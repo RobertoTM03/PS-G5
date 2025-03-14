@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "../../../Desktop/my-app/my-app/node_modules/.bin/vite",
-    "build": "../../../Desktop/my-app/my-app/node_modules/.bin/vite build",
-    "lint": "../../../Desktop/my-app/my-app/node_modules/.bin/eslint .",
-    "preview": "../../../Desktop/my-app/my-app/node_modules/.bin/vite preview"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.0.0",
