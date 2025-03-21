@@ -1,0 +1,28 @@
+.footer {
+    background-color: #112757;
+    color: white;
+    padding: 20px 0;
+    text-align: left; 
+    width: 100%;
+  }
+  
+  .footer-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: flex-end; 
+    padding-right: 20px;
+  }
+  
+  .footer-section {
+    margin-left: 100px; 
+  }
+  
+  .footer-section h4 {
+    margin-bottom: 10px;
+  }
+  
+  .footer-section p {
+    margin: 5px 0;
+  }
+  

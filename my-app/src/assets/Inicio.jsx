@@ -1,26 +1,28 @@
-import React from 'react';
-import './Inicio.css';
+import React from "react";
+import "./Inicio.css";
+import Footer from "./Footer"; 
+import mundo from "../pictures/mundo.png"; 
 
 export default function Inicio() {
     return (
-        <div className="container">
-            {/* Sección Izquierda */}
-            <div className="left-section">
-                <h1>Lorem ipsum!</h1>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua.
-                </p>
-                <button className="btn login-btn">Login</button>
-                <button className="btn signup-btn">Sign Up</button>
-            </div>
+        <div className="inicio">
+            <div className="container">
+                <div className="left-section">
+                    <h1>Â¡Viajar en grupo nunca ha sido tan fÃ¡cil!</h1>
+                    <p>Facilita la colaboraciÃ³n en equipo con herramientas para organizar grupos, dividir gastos, gestionar eventos, compartir documentos y comunicarte en tiempo real.</p>
+                    <p>Todo lo que necesitas para trabajar en equipo, en una sola aplicaciÃ³n.</p>
+                    
+                    <button className="btn login-btn">Login</button>
+                    <button className="btn signup-btn">Sign Up</button>
+                </div>
 
-            {/* Sección Derecha - Imagen o componente de información */}
-            <div className="right-section">
-                <div className="image-placeholder">
-                    <p>Información o imagen aquí</p>
+                <div className="right-section">
+                    <div className="image-placeholder">
+                        <img src={mundo} alt="mundo" className="mundo-image" />
+                    </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }
