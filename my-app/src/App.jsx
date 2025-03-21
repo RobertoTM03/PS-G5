@@ -1,13 +1,15 @@
-import React from 'react';
-import Inicio from './assets/Inicio';
-import ResetearContraseña from './assets/ResetearContraseña';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Inicio from "./assets/Inicio.jsx";
+import Registrarse from "./assets/Registrarse.jsx";
 
-function App() {
+export default function App() {
     return (
-        <div>
-            <Inicio />
-        </div>
+        <Router>
+            <Routes>
+                <Route path="/" element={<Inicio />} />
+                <Route path="/Registrarse" element={<Registrarse />} /> {/* Aquí corregimos la ruta */}
+            </Routes>
+        </Router>
     );
 }
-
-export default App;

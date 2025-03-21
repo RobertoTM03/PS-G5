@@ -1,6 +1,27 @@
 * {
   box-sizing: border-box;
 }
+/* Contenedor principal de toda la pantalla */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Hace que el div ocupe toda la altura de la pantalla */
+}
+
+/* Hace que el contenido empuje el footer hacia abajo */
+.content {
+  flex: 1;
+}
+
+/* Ajustes para el footer */
+footer {
+  background-color: #002766; /* Color de fondo */
+  color: white; /* Color del texto */
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+}
+
 
 /* Contenedor principal centrado */
 .registro-container {
