@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Contenedor principal centrado */
+.registro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: white;
+  padding: 20px;
+}
+
+/* Caja del formulario */
+.registro-box {
+  width: 60%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Título del formulario */
+.registro-box h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Ajustes generales para body y html */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Estilo para cada grupo del formulario */
+.form-group {
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* Etiquetas del formulario */
+.form-group label {
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* Campos de entrada */
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+}
+
+/* Botón de registro */
+.btn-register {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* Hover del botón */
+.btn-register:hover {
+  background-color: #003d80;
+}
+
+/* Texto debajo del botón */
+p {
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+/* Enlace dentro del párrafo */
+p a {
+  color: #0056b3;
+  font-weight: bold;
+}
