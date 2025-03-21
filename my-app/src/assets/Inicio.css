@@ -1,46 +1,68 @@
+/* Global styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    font-family: 'Montserrat', sans-serif; 
+    background: linear-gradient(to right, #d4d4e2, #85a1e1); 
+    color: white; 
+}
+
 /* Contenedor principal */
 .container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 80%;
-    height: 90vh;
-    margin: auto;
-    background-color: #f8f9fa; /* Fondo claro */
-    padding: 20px;
-    border-radius: 10px;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
 }
 
-/* Secci髇 izquierda */
-.left-section {
+/* Secciones izquierda y derecha */
+.left-section, .right-section {
     flex: 1;
     padding: 20px;
 }
 
-    .left-section h1 {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #333;
-    }
+/* Ajuste del margen de la secci贸n izquierda */
+.left-section {
+    margin-left: 80px;
+}
 
-    .left-section p {
-        color: #6c757d;
-        font-size: 1rem;
-        margin-bottom: 20px;
-    }
+.right-section {
+    margin-right: 30px;
+}
+
+/* T铆tulos */
+.left-section h1 {
+    font-size: 50px;
+    font-weight: bold;
+    color: #133379; /* Texto en blanco para mayor contraste */
+}
+
+/* P谩rrafos */
+.left-section p {
+    color: black; /* Un gris claro para mejor visibilidad */
+    font-size: 18px;
+    margin-bottom: 20px;
+}
 
 /* Botones */
 .btn {
     display: block;
-    width: 200px;
+    width: 300px;
     padding: 12px;
     font-size: 1rem;
     border: none;
     cursor: pointer;
     margin-bottom: 10px;
     border-radius: 5px;
+    text-align: center;
+    transition: 0.3s ease-in-out;
 }
 
+/* Estilos de los botones con efecto hover */
 .login-btn {
     background-color: #5a7ec7;
     color: white;
@@ -51,21 +73,39 @@
     color: white;
 }
 
-/* Secci髇 derecha (imagen o informaci髇) */
+.btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Secci贸n derecha */
 .right-section {
-    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+/* Placeholder de imagen con animaci贸n */
 .image-placeholder {
-    width: 90%;
+    width: 60%;
+    max-width: 400px;
     height: 350px;
-    border: 2px dashed #ccc;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    color: #888;
+    opacity: 1;
+    animation: moverArribaAbajo 2s infinite ease-in-out; /* Agregado: animaci贸n de movimiento */
+}
+
+/* Definir la animaci贸n de mover hacia arriba y hacia abajo */
+@keyframes moverArribaAbajo {
+    0% {
+        transform: translateY(0); /* posici贸n inicial */
+    }
+    50% {
+        transform: translateY(-10px); /* mover hacia arriba */
+    }
+    100% {
+        transform: translateY(0); /* volver a la posici贸n inicial */
+    }
 }
