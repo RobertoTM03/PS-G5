@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import "./ResetearContraseña.css";
 import Footer from "./Footer";
+import { Link } from 'react-router-dom';
 
 const ResetPassword = () => {
   const [email, setEmail] = useState('');
@@ -30,7 +31,7 @@ const ResetPassword = () => {
           <button type="submit" className="confirm-button">Confirm Email Address</button>
         </form>
         <p className="go-to-login">
-          Go to <a href="/login">Login</a>
+          Go to <Link to="/IniciarSesion">Login</Link>
         </p>
         
       </div>

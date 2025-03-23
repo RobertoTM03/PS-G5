@@ -7,6 +7,9 @@ export default function Inicio() {
     const handleSignupClick = () => {
         window.location.href = "./Registrarse";
     };
+    const handleSignInClick = () => {
+        window.location.href = "./IniciarSesion";
+    };
 
     return (
         <div className="inicio">
@@ -19,8 +22,9 @@ export default function Inicio() {
                         comunicarte en tiempo real.
                     </p>
                     <p>Todo lo que necesitas para trabajar en equipo, en una sola aplicación.</p>
-
-                    <button className="btn login-btn">Login</button>
+                    <button className="btn login-btn" onClick={handleSignInClick}>
+                        Login
+                    </button>
                     <button className="btn signup-btn" onClick={handleSignupClick}>
                         Sign Up
                     </button>

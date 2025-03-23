@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Registrarse.css";
 import Footer from "./Footer";
+import { Link } from 'react-router-dom';
 
 export default function Registrarse() {
   const [formData, setFormData] = useState({
@@ -77,7 +78,7 @@ export default function Registrarse() {
               <button type="submit" className="btn-register">Sign Up</button>
             </form>
             <p>
-              Already have an account? <a href="#">Login</a>
+              Already have an account? <Link to="/IniciarSesion">Login</Link>
             </p>
           </div>
         </div>
