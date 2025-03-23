@@ -78,26 +78,50 @@ exports.login = async (req, res) => {
 };
 
 
-exports.forgotPassword = async (req, res) => {
-    // TODO: Comprobar valores válidos de los campos (cod: 400)
+const nodemailer = require('nodemailer');
 
+exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ msg: 'Email requerido' });
 
     try {
         const link = await admin.auth().generatePasswordResetLink(email, {
-            url: 'página_de_restablecer_contraseña',
+            url: 'http://localhost:5173/PasswordRecover',
             handleCodeInApp: true
         });
 
-        // TODO: Enviar el correo de restablecimiento (nodemailer)?
+        // Configura el transportador de nodemailer
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS
+            }
+        });
 
-        res.json({ msg: 'Se ha enviado el correo de recuperación', link });
+        // Opciones del correo
+        const mailOptions = {
+            from: `"TripCollab" <${process.env.MAIL_USER}>`,
+            to: email,
+            subject: 'Recupera tu contraseña en TripCollab',
+            html: `
+                <p>Hola,</p>
+                <p>Has solicitado restablecer tu contraseña en TripCollab. Haz clic en el enlace de abajo para continuar:</p>
+                <a href="${link}">Restablecer contraseña</a>
+                <p>Si no solicitaste restablecer tu contraseña, puedes ignorar este mensaje.</p>
+            `
+        };
+
+        // Enviar el correo
+        await transporter.sendMail(mailOptions);
+
+        res.json({ msg: 'Se ha enviado el correo de recuperación' });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Error al generar el enlace' });
+        res.status(500).json({ msg: 'Error al generar o enviar el enlace' });
     }
 };
+
 
 
 exports.resetPassword = async (req, res) => {
