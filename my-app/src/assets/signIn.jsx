@@ -1,7 +1,7 @@
 import React from 'react';
 import './signIn.css';
 
-export default function SignIn() {
+export default function signIn() {
     return (
             <main className="sign-page-container">
                 <section className="sign-box">

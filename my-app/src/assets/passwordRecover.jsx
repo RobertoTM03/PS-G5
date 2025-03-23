@@ -1,28 +1,31 @@
 import React from 'react';
+import './passwordRecoverStyle.css';
 
-export default function passwordRecover() {
+export function PasswordRecover() {
     return (
-        <section>
-            <section>
-                <h1>Introduce new password!</h1>
-            </section>
-            <section>
-                <section>
-                    <h4>New Password</h4>
-                    <input type="password" name="password" placeholder="Password" />
-                </section>
-                <section>
-                    <h4>Confirm Your New Password</h4>
-                    <input type="password" name="password" placeholder="Password" />
-                </section>
-                <section>
-                    <button>Change Password</button>
-                </section>
-                <section>
-                    <a>Got to Login</a>
-                </section>
-            </section>
+        <>
+            <div className="container">
+                <form className="password-form">
+                    <h1 id="title-password">Introduce new password</h1>
 
-        </section>
+                    <div className="input-group">
+                        <label>New Password</label>
+                        <input className="passwordblock" type="password" name="password" placeholder="Enter password" required />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Confirm Your New Password</label>
+                        <input className="passwordblock" type="password" name="confirmPassword" placeholder="Repeat the password" required />
+                    </div>
+
+                    <button id="passwordButton" type="submit">Change Password</button>
+
+
+                </form>
+            </div>
+
+            {/* Espacio reservado para el footer */}
+            <div className="footer-space"></div>
+        </>
     );
 }
