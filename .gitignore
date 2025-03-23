@@ -11,7 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
-server/firebase-service-account.json
+
+# IMPORTANTE. NO QUITAR. EL REPO ES PUBLICO 
+firebase-service-account.json
+# IMPORTANTE. NO QUITAR. EL REPO ES PUBLICO
 
 # Editor directories and files
 .vscode/*

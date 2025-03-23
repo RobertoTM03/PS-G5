@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, forgotPassword, resetPassword } = require('../controllers/authController');
+const { register, login, forgotPassword, resetPassword } = require('../auth/authController');
 
 /**
  * @openapi
