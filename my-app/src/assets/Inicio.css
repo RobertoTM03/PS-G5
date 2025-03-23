@@ -28,10 +28,7 @@ body, html {
 /* Ajuste del margen de la sección izquierda */
 .left-section {
     margin-left: 80px;
-}
-
-.right-section {
-    margin-right: 30px;
+    
 }
 
 /* Títulos */
@@ -46,6 +43,7 @@ body, html {
     color: black; /* Un gris claro para mejor visibilidad */
     font-size: 18px;
     margin-bottom: 20px;
+    text-align: left;
 }
 
 /* Botones */
@@ -83,6 +81,7 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 30px;
 }
 
 /* Placeholder de imagen con animación */
