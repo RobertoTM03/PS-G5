@@ -1,0 +1,73 @@
+.vistaGrupos {
+    padding: 5vh 1vh 10vh 1vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+    min-height: 50vh;
+}
+.top-text{
+    width: 100%;
+    justify-content: left;
+    padding:30px 30px 30px 30px;
+    border : 1px solid lightgray;
+    text-align: left;
+}
+.top-text h1{
+    font: bold 54px Georgia;
+    color: #1a1a1a;
+    margin: 20px;
+}
+
+.groupTray{
+    padding: 30px 0 30px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+
+.groupTray h1{
+    font: bold 30px Georgia;
+    color: #1a1a1a;
+    margin: 20px;
+}
+.groupDisplay{
+    border: 1px #1a1a1a solid;
+    padding: 10px;
+    width: 80%;
+    display: grid;
+    grid-template-columns: 3fr fit-content(80%);
+
+}
+
+.btn-showMore{
+    font : bold 30px Georgia;
+    border: 1px #1a1a1a solid;
+    border-radius: 5px;
+    width: fit-content;
+    background-color: #8ea7cc;
+    text-align: center;
+    padding: 10px;
+}
+.btn-showMore:hover{
+    color: #5185d1;
+}
+
+.bottom-text{
+    padding: 0 30px 0 30px;
+    text-align: center;
+    justify-content: center;
+}
+
+.btn-addGroup{
+    font: bold 30px Georgia;
+    border: 1px #1a1a1a solid;
+    border-radius: 5px;
+    background-color: #8ea7cc;
+    text-align: center;
+    padding: 10px;
+}
