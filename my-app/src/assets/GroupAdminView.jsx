@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './GroupAdminView.css';
 import Footer from './Footer';
 import money from '../pictures/money-bag.svg';
@@ -8,21 +8,56 @@ import document from '../pictures/document.svg';
 import chat from '../pictures/chat.svg';
 
 export default function GroupAdminView() {
+  const [groupData, setGroupData] = useState({
+    name: '',
+    description: '',
+    members: [],
+  });
+
+
+  useEffect(() => {
+    const fetchGroupData = async () => {
+      try {
+        const response = await fetch('/api/groups/1'); // ID del grupo
+        const data = await response.json();
+        setGroupData({
+          name: data.name,
+          description: data.description,
+          members: data.members.map(user => user.name), // extrae solo los nombres
+        });
+      } catch (error) {
+        console.error('Error fetching group data:', error);
+        setGroupData({
+          name: 'Dev Group',
+          description: 'Esto es una prueba para ver cómo se va a ver al poner la descripción del grupo aquí.',
+          members: ['Alice', 'Bob', 'Charlie'],
+        });
+      }
+    };
+  
+    fetchGroupData();
+  }, []);
+
   return (
     <div className="group-admin-wrapper">
       <div className="group-admin-container">
         {/* Left panel */}
         <div className="left-panel">
-          <h2 className="group-title">Group name</h2>
+          <h2 className="group-title">{groupData.name || 'Group name'}</h2>
           <p className="description-title">DESCRIPTION</p>
           <p className="group-description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-            ut labore et dolore magna aliqua.
+            {groupData.description || 'Loading description...'}
           </p>
 
           <p className="members-title">GROUP MEMBERS</p>
           <div className="members-list">
-            {/* Members should be dynamically generated here */}
+            {groupData.members.length > 0 ? (
+              groupData.members.map((member, index) => (
+                <p key={index}>{member}</p>
+              ))
+            ) : (
+              <p>No members yet.</p>
+            )}
           </div>
 
           <button className="add-member-btn">ADD MEMBER</button>
@@ -59,7 +94,6 @@ export default function GroupAdminView() {
         </div>
       </div>
 
-      {/* Footer component at the bottom */}
       <Footer />
     </div>
   );

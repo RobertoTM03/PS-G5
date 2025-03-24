@@ -6,6 +6,7 @@ import Registrarse from './assets/Registrarse.jsx';
 import IniciarSesion from './assets/signIn.jsx';
 import { PasswordRecover } from './assets/passwordRecover.jsx';
 import ResetearContraseña from "./assets/ResetearContraseña.jsx";
+import GroupAdminView from './assets/GroupAdminView.jsx';
 
 function App() {
     return (

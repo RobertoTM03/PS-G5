@@ -6,7 +6,6 @@ body, html {
     height: 100%;
     overflow-x: hidden;
     font-family: 'Montserrat', sans-serif; 
-    background: linear-gradient(to right, #d4d4e2, #85a1e1); 
     color: white; 
 }
 
@@ -16,8 +15,10 @@ body, html {
     align-items: center;
     justify-content: center;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
+    background: linear-gradient(to right, #d4d4e2, #85a1e1); 
 }
+
 
 /* Secciones izquierda y derecha */
 .left-section, .right-section {
@@ -33,7 +34,7 @@ body, html {
 
 /* Títulos */
 .left-section h1 {
-    font-size: 50px;
+    font-size: 55px;
     font-weight: bold;
     color: #133379; /* Texto en blanco para mayor contraste */
 }
@@ -41,15 +42,17 @@ body, html {
 /* Párrafos */
 .left-section p {
     color: black; /* Un gris claro para mejor visibilidad */
-    font-size: 18px;
+    font-size: 25px;
     margin-bottom: 20px;
     text-align: left;
 }
 
+
 /* Botones */
 .btn {
     display: block;
-    width: 300px;
+    width: 350px;
+    height: 40px;
     padding: 12px;
     font-size: 1rem;
     border: none;
@@ -81,14 +84,14 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 30px;
+    margin-right: 50px;
 }
 
 /* Placeholder de imagen con animación */
 .image-placeholder {
     width: 60%;
-    max-width: 400px;
-    height: 350px;
+    max-width: 300px;
+    height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -108,3 +111,141 @@ body, html {
         transform: translateY(0); /* volver a la posición inicial */
     }
 }
+
+.highlight-section {
+    text-align: center;
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.highlight-title {
+    color: #2c3e50;
+    letter-spacing: 1.2px;
+    font-size: 50px;
+    font-weight: bold;
+    color: #133379;
+    margin-top: 30px;
+
+}
+
+
+
+.right-section2 h1 {
+    font-size: 55px;
+    font-weight: bold;
+    color: #133379; /* Texto en blanco para mayor contraste */
+}
+
+/* Párrafos */
+.right-section2 p {
+    color: black;
+    font-size: 25px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.right-section2 {
+    display: flex;
+    text-align: left;
+    margin-right: 30px;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 60px;
+}
+
+.left-section2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 30px;
+}
+
+.container2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    min-height: 100vh;
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
+}
+
+.left-section2 {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 60px;
+}
+
+.feature-image {
+    width: 100%;
+    min-width: 500px;
+    
+}
+
+.feature-image2 {
+    width: 100%;
+    min-width: 400px;
+    
+}
+
+.mundo-image {
+    width: 100%;
+    min-width: 450px;
+}
+
+.main-header {
+    width: 100%;
+    padding: 10px 40px;
+    background-color: #133379;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    z-index: 999;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    color: white;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    gap: 15px;
+}
+
+/* Reutilizamos la clase .btn, pero puedes ajustar aquí también si querés separarlo visualmente */
+.header-btn {
+    background-color: white;
+    color: #133379;
+    font-weight: 600;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    transition: 0.3s ease;
+    width: 150px;
+}
+
+.header-btn.signup {
+    background-color: #244a9b;
+    color: white;
+}
+
+.header-btn:hover {
+    transform: scale(1.05);
+}
+
+.inicio {
+    padding-top: 60px; /* Ajusta este valor al alto real del header */
+}
+  
