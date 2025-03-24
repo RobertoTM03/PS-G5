@@ -1,17 +1,23 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Inicio from './assets/Inicio';
-//import ResetearContraseña from './assets/ResetearContraseña';
-//import { BrowserRouter, Routes, Route } from "react-router-dom";
-//import {Registrarse} from './assets/Registrarse.jsx'
-//import './assets/signIn.jsx'
-//import {PasswordRecover} from "./assets/passwordRecover.jsx";
+import Registrarse from './assets/Registrarse.jsx';
+import IniciarSesion from './assets/signIn.jsx';
+import { PasswordRecover } from './assets/passwordRecover.jsx';
+import ResetearContraseña from "./assets/ResetearContraseña.jsx";
 
 function App() {
     return (
-        <div>
-            <Inicio />
-        </div>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Inicio />} />
+                <Route path="/Registrarse" element={<Registrarse />} />
+                <Route path="/IniciarSesion" element={<IniciarSesion />} />
+                <Route path="/PasswordRecover" element={<PasswordRecover />} />
+                <Route path="/Resetear" element={<ResetearContraseña />} />
+            </Routes>
+        </BrowserRouter>
     );
 }
 

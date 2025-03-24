@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Registrarse.css";
 import Footer from "./Footer";
 import { Link } from 'react-router-dom';
+import Header from "./Header";
 
 export default function Registrarse() {
   const [formData, setFormData] = useState({
@@ -26,6 +27,7 @@ export default function Registrarse() {
 
   return (
     <div className="main-container"> {/* Nuevo contenedor que usa flexbox */}
+      <Header />
       <div className="content">
         <div className="registro-container">
           <div className="registro-box">
