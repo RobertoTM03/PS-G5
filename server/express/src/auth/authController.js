@@ -1,8 +1,6 @@
 const admin = require('./firebase');
 const axios = require('axios');
-
-const pgp = require('pg-promise')();
-const db = pgp(dbConnection);
+const db = require("../database");
 
 
 exports.register = async (req, res) => {

@@ -19,7 +19,7 @@ const swaggerSpec = swaggerJsdoc({
       },
     },
   },
-  apis: ['./routes/*.js'],
+  apis: ['./src/*/*routes.js'],
 });
 
 module.exports = { swaggerUi, swaggerSpec };
