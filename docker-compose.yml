@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+
+    react:
+        build: ./my-app
+        volumes:
+            - ./my-app/src:/app/src
+        ports:
+            - 5173:5173
+        depends_on: 
+            - express
+    
+    express:
+        build: ./server/express
+        volumes:
+            - ./server/express/src:/app/src
+        ports:
+            - 3000:3000
+        depends_on: 
+            - postgres_db
+
+    postgres_db:
+        image: postgres:latest
+        restart: always
+        environment:
+            POSTGRES_DB: ps_g5
+            POSTGRES_PASSWORD: "1234"
+        tmpfs:
+            - /var/lib/postgresql/data
+        volumes:
+            - ./server/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+        
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
