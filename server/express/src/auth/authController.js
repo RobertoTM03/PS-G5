@@ -1,33 +1,53 @@
 const admin = require('./firebase');
 const axios = require('axios');
 
+const pgp = require('pg-promise')();
+const db = pgp(dbConnection);
+
+
 exports.register = async (req, res) => {
-    // TODO: Comprobar valores válidos de los campos (cod: 400)
-    // TODO: Comprobar email no asignado a otra cuenta (cod: 409)
-    // TODO: Comprobar nombre no asignado a otra cuenta (Falta en la HU)
-    // TODO: Comprobar que la contraseña no cumple los requisitos de seguridad (cod: 422)
-
-
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
         return res.status(400).json({ msg: 'Falta campos requeridos' });
     }
 
+    // Validación de formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ msg: 'Formato de email no válido' });
+    }
+
+    // Validación de longitud de la contraseña
+    if (password.length < 8 || password.length > 32) {
+        return res.status(422).json({ msg: 'La contraseña debe tener más de 8 y menos de 32 caracteres' });
+    }
+
     try {
+        // Verificar si el email existe:
+        const emailExists = await db.oneOrNone('SELECT id FROM users WHERE email = $1', [email]);
+        if (emailExists) {
+            return res.status(409).json({ msg: 'El email ya está registrado' });
+        }
+
+        // Verificar si el nombre existe:
+        const nameExists = await db.oneOrNone('SELECT id FROM users WHERE name = $1', [name]);
+        if (nameExists) {
+            return res.status(409).json({ msg: 'El nombre de usuario ya está en uso' });
+        }
+
         // Crear usuario en Firebase Auth
         const newUser = await admin.auth().createUser({
-            email: name,
-            password: email,
+            email: email,
+            password: password,
             displayName: name,
         });
 
-        // Guardar en base de datos
-        /*
-            Nombre: name
-            Correo: email
-            Firebase_uid: newUser.uid
-         */
+        // Insertar usuario en PostgreSQL
+        await db.none(
+            'INSERT INTO users (name, email, firebase_uid) VALUES ($1, $2, $3)',
+            [name, email, newUser.uid]
+        );
 
         // Crear un token personalizado
         const customToken = await admin.auth().createCustomToken(newUser.uid);
@@ -36,7 +56,6 @@ exports.register = async (req, res) => {
         res.status(201).json({
             token: customToken,
         });
-
     } catch (err) {
         console.error('Error en el registro:', err);
         res.status(500).json({ msg: 'Error al registrar', error: err.message });
@@ -44,22 +63,28 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    // TODO: Comprobar valores válidos de los campos (cod: 400)
-
     const { identifier, password } = req.body;
 
     if (!identifier || !password) {
         return res.status(400).json({ msg: 'Faltan campos obligatorios' });
     }
 
+    // Validación de longitud de la contraseña
+    if (password.length < 8 || password.length > 32) {
+        return res.status(400).json({ msg: 'La contraseña debe tener más de 8 y menos de 32 caracteres' });
+    }
+
     try {
-        // TODO: Buscar en la base de datos por email o nombre y obtener el user.
+        // Buscar al usuario en la base de datos por email o nombre
+        const user = await db.oneOrNone(
+            'SELECT * FROM users WHERE email = $1 OR name = $1',
+            [identifier]
+        );
 
         if (!user) {
-            return res.sendStatus(401); // Credenciales incorrectas (email o nombre)
+            return res.status(401).json({ msg: 'Credenciales incorrectas' }); // Credenciales incorrectas (email o nombre)
         }
 
-        // TODO ¿El token se pasa por cabecera o cómo?
         // Usar el email de la base de datos para loguear en Firebase
         const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIREBASE_API_KEY}`, {
             email: user.email,
@@ -67,12 +92,13 @@ exports.login = async (req, res) => {
             returnSecureToken: true
         });
 
-        // Devolver el token y datos
+        // Devolver el token
         res.status(200).json({
             token: response.data.idToken,
         });
+
     } catch (err) {
-        console.error(err.response?.data || err.message);
+        console.error(err?.response?.data || err.message);
         res.status(401).json({ msg: 'Credenciales incorrectas' });
     }
 };
