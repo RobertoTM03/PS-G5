@@ -17,15 +17,51 @@
 // 2. Obtener el uid del user y el email
 // 3. Cambiar Password
 
-function mecagoenRobertoyEnSusMuertos(url){
+const axios = require("axios");
+require("dotenv").config();
+
+const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
+
+// 🔹 Verifica si el código `oobCode` es válido
+async function verificarOobCode(oobCode) {
     try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
+        const response = await axios.post(
+            `https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key=${FIREBASE_API_KEY}`,
+            { oobCode }
+        );
 
-
-    } catch (error) {
-        console.error(error.message);
+        return { valido: true, email: response.data.email };
+    } catch (err) {
+        return { valido: false, error: "Código inválido o expirado" };
     }
 }
+
+// 🔹 Cambia la contraseña si el `oobCode` es válido
+async function cambiarContraseña(oobCode, newPassword) {
+    try {
+        await axios.post(
+            `https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key=${FIREBASE_API_KEY}`,
+            { oobCode, newPassword }
+        );
+
+        return { msg: " Contraseña actualizada correctamente" };
+    } catch (err) {
+        return { msg: " Error al cambiar la contraseña" };
+    }
+}
+
+/**Para el servidor
+ * if (req.url === "/verify-oob" && req.method === "POST") {
+ *     const { oobCode } = JSON.parse(body);
+ *     const resultado = await verificarOobCode(oobCode);
+ *     res.writeHead(resultado.valido ? 200 : 400, { "Content-Type": "application/json" });
+ *     res.end(JSON.stringify(resultado));
+ * }
+ *
+ * if (req.url === "/reset-password" && req.method === "POST") {
+ *     const { oobCode, newPassword } = JSON.parse(body);
+ *     const resultado = await cambiarContraseña(oobCode, newPassword);
+ *     res.writeHead(200, { "Content-Type": "application/json" });
+ *     res.end(JSON.stringify(resultado));
+ * }
+ */
