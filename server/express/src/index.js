@@ -2,16 +2,20 @@ const express = require('express');
 const app = express();
 const { swaggerUi, swaggerSpec } = require('./swagger');
 const db = require("./database");
+const syncUsersFromFirebase = require('./syncFirebase');
 
 db.any('SELECT * FROM users')
     .then(function(data) {
-      console.log(data)
+        console.log(data)
     })
     .catch(function(error) {
-      console.log(error);
+        console.log(error);
     });
 
-    
+// Sincronizar usuarios desde Firebase.
+(async () => {
+    syncUsersFromFirebase();
+})();
 
 // Middleware para parsear JSON
 app.use(express.json());
@@ -29,11 +33,11 @@ app.use('/groups', groupsRoutes);
 
 // Ruta base de prueba
 app.get('/', (req, res) => {
-  res.send('API funcionando');
+    res.send('API funcionando');
 });
 
 // Levantar el servidor
 app.listen(3000, () => {
-  console.log('Servidor corriendo en http://localhost:3000');
-  console.log('Documentación disponible en http://localhost:3000/api-docs');
+    console.log('Servidor corriendo en http://localhost:3000');
+    console.log('Documentación disponible en http://localhost:3000/api-docs');
 });
