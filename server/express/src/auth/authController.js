@@ -2,58 +2,51 @@ const admin = require('./firebase');
 const axios = require('axios');
 const db = require("../database");
 
-
 exports.register = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;
 
-    if (!name || !email || !password) {
-        return res.status(400).json({ msg: 'Falta campos requeridos' });
+    if (!username || !email || !password) {
+        return res.status(400).json({ msg: 'Faltan campos requeridos' });
     }
 
-    // Validación de formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         return res.status(400).json({ msg: 'Formato de email no válido' });
     }
 
-    // Validación de longitud de la contraseña
     if (password.length < 8 || password.length > 32) {
         return res.status(422).json({ msg: 'La contraseña debe tener más de 8 y menos de 32 caracteres' });
     }
 
+    let newUser = null; // ✅ Declarada aquí
     try {
-        // Verificar si el email existe:
         const emailExists = await db.oneOrNone('SELECT id FROM users WHERE email = $1', [email]);
-        if (emailExists) {
-            return res.status(409).json({ msg: 'El email ya está registrado' });
+        if (emailExists) return res.status(409).json({ msg: 'El email ya está registrado' });
+
+        const nameExists = await db.oneOrNone('SELECT id FROM users WHERE name = $1', [username]);
+        if (nameExists) return res.status(409).json({ msg: 'El nombre de usuario ya está en uso' });
+
+        try {
+            newUser = await admin.auth().createUser({
+                email,
+                password,
+                displayName: username,
+            });
+
+            await db.none(
+                'INSERT INTO users (name, email, firebase_uid) VALUES ($1, $2, $3)',
+                [username, email, newUser.uid]
+            );
+        } catch (err) {
+            if (newUser?.uid) {
+                await admin.auth().deleteUser(newUser.uid);
+            }
+            throw err;
         }
 
-        // Verificar si el nombre existe:
-        const nameExists = await db.oneOrNone('SELECT id FROM users WHERE name = $1', [name]);
-        if (nameExists) {
-            return res.status(409).json({ msg: 'El nombre de usuario ya está en uso' });
-        }
-
-        // Crear usuario en Firebase Auth
-        const newUser = await admin.auth().createUser({
-            email: email,
-            password: password,
-            displayName: name,
-        });
-
-        // Insertar usuario en PostgreSQL
-        await db.none(
-            'INSERT INTO users (name, email, firebase_uid) VALUES ($1, $2, $3)',
-            [name, email, newUser.uid]
-        );
-
-        // Crear un token personalizado
         const customToken = await admin.auth().createCustomToken(newUser.uid);
+        res.status(201).json({ token: customToken });
 
-        // Devolver respuesta
-        res.status(201).json({
-            token: customToken,
-        });
     } catch (err) {
         console.error('Error en el registro:', err);
         res.status(500).json({ msg: 'Error al registrar', error: err.message });
@@ -83,18 +76,20 @@ exports.login = async (req, res) => {
             return res.status(401).json({ msg: 'Credenciales incorrectas' }); // Credenciales incorrectas (email o nombre)
         }
 
-        // Usar el email de la base de datos para loguear en Firebase
-        const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIREBASE_API_KEY}`, {
-            email: user.email,
-            password: password,
-            returnSecureToken: true
-        });
-
-        // Devolver el token
-        res.status(200).json({
-            token: response.data.idToken,
-        });
-
+        try {
+            const firebaseRes = await axios.post(
+                `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIREBASE_API_KEY}`,
+                {
+                    email: user.email,
+                    password: password,
+                    returnSecureToken: true
+                }
+            );
+            res.status(200).json({ token: firebaseRes.data.idToken });
+        } catch (err) {
+            console.error('Error al loguear:', err.response?.data || err.message);
+            res.status(401).json({ msg: 'Credenciales incorrectas' });
+        }
     } catch (err) {
         console.error(err?.response?.data || err.message);
         res.status(401).json({ msg: 'Credenciales incorrectas' });
