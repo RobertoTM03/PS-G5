@@ -18,7 +18,7 @@ export default function GroupAdminView() {
   useEffect(() => {
     const fetchGroupData = async () => {
       try {
-        const response = await fetch('/api/groups/1'); // ID del grupo
+        const response = await fetch('localhost:3000/groups/1'); // ID del grupo
         const data = await response.json();
         setGroupData({
           name: data.name,
@@ -27,11 +27,6 @@ export default function GroupAdminView() {
         });
       } catch (error) {
         console.error('Error fetching group data:', error);
-        setGroupData({
-          name: 'Dev Group',
-          description: 'Esto es una prueba para ver cómo se va a ver al poner la descripción del grupo aquí.',
-          members: ['Alice', 'Bob', 'Charlie'],
-        });
       }
     };
   
