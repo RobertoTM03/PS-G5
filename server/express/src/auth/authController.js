@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
     }
 
     if (password.length < 8 || password.length > 32) {
-        return res.status(422).json({ msg: 'La contraseña debe tener más de 8 y menos de 32 caracteres' });
+        return res.status(422).json({ msg: 'La contraseña debe tener entre 8 y 32 caracteres' });
     }
 
     let newUser = null; // ✅ Declarada aquí
