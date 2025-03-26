@@ -44,6 +44,8 @@ const { register, login, forgotPassword, resetPassword } = require('./authContro
  *         description: Faltan campos obligatorios o formato inválido
  *       401:
  *         description: Credenciales incorrectas
+ *       500:
+ *         description: Error no definido
  */
 router.post('/login', login);
 
@@ -96,6 +98,8 @@ router.post('/login', login);
  *         description: Email ya registrado
  *       422:
  *         description: La contraseña no cumple los requisitos de seguridad
+ *       500:
+ *         description: Error no definido
  */
 router.post('/register', register);
 
@@ -126,6 +130,8 @@ router.post('/register', register);
  *         description: Se ha enviado un correo con instrucciones (aunque el email no esté registrado, por seguridad no se informa)
  *       400:
  *         description: Falta el campo email o es inválido
+ *       500:
+ *         description: Error no definido
  */
 router.post('/forgot-password', forgotPassword);
 
@@ -164,6 +170,8 @@ router.post('/forgot-password', forgotPassword);
  *         description: Faltan campos o la contraseña no cumple los requisitos
  *       409:
  *         description: La nueva contraseña no puede ser igual a la anterior
+ *       500:
+ *         description: Error no definido
  */
 router.post('/reset-password', resetPassword);
 
