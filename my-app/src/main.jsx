@@ -1,7 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Inicio from "./assets/Inicio";
@@ -16,7 +14,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<GroupAdminView />} />
+        <Route path="/" element={<Inicio />} />
         <Route path="/Registrarse" element={<Registrarse />} />
         <Route path="/IniciarSesion" element={<IniciarSesion />} />
         <Route path="/PasswordRecover" element={<PasswordRecover />} />

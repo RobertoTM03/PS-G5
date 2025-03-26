@@ -20,12 +20,12 @@ export default function Registrarse() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (formData.password !== formData.confirmPassword) {
       alert("Las contraseñas no coinciden");
       return;
     }
-
+  
     try {
       const response = await fetch("http://localhost:3000/auth/register", {
         method: "POST",
@@ -38,24 +38,25 @@ export default function Registrarse() {
           password: formData.password
         })
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(data.msg || "Error desconocido al registrarse");
       }
-
+  
       // Guardar token en localStorage
       localStorage.setItem("token", data.token);
-
+  
       // Redirigir a vistaGrupos
       navigate("/vistaGrupos");
-
+  
     } catch (error) {
       alert(`Error al registrarse: ${error.message}`);
       console.error("Registro fallido:", error);
     }
   };
+  
 
   return (
     <div className="main-container">
