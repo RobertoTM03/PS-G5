@@ -5,11 +5,24 @@ const db = require("./database");
 const syncUsersFromFirebase = require('./syncFirebase');
 
 const cors = require('cors');
+
+const allowedOrigins = ['http://localhost', 'http://localhost:3000', 'http://localhost:80'];
+
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: function(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 
+// Sincronizar usuarios desde Firebase.
+(async () => {
+    syncUsersFromFirebase();
+})();
 
 db.any('SELECT * FROM users')
     .then(function(data) {
@@ -19,10 +32,6 @@ db.any('SELECT * FROM users')
         console.log(error);
     });
 
-// Sincronizar usuarios desde Firebase.
-(async () => {
-    syncUsersFromFirebase();
-})();
 
 // Middleware para parsear JSON
 app.use(express.json());
