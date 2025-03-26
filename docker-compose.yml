@@ -4,6 +4,7 @@ services:
 
     react:
         build: ./my-app
+        restart: always
         volumes:
             - ./my-app/src:/app/src
         ports:
@@ -13,6 +14,7 @@ services:
     
     express:
         build: ./server/express
+        restart: always
         volumes:
             - ./server/express/src:/app/src
         ports:
