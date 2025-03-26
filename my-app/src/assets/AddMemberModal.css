@@ -1,0 +1,108 @@
+/* Fondo desenfocado y oscurecido */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Animación suave de entrada */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Caja del modal */
+  .modal-box {
+    background-color: #1c4a91;
+    border-radius: 15px;
+    width: 450px;
+    max-width: 90%;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  /* Título */
+  .modal-title {
+    text-align: center;
+    font-size: 24px;
+    color: #ffffff;
+    padding: 20px 0;
+    font-weight: bold;
+    background-color: #1c4a91;
+  }
+  
+  /* Contenido del modal */
+  .modal-content {
+    background-color: #ffffff;
+    padding: 30px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  /* Etiqueta del input */
+  .username-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000000;
+  }
+  
+  /* Input de texto */
+  .username-input {
+    background-color: #dbeaff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 15px;
+    font-size: 16px;
+    width: 60%;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .username-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #558de8;
+  }
+  
+  /* Pie del modal */
+  .modal-footer {
+    background-color: #1c4a91;
+    padding: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  /* Botón confirmar */
+  .confirm-btn {
+    background-color: #e6f0ff;
+    border: 2px solid #000000;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .confirm-btn:hover {
+    background-color: #d0e0ff;
+    transform: translateY(-2px);
+  }
+  
