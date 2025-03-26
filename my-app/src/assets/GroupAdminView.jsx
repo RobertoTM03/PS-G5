@@ -6,6 +6,7 @@ import calendar from '../pictures/calendar.png';
 import location from '../pictures/location.svg';
 import document from '../pictures/document.svg';
 import chat from '../pictures/chat.svg';
+import AddMemberModal from './AddMemberModal'; // Importa tu modal
 
 export default function GroupAdminView() {
   const [groupData, setGroupData] = useState({
@@ -14,7 +15,8 @@ export default function GroupAdminView() {
     members: [],
   });
 
-  const [openMenuIndex, setOpenMenuIndex] = useState(null); // índice del menú desplegado
+  const [openMenuIndex, setOpenMenuIndex] = useState(null);
+  const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
   useEffect(() => {
     const fakeData = {
@@ -31,7 +33,7 @@ export default function GroupAdminView() {
 
     const fetchGroupData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/groups/1'); 
+        const response = await fetch('http://localhost:3000/groups/1');
         const data = await response.json();
 
         setGroupData({
@@ -45,7 +47,7 @@ export default function GroupAdminView() {
     };
 
     fetchGroupData();
-    
+
     setGroupData({
       name: fakeData.name,
       description: fakeData.description,
@@ -77,12 +79,19 @@ export default function GroupAdminView() {
               groupData.members.map((member, index) => (
                 <div key={index} className="member-item">
                   <span>{member}</span>
-                  <button className="dots-button" onClick={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}>⋮</button>
-                  {openMenuIndex === index && (
-                    <div className="member-menu">
-                      <button onClick={() => handleRemoveMember(index)}>Eliminar miembro</button>
-                    </div>
-                  )}
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      className="dots-button"
+                      onClick={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
+                    >
+                      ⋮
+                    </button>
+                    {openMenuIndex === index && (
+                      <div className="member-menu">
+                        <button onClick={() => handleRemoveMember(index)}>Eliminar miembro</button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))
             ) : (
@@ -90,7 +99,9 @@ export default function GroupAdminView() {
             )}
           </div>
 
-          <button className="add-member-btn">ADD MEMBER</button>
+          <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
+            ADD MEMBER
+          </button>
         </div>
 
         {/* Right panel - Icon Buttons */}
@@ -123,6 +134,12 @@ export default function GroupAdminView() {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {showAddMemberModal && (
+        <AddMemberModal onClose={() => setShowAddMemberModal(false)} />
+      )}
+
       <Footer />
     </div>
   );
