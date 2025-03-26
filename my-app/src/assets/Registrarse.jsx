@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Registrarse.css";
 import Footer from "./Footer";
 import { Link } from 'react-router-dom';
-import Header from "./Header";
+import Header from "./HeaderNoSigned";
 
 export default function Registrarse() {
   const [formData, setFormData] = useState({

@@ -1,78 +1,93 @@
-.reset-password-container {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    background-color: white;
-  }
-  
-  .reset-password-box {
-    background-color: white;
-    padding: 30px;
-    text-align: center;
-    margin-top: 45px;
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  .reset-password-box h1 {
-    font-size: 28px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .reset-password-box p {
-    font-size: 16px;
-    color: #555;
-  }
-
-  .reset-password-box input,
-  .reset-password-box button {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 5px;
-    margin: 10px 0;
-    box-sizing: border-box;
-  }
-  
-  .reset-password-box input {
-    border: 1px solid #ccc; 
-  }
-  
-  .reset-password-box button {
-    background-color: #3360a4;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .reset-password-box button:hover {
-    background-color: #0b2a4a;
-  }
-
-  
-  .reset-password-box button:hover {
-    background-color: #0b2a4a;
-  }
-  
-  .reset-password-box .go-to-login {
-    margin-top: 15px;
-    font-size: 14px;
-  }
-  
-  .reset-password-box .go-to-login a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .reset-password-box .go-to-login a:hover {
-    text-decoration: underline;
-  }
-
-
-footer {
-    margin-top: auto;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-  
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.reset-password-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(to right, #d4d4e2, #85a1e1);
+}
+
+/* Empuja el contenido hacia abajo para compensar el header fijo */
+.reset-password-box {
+  padding: 30px;
+  text-align: center;
+  margin: 100px auto 30px auto; /* ← espacio arriba para el header */
+  width: 90%;
+  max-width: 400px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.reset-password-box h1 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.reset-password-box p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.reset-password-box input,
+.reset-password-box button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.reset-password-box input {
+  border: 1px solid #ccc;
+}
+
+.reset-password-box button {
+  background-color: #3360a4;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.reset-password-box button:hover {
+  background-color: #0b2a4a;
+}
+
+.go-to-login {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.go-to-login a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.go-to-login a:hover {
+  text-decoration: underline;
+}
+
+/* Footer pegado abajo si hay poco contenido */
+footer {
+  background-color: #002766;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  margin-top: auto;
+  width: 100%;
+}

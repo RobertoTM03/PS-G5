@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import "./ResetearContraseña.css";
 import Footer from "./Footer";
 import { Link } from 'react-router-dom';
+import HeaderNoSigned from './HeaderNoSigned';
 
 const ResetPassword = () => {
   const [email, setEmail] = useState('');
@@ -17,6 +18,7 @@ const ResetPassword = () => {
 
   return (
     <div className="reset-password-container">
+      <HeaderNoSigned/>
       <div className="reset-password-box">
         <h1>Reset password</h1>
         <p>Enter your user account's verified email address and we will send you a password reset link:</p>

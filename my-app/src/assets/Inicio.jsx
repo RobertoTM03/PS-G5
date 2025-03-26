@@ -7,6 +7,7 @@ import calendar from "../pictures/calendar.png";
 import mapa from "../pictures/mapa.png";
 import documentos from "../pictures/docs.png";
 import chat from "../pictures/chatea.png";
+import Header from "./HeaderNoSigned.jsx";
 
 export default function Inicio() {
     const handleSignupClick = () => {
@@ -19,15 +20,8 @@ export default function Inicio() {
     return (
         
         <div className="inicio">
-            <header className="main-header">
-                <div className="header-left">
-                    <h2 className="logo">TripCollab</h2>
-                </div>
-                <div className="header-right">
-                    <button className="btn header-btn" onClick={handleSignInClick}>Login</button>
-                    <button className="btn header-btn signup" onClick={handleSignupClick}>Sign Up</button>
-                </div>
-            </header>
+            <Header />
+
 
             <div className="container">
                 <div className="left-section">
