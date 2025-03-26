@@ -18,7 +18,7 @@ exports.register = async (req, res) => {
         return res.status(422).json({ msg: 'La contraseña debe tener entre 8 y 32 caracteres' });
     }
 
-    let newUser = null; // ✅ Declarada aquí
+    let newUser = null;
     try {
         const emailExists = await db.oneOrNone('SELECT id FROM users WHERE email = $1', [email]);
         if (emailExists) return res.status(409).json({ msg: 'El email ya está registrado' });
@@ -26,32 +26,42 @@ exports.register = async (req, res) => {
         const nameExists = await db.oneOrNone('SELECT id FROM users WHERE name = $1', [username]);
         if (nameExists) return res.status(409).json({ msg: 'El nombre de usuario ya está en uso' });
 
-        try {
-            newUser = await admin.auth().createUser({
+        // Crear el usuario en Firebase
+        newUser = await admin.auth().createUser({
+            email,
+            password,
+            displayName: username,
+        });
+
+        // Registrar el usuario en la base de datos
+        await db.none(
+            'INSERT INTO users (name, email, firebase_uid) VALUES ($1, $2, $3)',
+            [username, email, newUser.uid]
+        );
+
+        // Obtener el ID Token logueando al usuario
+        const firebaseRes = await axios.post(
+            `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIREBASE_API_KEY}`,
+            {
                 email,
                 password,
-                displayName: username,
-            });
-
-            await db.none(
-                'INSERT INTO users (name, email, firebase_uid) VALUES ($1, $2, $3)',
-                [username, email, newUser.uid]
-            );
-        } catch (err) {
-            if (newUser?.uid) {
-                await admin.auth().deleteUser(newUser.uid);
+                returnSecureToken: true
             }
-            throw err;
-        }
+        );
 
-        const customToken = await admin.auth().createCustomToken(newUser.uid);
-        res.status(201).json({ token: customToken });
+        // Devolver el ID Token
+        res.status(201).json({ token: firebaseRes.data.idToken });
 
     } catch (err) {
         console.error('Error en el registro:', err);
+        // Limpieza si falló después de crear el usuario en Firebase
+        if (newUser?.uid) {
+            await admin.auth().deleteUser(newUser.uid);
+        }
         res.status(500).json({ msg: 'Error al registrar', error: err.message });
     }
 };
+
 
 exports.login = async (req, res) => {
     const { identifier, password } = req.body;
