@@ -6,7 +6,7 @@ const syncUsersFromFirebase = require('./syncFirebase');
 
 const cors = require('cors');
 
-const allowedOrigins = ['http://localhost', 'http://localhost:3000', 'http://localhost:80'];
+const allowedOrigins = ['http://localhost', 'http://localhost:3000', 'http://localhost:80', 'http://localhost:81'];
 
 app.use(cors({
     origin: function(origin, callback) {
