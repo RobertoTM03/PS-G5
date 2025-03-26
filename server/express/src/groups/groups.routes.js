@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { createGroup, addGroupMember, removeGroupMember, removeGroup, getGroupDetails, leaveGroup, getMyGroups} = require('./groupsController');
 
 /**
  * @openapi
@@ -43,22 +44,13 @@ const router = express.Router();
  *                   type: string
  *                   example: "64ac9b7b5f8e2c001fc45def"
  *       400:
- *         description: Error de validación por título u ownerId faltante o inválido
+ *         description: Error de validación por título faltante o inválido
+ *       401:
+ *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
+ *       500:
+ *         description: Error no definido
  */
-router.post('/', verifyToken);
-
-async function verifyToken(req, res) {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-        return res.status(401).json({msg: 'Token faltante'});
-    }
-
-    const token = authHeader.split(' ')[1]; // Nos quedamos solo con el token, quitando "Bearer "
-
-    res.status(200).json({msg: 'Token recibido', token});
-}
-
+router.post('/', createGroup);
 
 /**
  * @openapi
@@ -97,10 +89,16 @@ async function verifyToken(req, res) {
  *         description: Usuario añadido exitosamente al grupo
  *       400:
  *         description: El usuario ya es integrante del grupo o el email no es válido
+ *       401:
+ *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
+ *       403:
+ *         description: EL usuario no tiene permiso para realizar la operación
  *       404:
  *         description: Usuario no registrado o grupo no encontrado
+ *       500:
+ *         description: Error no definido
  */
-router.post('/:groupId/members', verifyToken);
+router.post('/:groupId/members', addGroupMember);
 
 /**
  * @openapi
@@ -138,10 +136,16 @@ router.post('/:groupId/members', verifyToken);
  *         description: Usuario eliminado exitosamente del grupo
  *       400:
  *         description: No se puede eliminar al administrador o el usuario no está en el grupo
+ *       401:
+ *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
+ *       403:
+ *         description: EL usuario no tiene permiso para realizar la operación
  *       404:
  *         description: El grupo o el usuario no existen
+ *       500:
+ *         description: Error no definido
  */
-router.delete('/:groupId/members', verifyToken);
+router.delete('/:groupId/members', removeGroupMember);
 
 /**
  * @openapi
@@ -164,13 +168,17 @@ router.delete('/:groupId/members', verifyToken);
  *     responses:
  *       200:
  *         description: Grupo eliminado exitosamente
+ *       401:
+ *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
  *       403:
- *         description: Solo el administrador del grupo puede eliminarlo
+ *         description: EL usuario no tiene permiso para realizar la operación
  *       404:
  *         description: Grupo no encontrado
+ *       500:
+ *         description: Error no definido
  */
 
-router.delete('/:groupId', verifyToken);
+router.delete('/:groupId', removeGroup);
 
 
 /**
@@ -196,10 +204,14 @@ router.delete('/:groupId', verifyToken);
  *         description: Usuario salió del grupo exitosamente
  *       400:
  *         description: No se puede salir del grupo si eres el propietario
+ *       401:
+ *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
  *       404:
  *         description: El grupo no fue encontrado o el usuario no es miembro del grupo
+ *       500:
+ *         description: Error no definido
  */
-router.delete('/:groupId/leave', verifyToken);
+router.delete('/:groupId/leave', leaveGroup);
 
 /**
  * @openapi
@@ -247,10 +259,14 @@ router.delete('/:groupId/leave', verifyToken);
  *                       email:
  *                         type: string
  *                         example: "juan.perez@example.com"
+ *       403:
+ *         description: EL usuario no tiene permiso para realizar la operación
  *       404:
  *         description: No se pudieron cargar los detalles del grupo
+ *       500:
+ *         description: Error no definido
  */
-router.get('/:groupId', verifyToken);
+router.get('/:groupId', getGroupDetails);
 
 /**
  * @openapi
@@ -283,7 +299,9 @@ router.get('/:groupId', verifyToken);
  *                     example: "Grupo para planear la salida de fin de semana"
  *       404:
  *         description: No se encontraron grupos asociados al usuario
+ *       500:
+ *         description: Error no definido
  */
-router.get('/mine', verifyToken);
+router.get('/mine', getMyGroups);
 
 module.exports = router;
