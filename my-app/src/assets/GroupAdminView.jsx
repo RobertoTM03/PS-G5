@@ -14,24 +14,51 @@ export default function GroupAdminView() {
     members: [],
   });
 
+  const [openMenuIndex, setOpenMenuIndex] = useState(null); // índice del menú desplegado
 
   useEffect(() => {
+    const fakeData = {
+      name: 'Desarrolladores Frontend',
+      description: 'Grupo dedicado a compartir recursos y conocimientos sobre desarrollo frontend.',
+      members: [
+        { id: 1, name: 'Ana Pérez' },
+        { id: 2, name: 'Carlos Gómez' },
+        { id: 3, name: 'Lucía Fernández' },
+        { id: 4, name: 'María Rodríguez' },
+        { id: 5, name: 'Houda Ait' },
+      ],
+    };
+
     const fetchGroupData = async () => {
       try {
-        const response = await fetch('localhost:3000/groups/1'); // ID del grupo
+        const response = await fetch('http://localhost:3000/groups/1'); 
         const data = await response.json();
+
         setGroupData({
-          name: data.name,
-          description: data.description,
-          members: data.members.map(user => user.name), // extrae solo los nombres
+          name: data.titulo || 'Unnamed Group',
+          description: data.descripcion || 'No description provided.',
+          members: (data.integrantes || []).map(user => user.nombre),
         });
       } catch (error) {
         console.error('Error fetching group data:', error);
       }
     };
-  
+
     fetchGroupData();
+    
+    setGroupData({
+      name: fakeData.name,
+      description: fakeData.description,
+      members: fakeData.members.map(user => user.name),
+    });
   }, []);
+
+  const handleRemoveMember = (index) => {
+    const updatedMembers = [...groupData.members];
+    updatedMembers.splice(index, 1);
+    setGroupData({ ...groupData, members: updatedMembers });
+    setOpenMenuIndex(null);
+  };
 
   return (
     <div className="group-admin-wrapper">
@@ -48,7 +75,15 @@ export default function GroupAdminView() {
           <div className="members-list">
             {groupData.members.length > 0 ? (
               groupData.members.map((member, index) => (
-                <p key={index}>{member}</p>
+                <div key={index} className="member-item">
+                  <span>{member}</span>
+                  <button className="dots-button" onClick={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}>⋮</button>
+                  {openMenuIndex === index && (
+                    <div className="member-menu">
+                      <button onClick={() => handleRemoveMember(index)}>Eliminar miembro</button>
+                    </div>
+                  )}
+                </div>
               ))
             ) : (
               <p>No members yet.</p>
@@ -88,7 +123,6 @@ export default function GroupAdminView() {
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );
