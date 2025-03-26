@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "cors": "^2.8.5",
     "openssl": "^2.0.0"
   }
 }

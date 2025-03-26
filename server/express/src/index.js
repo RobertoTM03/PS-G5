@@ -4,6 +4,13 @@ const { swaggerUi, swaggerSpec } = require('./swagger');
 const db = require("./database");
 const syncUsersFromFirebase = require('./syncFirebase');
 
+const cors = require('cors');
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
+
+
 db.any('SELECT * FROM users')
     .then(function(data) {
         console.log(data)

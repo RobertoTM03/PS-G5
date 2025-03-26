@@ -45,7 +45,7 @@ export default function GroupAdminView() {
     };
 
     fetchGroupData();
-    
+
     setGroupData({
       name: fakeData.name,
       description: fakeData.description,

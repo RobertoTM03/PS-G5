@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Registrarse.css";
 import Footer from "./Footer";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from "./HeaderNoSigned";
 
 export default function Registrarse() {
@@ -12,21 +12,53 @@ export default function Registrarse() {
     confirmPassword: "",
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       alert("Las contraseñas no coinciden");
       return;
     }
-    console.log("Registro exitoso:", formData);
+
+    try {
+      const response = await fetch("http://localhost:3000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.msg || "Error desconocido al registrarse");
+      }
+
+      // Guardar token en localStorage
+      localStorage.setItem("token", data.token);
+
+      // Redirigir a vistaGrupos
+      navigate("/vistaGrupos");
+
+    } catch (error) {
+      alert(`Error al registrarse: ${error.message}`);
+      console.error("Registro fallido:", error);
+    }
   };
 
   return (
-    <div className="main-container"> {/* Nuevo contenedor que usa flexbox */}
+    <div className="main-container">
       <Header />
       <div className="content">
         <div className="registro-container">
@@ -85,7 +117,7 @@ export default function Registrarse() {
           </div>
         </div>
       </div>
-      <Footer /> {/* Footer pegado abajo */}
+      <Footer />
     </div>
   );
 }
