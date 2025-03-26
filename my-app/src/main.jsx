@@ -1,9 +1,32 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from '../src/App.jsx';  // Asegúrate de que App.jsx existe
+import React from "react";
+import ReactDOM from "react-dom/client";
 
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+import Inicio from "./assets/Inicio";
+import Registrarse from "./assets/Registrarse.jsx";
+import IniciarSesion from "./assets/signIn.jsx";
+import { PasswordRecover } from "./assets/passwordRecover.jsx";
+import ResetearContraseña from "./assets/ResetearContraseña.jsx";
+import GroupAdminView from "./assets/GroupAdminView.jsx";
+import VistaGrupos from "./assets/vistaGrupos.jsx";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<GroupAdminView />} />
+        <Route path="/Registrarse" element={<Registrarse />} />
+        <Route path="/IniciarSesion" element={<IniciarSesion />} />
+        <Route path="/PasswordRecover" element={<PasswordRecover />} />
+        <Route path="/Resetear" element={<ResetearContraseña />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
