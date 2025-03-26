@@ -29,6 +29,23 @@ export default function GroupAdminView() {
       ],
     };
 
+    const fetchGroupData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/groups/1'); 
+        const data = await response.json();
+
+        setGroupData({
+          name: data.titulo || 'Unnamed Group',
+          description: data.descripcion || 'No description provided.',
+          members: (data.integrantes || []).map(user => user.nombre),
+        });
+      } catch (error) {
+        console.error('Error fetching group data:', error);
+      }
+    };
+
+    fetchGroupData();
+    
     setGroupData({
       name: fakeData.name,
       description: fakeData.description,
