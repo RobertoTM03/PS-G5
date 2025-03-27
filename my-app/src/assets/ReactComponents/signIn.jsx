@@ -1,10 +1,54 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/signIn.css';
 import Footer from './Footer.jsx';
 import Header from './HeaderNoSigned.jsx';
 
 export default function SignIn() {
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+
+    const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+    try {
+        const response = await fetch("http://localhost:3000/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: formData.email,
+                password: formData.password
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.msg || "Error desconocido al iniciar sesion");
+        }
+
+        // Guardar token en localStorage
+        localStorage.setItem("token", data.token);
+
+        // Redirigir a vistaGrupos
+        navigate("/vistaGrupos");
+
+    } catch (error) {
+        alert(`Error al iniciar sesion: ${error.message}`);
+        console.error("Login FAIL:", error);
+    }
+};
+
     return (
         <main className="sign-page-container">
             <Header />
