@@ -11,7 +11,7 @@ export default function AddMemberModal({ onClose, groupId, token }) {
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:3000/groups/${groupId}/members`, {
+      const response = await fetch(`http://localhost:3000/groups/1/members`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

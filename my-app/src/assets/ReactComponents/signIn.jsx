@@ -42,7 +42,7 @@ export default function IniciarSesion() {
             localStorage.setItem("token", data.token);
 
             // Redirigir a vistaGrupos
-            navigate("/vistaGrupos");
+            navigate("/GroupAdminView");
         } catch (error) {
             alert(`Error al iniciar sesión: ${error.message}`);
             console.error("Inicio de sesión fallido:", error);

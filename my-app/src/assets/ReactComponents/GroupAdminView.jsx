@@ -49,31 +49,41 @@ export default function GroupAdminView() {
   const handleRemoveMember = async (index) => {
     const memberToRemove = groupData.members[index];
     const groupId = '1';
-
+  
     try {
+      const token = localStorage.getItem('token');
+  
       const response = await fetch(`http://localhost:3000/groups/${groupId}/members`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId: memberToRemove.id,
+          userId: String(memberToRemove.id),
         }),
       });
-
+  
+      const responseData = await response.json(); // <-- intenta leer la respuesta
+  
       if (!response.ok) {
-        throw new Error('Error al eliminar el miembro del servidor');
+        console.error('Respuesta del servidor:', responseData);
+        throw new Error(responseData.msg || 'Error al eliminar el miembro del servidor');
       }
-
+  
+      console.log('Miembro eliminado con éxito:', responseData);
+  
       const updatedMembers = [...groupData.members];
       updatedMembers.splice(index, 1);
       setGroupData({ ...groupData, members: updatedMembers });
       setOpenMenuIndex(null);
     } catch (error) {
-      console.error('Error eliminando miembro:', error);
+      console.error('Error eliminando miembro:', error.message || error);
       alert('Hubo un error al eliminar el miembro.');
     }
   };
+  
+  
 
   return (
     <div className="group-admin-wrapper">
