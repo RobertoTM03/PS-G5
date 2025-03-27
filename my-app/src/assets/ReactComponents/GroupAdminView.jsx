@@ -6,7 +6,8 @@ import calendar from '../../pictures/calendar.png';
 import location from '../../pictures/location.svg';
 import document from '../../pictures/document.svg';
 import chat from '../../pictures/chat.svg';
-import AddMemberModal from './AddMemberModal.jsx'; // Importa tu modal
+import AddMemberModal from './AddMemberModal.jsx';
+import Header from './Header.jsx';
 
 export default function GroupAdminView() {
   const [groupData, setGroupData] = useState({
@@ -19,51 +20,64 @@ export default function GroupAdminView() {
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
   useEffect(() => {
-    const fakeData = {
-      name: 'Desarrolladores Frontend',
-      description: 'Grupo dedicado a compartir recursos y conocimientos sobre desarrollo frontend.',
-      members: [
-        { id: 1, name: 'Ana Pérez' },
-        { id: 2, name: 'Carlos Gómez' },
-        { id: 3, name: 'Lucía Fernández' },
-        { id: 4, name: 'María Rodríguez' },
-        { id: 5, name: 'Houda Ait' },
-      ],
-    };
-
+    // Puedes descomentar esto si quieres hacer el fetch real más adelante
     const fetchGroupData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/groups/1');
+        const token = localStorage.getItem('token'); // o sessionStorage
+        const response = await fetch('http://localhost:3000/groups/1', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+    
         const data = await response.json();
-
+        console.log('Datos del grupo:', data);
+    
         setGroupData({
           name: data.titulo || 'Unnamed Group',
           description: data.descripcion || 'No description provided.',
-          members: (data.integrantes || []).map(user => user.nombre),
+          members: (data.integrantes || []).map(user => ({ id: user.id, name: user.nombre })),
         });
       } catch (error) {
         console.error('Error fetching group data:', error);
       }
     };
 
-    fetchGroupData();
-
-    setGroupData({
-      name: fakeData.name,
-      description: fakeData.description,
-      members: fakeData.members.map(user => user.name),
-    });
+     fetchGroupData();
   }, []);
 
-  const handleRemoveMember = (index) => {
-    const updatedMembers = [...groupData.members];
-    updatedMembers.splice(index, 1);
-    setGroupData({ ...groupData, members: updatedMembers });
-    setOpenMenuIndex(null);
+  const handleRemoveMember = async (index) => {
+    const memberToRemove = groupData.members[index];
+    const groupId = '1';
+
+    try {
+      const response = await fetch(`http://localhost:3000/groups/${groupId}/members`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: memberToRemove.id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar el miembro del servidor');
+      }
+
+      const updatedMembers = [...groupData.members];
+      updatedMembers.splice(index, 1);
+      setGroupData({ ...groupData, members: updatedMembers });
+      setOpenMenuIndex(null);
+    } catch (error) {
+      console.error('Error eliminando miembro:', error);
+      alert('Hubo un error al eliminar el miembro.');
+    }
   };
 
   return (
     <div className="group-admin-wrapper">
+      <Header />
       <div className="group-admin-container">
         {/* Left panel */}
         <div className="left-panel">
@@ -78,7 +92,7 @@ export default function GroupAdminView() {
             {groupData.members.length > 0 ? (
               groupData.members.map((member, index) => (
                 <div key={index} className="member-item">
-                  <span>{member}</span>
+                  <span>{member.name}</span>
                   <div style={{ position: 'relative' }}>
                     <button
                       className="dots-button"

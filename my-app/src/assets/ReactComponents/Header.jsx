@@ -8,7 +8,7 @@ const Header = () => {
     return (
         <header className="header">
             <div className="logo">
-                <h1>TripCollabq</h1>
+                <h1>TripCollab</h1>
             </div>
             <div className="header-icons">
                 {/* Icono de campana */}
