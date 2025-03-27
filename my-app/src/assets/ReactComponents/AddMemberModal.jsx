@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../CSS/AddMemberModal.css';
 
-export default function AddMemberModal({ onClose, groupId, token }) {
+export default function AddMemberModal({ onClose, groupId }) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -11,19 +11,26 @@ export default function AddMemberModal({ onClose, groupId, token }) {
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:3000/groups/${groupId}/members`, {
+      const token = localStorage.getItem('token'); // 🟢 Now matching the remove logic
+
+      if (!token) {
+        setError('🔒 Token no encontrado. Por favor inicia sesión.');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3000/groups/1/members`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`, // 🟢 Using token from localStorage
         },
         body: JSON.stringify({ email }),
       });
 
-      if (response.ok) {
-        setSuccess(`✅ Usuario "${email}" añadido exitosamente al grupo.`);
-        setEmail(''); // Limpiar el campo de email
-      } else {
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error('Respuesta del servidor:', responseData);
         switch (response.status) {
           case 400:
             setError('⚠️ El usuario ya es integrante o el email no es válido.');
@@ -40,10 +47,14 @@ export default function AddMemberModal({ onClose, groupId, token }) {
           default:
             setError('😵 Error desconocido del servidor.');
         }
+        return;
       }
+
+      setSuccess(`✅ Usuario "${email}" añadido exitosamente al grupo.`);
+      setEmail('');
     } catch (err) {
       setError('🌐 Error de red o del servidor. Intenta nuevamente.');
-      console.error(err);
+      console.error('Error en la solicitud:', err);
     }
   };
 
@@ -64,12 +75,8 @@ export default function AddMemberModal({ onClose, groupId, token }) {
           {success && <p className="success-text">{success}</p>}
         </div>
         <div className="modal-footer">
-          <button className="confirm-btn" onClick={handleConfirm}>
-            Confirmar
-          </button>
-          <button className="cancel-btn" onClick={onClose}>
-            Cancelar
-          </button>
+          <button className="confirm-btn" onClick={handleConfirm}>Confirmar</button>
+          <button className="cancel-btn" onClick={onClose}>Cancelar</button>
         </div>
       </div>
     </div>

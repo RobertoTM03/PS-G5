@@ -10,6 +10,7 @@ import AddMemberModal from './AddMemberModal.jsx';
 import Header from './Header.jsx';
 
 export default function GroupAdminView() {
+  const groupId = '1'; // 🔄 Make dynamic if needed
   const [groupData, setGroupData] = useState({
     name: '',
     description: '',
@@ -19,58 +20,73 @@ export default function GroupAdminView() {
   const [openMenuIndex, setOpenMenuIndex] = useState(null);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
-  useEffect(() => {
-    // Puedes descomentar esto si quieres hacer el fetch real más adelante
-    const fetchGroupData = async () => {
-      try {
-        const token = localStorage.getItem('token'); // o sessionStorage
-        const response = await fetch('http://localhost:3000/groups/1', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-    
-        const data = await response.json();
-        console.log('Datos del grupo:', data);
-    
-        setGroupData({
-          name: data.titulo || 'Unnamed Group',
-          description: data.descripcion || 'No description provided.',
-          members: (data.integrantes || []).map(user => ({ id: user.id, name: user.nombre })),
-        });
-      } catch (error) {
-        console.error('Error fetching group data:', error);
-      }
-    };
+  // 🔄 Fetch group data and make it reusable
+  const fetchGroupData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/groups/${groupId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
 
-     fetchGroupData();
+      const data = await response.json();
+      console.log('Datos del grupo:', data);
+
+      setGroupData({
+        name: data.titulo || 'Unnamed Group',
+        description: data.descripcion || 'No description provided.',
+        members: (data.integrantes || []).map(user => ({
+          id: user.userId, // ✅ Fixed: using userId instead of user.id
+          name: user.nombre,
+        })),
+      });
+    } catch (error) {
+      console.error('Error fetching group data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGroupData();
   }, []);
 
   const handleRemoveMember = async (index) => {
     const memberToRemove = groupData.members[index];
-    const groupId = '1';
 
     try {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        alert('Token no encontrado. Por favor, inicia sesión.');
+        return;
+      }
+
       const response = await fetch(`http://localhost:3000/groups/${groupId}/members`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId: memberToRemove.id,
+          userId: String(memberToRemove.id),
         }),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        throw new Error('Error al eliminar el miembro del servidor');
+        console.error('Respuesta del servidor:', responseData);
+        throw new Error(responseData.msg || 'Error al eliminar el miembro del servidor');
       }
+
+      console.log('✅ Miembro eliminado con éxito:', responseData);
 
       const updatedMembers = [...groupData.members];
       updatedMembers.splice(index, 1);
       setGroupData({ ...groupData, members: updatedMembers });
       setOpenMenuIndex(null);
     } catch (error) {
-      console.error('Error eliminando miembro:', error);
+      console.error('Error eliminando miembro:', error.message || error);
       alert('Hubo un error al eliminar el miembro.');
     }
   };
@@ -151,7 +167,13 @@ export default function GroupAdminView() {
 
       {/* Modal */}
       {showAddMemberModal && (
-        <AddMemberModal onClose={() => setShowAddMemberModal(false)} />
+        <AddMemberModal
+          onClose={() => {
+            setShowAddMemberModal(false);
+            fetchGroupData(); // 🔄 Refresh members after adding
+          }}
+          groupId={groupId}
+        />
       )}
 
       <Footer />
