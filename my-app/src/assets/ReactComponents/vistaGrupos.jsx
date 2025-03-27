@@ -4,65 +4,53 @@ import Footer from "./Footer.jsx";
 import Header from "./Header.jsx";
 
 export default function VistaGrupos() {
-    // Estados para los grupos, cargando, error y la cantidad de grupos que se van a mostrar
     const [grupos, setGrupos] = useState([]);
-    const [gruposParaMostrar, setGruposParaMostrar] = useState(4); // Mostrar 4 grupos inicialmente
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const token = "falso-token";  // Token falso para probar
-        const url = 'http://localhost:3000/group/mine';  // URL de la API
-        /**
-         * const token = localStorage.getItem("token");
-         * if (token) {
-         *     fetch('http://localhost:3000/group/mine', {
-         *         method: 'GET',
-         *         headers: {
-         *             'Authorization': `Bearer ${token}`,
-         *             'Content-Type': 'application/json'
-         *         }
-         *     })
-         * }
-         * .then(response => response.json())
-         * .then(data => {
-         *     setGrupos(data);  // Establecer los grupos obtenidos en el estado
-         *     setLoading(false);  // Cambiar el estado de carga
-         * })
-         * .catch(error => {
-         *     setError(error.message);  // Manejo de errores en la solicitud
-         *     setLoading(false);
-         * });
-         *
-         * **/
-        // Simular una respuesta de la API con un conjunto de datos de ejemplo
-        if (token === "falso-token") {
-            // Simulamos una respuesta de la API con un conjunto de grupos de ejemplo
-            const gruposDeEjemplo = [
-                { id: 1, nombre: "Grupo A" },
-                { id: 2, nombre: "Grupo B" },
-                { id: 3, nombre: "Grupo C" },
-                { id: 4, nombre: "Grupo D" },
-                { id: 5, nombre: "Grupo E" },
-                { id: 6, nombre: "Grupo F" },
-                { id: 7, nombre: "Grupo G" },
-                { id: 8, nombre: "Grupo H" },
-                { id: 9, nombre: "Grupo I" },
-                { id: 10, nombre: "Grupo J" }
-            ];
+        const token = localStorage.getItem("token");
+        const url = 'http://localhost:3000/groups/mine';
 
-            // Simulamos la carga de los datos después de un pequeño retraso (usamos setTimeout)
-            setTimeout(() => {
-                setGrupos(gruposDeEjemplo);  // Almacenar los grupos en el estado
-                setLoading(false);  // Cambiar el estado de carga
-            }, 1000);  // Retraso de 1 segundo para simular la solicitud
+        if (!token) {
+            console.error("⚠️ No token found! Redirecting to login...");
+            window.location.href = "/login";
+            return;
         }
-    }, []);
 
-    // Función para cargar más grupos
-    const cargarMasGrupos = () => {
-        setGruposParaMostrar(gruposParaMostrar + 4);  // Incrementar el número de grupos a mostrar en 4
-    };
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    throw new Error('Error 401: No autorizado. Redirigiendo a login...');
+                }
+                if (response.status === 404) {
+                    throw new Error('Error 404: No se encontraron grupos.');
+                }
+                if (response.status === 500) {
+                    throw new Error('Error 500: Problema con el servidor.');
+                }
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                setGrupos(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error(error.message);
+                setError(error.message);
+                setLoading(false);
+            });
+    }, []);
 
     return (
         <div>
@@ -74,28 +62,26 @@ export default function VistaGrupos() {
 
                 <div className="groupTray">
                     {loading ? (
-                        <p>Loading...</p>  // Mostrar mensaje de carga mientras se obtienen los datos
+                        <p>Loading...</p>
                     ) : error ? (
-                        <p>Error: {error}</p>  // Mostrar mensaje de error si la solicitud falla
+                        <p>{error}</p>
                     ) : grupos.length > 0 ? (
-                        grupos.slice(0, gruposParaMostrar).map((grupo) => (
-                            <div className="groupDisplay" key={grupo.id}>
-                                <h1>{grupo.nombre}</h1>  {/* Nombre del grupo */}
+                        grupos.map((grupo) => (
+                            <div className="groupDisplay" key={grupo.groupId}>
+                                <h1>{grupo.titulo}</h1>
+                                <p>{grupo.descripcion}</p>
                                 <button className="btn-showMore">. . .</button>
                             </div>
                         ))
                     ) : (
-                        <p>You don't have any groups.</p>  // Mostrar si no hay grupos
+                        <p>No groups found.</p>
                     )}
                 </div>
 
                 <div className="bottom-text">
-                    <button className="btn-addGroup" onClick={cargarMasGrupos}>
-                        More Groups
-                    </button>
+                    <button className="btn-addGroup">Create Group</button>
                 </div>
             </div>
-
             <Footer />
         </div>
     );
