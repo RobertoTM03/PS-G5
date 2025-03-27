@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import "./ResetearContraseña.css";
-import Footer from "./Footer";
+import "../CSS/ResetearContraseña.css";
+import Footer from "./Footer.jsx";
 import { Link } from 'react-router-dom';
-import HeaderNoSigned from './HeaderNoSigned';
+import HeaderNoSigned from './HeaderNoSigned.jsx';
 
 const ResetPassword = () => {
   const [email, setEmail] = useState('');

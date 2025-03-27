@@ -1,12 +1,12 @@
 import React from "react";
-import "./Inicio.css";
-import Footer from "./Footer";
-import mundo from "../pictures/mundo.png";
-import money from "../pictures/money.png";
-import calendar from "../pictures/calendar.png";
-import mapa from "../pictures/mapa.png";
-import documentos from "../pictures/docs.png";
-import chat from "../pictures/chatea.png";
+import "../CSS/Inicio.css";
+import Footer from "./Footer.jsx";
+import mundo from "../../pictures/mundo.png";
+import money from "../../pictures/money.png";
+import calendar from "../../pictures/calendar.png";
+import mapa from "../../pictures/mapa.png";
+import documentos from "../../pictures/docs.png";
+import chat from "../../pictures/chatea.png";
 import Header from "./HeaderNoSigned.jsx";
 
 export default function Inicio() {
