@@ -46,7 +46,7 @@ exports.createGroup = async (req, res) => {
 
         // Crear el grupo
         const group = await db.one(
-            `INSERT INTO groups (name, description, idPropietary)
+            `INSERT INTO groups (name, description, user_owner_id)
              VALUES ($1, $2, $3) RETURNING id`,
             [titulo, descripcion || '', user.id]
         );
@@ -89,7 +89,7 @@ exports.addGroupMember = async (req, res) => {
         }
 
         // Verificar que sea el propietario
-        if (group.idpropietary !== requestingUser.id) {
+        if (group.user_owner_id !== requestingUser.id) {
             return res.status(403).json({ msg: 'No tienes permisos para añadir usuarios a este grupo' });
         }
 
@@ -145,7 +145,7 @@ exports.removeGroupMember = async (req, res) => {
         }
 
         // Verificar si el solicitante es el propietario del grupo
-        if (group.idpropietary !== requestingUser.id) {
+        if (group.user_owner_id !== requestingUser.id) {
             return res.status(403).json({ msg: 'No tienes permisos para eliminar usuarios de este grupo' });
         }
 
@@ -156,7 +156,7 @@ exports.removeGroupMember = async (req, res) => {
         }
 
         // No se puede eliminar al administrador del grupo
-        if (userToRemove.id === group.idpropietary) {
+        if (userToRemove.id === group.user_owner_id) {
             return res.status(400).json({ msg: 'No puedes eliminar al administrador del grupo' });
         }
 
@@ -200,7 +200,7 @@ exports.removeGroup = async (req, res) => {
         }
 
         // Verificar que el solicitante sea el propietario del grupo
-        if (group.idpropietary !== requestingUser.id) {
+        if (group.user_owner_id !== requestingUser.id) {
             return res.status(403).json({ msg: 'No tienes permisos para eliminar este grupo' });
         }
 
@@ -282,7 +282,7 @@ exports.leaveGroup = async (req, res) => {
         }
 
         // Verificar si el usuario es el propietario (no puede salir del grupo)
-        if (group.idpropietary === user.id) {
+        if (group.user_owner_id === user.id) {
             return res.status(400).json({ msg: 'El administrador no puede salir del grupo' });
         }
 
@@ -326,7 +326,7 @@ exports.getMyGroups = async (req, res) => {
                     g.description AS "descripcion"
                 FROM groups g
                          LEFT JOIN group_users gu ON g.id = gu.group_id
-                WHERE g.idPropietary = $1 OR gu.user_id = $1
+                WHERE g.user_owner_id = $1 OR gu.user_id = $1
             `,
             [user.id]
         );

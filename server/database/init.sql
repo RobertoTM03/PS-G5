@@ -32,7 +32,7 @@ INSERT INTO users (name, email, firebase_uid) VALUES
     ('Diana', 'diana@example.com', 'RxS2gngetFOosWvhZeyz4v0UuSR2');
 
 -- Insertando grupos
-INSERT INTO groups (name, description, idPropietary) VALUES
+INSERT INTO groups (name, description, user_owner_id) VALUES
     ('Grupo de Lectura', 'Amantes de los libros', 1),
     ('Gamers', 'Grupo de videojuegos', 2),
     ('Cine Club', 'Amantes del cine', 3);
