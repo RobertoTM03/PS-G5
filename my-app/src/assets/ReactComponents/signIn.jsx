@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../CSS/signIn.css';
 import Footer from './Footer.jsx';
 import Header from './HeaderNoSigned.jsx';
 
-export default function SignIn() {
+export default function IniciarSesion() {
     const [formData, setFormData] = useState({
-        email: "",
+        identifier: "",
         password: "",
     });
 
@@ -14,40 +14,40 @@ export default function SignIn() {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-    }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-    try {
-        const response = await fetch("http://localhost:3000/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: formData.email,
-                password: formData.password
-            })
-        });
+        try {
+            const response = await fetch("http://localhost:3000/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({
+                    identifier: formData.identifier,
+                    password: formData.password,
+                }),
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.msg || "Error desconocido al iniciar sesion");
+            if (!response.ok) {
+                throw new Error(data.msg || "Error desconocido al iniciar sesión");
+            }
+
+            // Guardar el token recibido
+            localStorage.setItem("token", data.token);
+
+            // Redirigir a vistaGrupos
+            navigate("/vistaGrupos");
+        } catch (error) {
+            alert(`Error al iniciar sesión: ${error.message}`);
+            console.error("Inicio de sesión fallido:", error);
         }
-
-        // Guardar token en localStorage
-        localStorage.setItem("token", data.token);
-
-        // Redirigir a vistaGrupos
-        navigate("/vistaGrupos");
-
-    } catch (error) {
-        alert(`Error al iniciar sesion: ${error.message}`);
-        console.error("Login FAIL:", error);
-    }
-};
+    };
 
     return (
         <main className="sign-page-container">
@@ -58,12 +58,28 @@ export default function SignIn() {
                         <h1>Welcome back</h1>
                     </div>
                     <section className="sign-entry-form">
-                        <form id="loginFormUser">
-                            <label htmlFor="email">Email Address</label>
-                            <input type="email" id="email" required placeholder="Enter email address" />
+                        <form id="loginFormUser" onSubmit={handleSubmit}>
+                            <label htmlFor="identifier">Username/Email</label>
+                            <input
+                                type="text"
+                                id="identifier"
+                                name="identifier"
+                                required
+                                placeholder="Enter username or email"
+                                value={formData.identifier}
+                                onChange={handleChange}
+                            />
 
                             <label htmlFor="password">Password</label>
-                            <input type="password" id="password" required placeholder="Enter password" />
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                required
+                                placeholder="Enter password"
+                                value={formData.password}
+                                onChange={handleChange}
+                            />
 
                             <button type="submit" className="submit-button">Login</button>
                         </form>
