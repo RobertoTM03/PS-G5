@@ -19,6 +19,10 @@ app.use(cors({
     credentials: true
 }));
 
+// Sincronizar usuarios desde Firebase.
+(async () => {
+    syncUsersFromFirebase();
+})();
 
 db.any('SELECT * FROM users')
     .then(function(data) {
@@ -28,10 +32,6 @@ db.any('SELECT * FROM users')
         console.log(error);
     });
 
-// Sincronizar usuarios desde Firebase.
-(async () => {
-    syncUsersFromFirebase();
-})();
 
 // Middleware para parsear JSON
 app.use(express.json());

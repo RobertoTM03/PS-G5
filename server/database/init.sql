@@ -8,8 +8,8 @@ CREATE TABLE users (
 CREATE TABLE groups (
             id SERIAL PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
-            description VARCHAR(100) UNIQUE NOT NULL,
-            idPropietary SERIAL  UNIQUE NOT NULL
+            description VARCHAR(100),
+            idPropietary SERIAL NOT NULL
 );
 
 CREATE TABLE group_users (

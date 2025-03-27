@@ -4,6 +4,44 @@ const { createGroup, addGroupMember, removeGroupMember, removeGroup, getGroupDet
 
 /**
  * @openapi
+ * /groups/mine:
+ *   get:
+ *     summary: Ver lista de mis grupos
+ *     security:
+ *       - bearerAuth: []
+ *     description: Permite al usuario autenticado ver todos los grupos que ha creado o en los que está como integrante.
+ *     tags:
+ *       - Grupos
+ *     responses:
+ *       200:
+ *         description: Lista de grupos obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   groupId:
+ *                     type: string
+ *                     example: "64ac9b7b5f8e2c001fc45def"
+ *                   titulo:
+ *                     type: string
+ *                     example: "Viaje a la montaña"
+ *                   descripcion:
+ *                     type: string
+ *                     example: "Grupo para planear la salida de fin de semana"
+ *       404:
+ *         description: No se encontraron grupos asociados al usuario
+ *       401:
+ *         description: Fallo de autenticación con el token del usuario
+ *       500:
+ *         description: Error no definido
+ */
+router.get('/mine', getMyGroups);
+
+/**
+ * @openapi
  * /groups:
  *   post:
  *     summary: Crear un nuevo grupo
@@ -46,7 +84,7 @@ const { createGroup, addGroupMember, removeGroupMember, removeGroup, getGroupDet
  *       400:
  *         description: Error de validación por título faltante o inválido
  *       401:
- *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
+ *         description: Fallo de autenticación con el token del usuario
  *       500:
  *         description: Error no definido
  */
@@ -90,7 +128,7 @@ router.post('/', createGroup);
  *       400:
  *         description: El usuario ya es integrante del grupo o el email no es válido
  *       401:
- *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
+ *         description: Fallo de autenticación con el token del usuario
  *       403:
  *         description: EL usuario no tiene permiso para realizar la operación
  *       404:
@@ -137,7 +175,7 @@ router.post('/:groupId/members', addGroupMember);
  *       400:
  *         description: No se puede eliminar al administrador o el usuario no está en el grupo
  *       401:
- *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
+ *         description: Fallo de autenticación con el token del usuario
  *       403:
  *         description: EL usuario no tiene permiso para realizar la operación
  *       404:
@@ -169,7 +207,7 @@ router.delete('/:groupId/members', removeGroupMember);
  *       200:
  *         description: Grupo eliminado exitosamente
  *       401:
- *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
+ *         description: Fallo de autenticación con el token del usuario
  *       403:
  *         description: EL usuario no tiene permiso para realizar la operación
  *       404:
@@ -205,7 +243,7 @@ router.delete('/:groupId', removeGroup);
  *       400:
  *         description: No se puede salir del grupo si eres el propietario
  *       401:
- *         description: Sesión del usuario caducada. (Volver a iniciar sesión)
+ *         description: Fallo de autenticación con el token del usuario
  *       404:
  *         description: El grupo no fue encontrado o el usuario no es miembro del grupo
  *       500:
@@ -259,6 +297,8 @@ router.delete('/:groupId/leave', leaveGroup);
  *                       email:
  *                         type: string
  *                         example: "juan.perez@example.com"
+ *       401:
+ *         description: Fallo de autenticación con el token del usuario
  *       403:
  *         description: EL usuario no tiene permiso para realizar la operación
  *       404:
@@ -267,41 +307,5 @@ router.delete('/:groupId/leave', leaveGroup);
  *         description: Error no definido
  */
 router.get('/:groupId', getGroupDetails);
-
-/**
- * @openapi
- * /groups/mine:
- *   get:
- *     summary: Ver lista de mis grupos
- *     security:
- *       - bearerAuth: []
- *     description: Permite al usuario autenticado ver todos los grupos que ha creado o en los que está como integrante.
- *     tags:
- *       - Grupos
- *     responses:
- *       200:
- *         description: Lista de grupos obtenida exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   groupId:
- *                     type: string
- *                     example: "64ac9b7b5f8e2c001fc45def"
- *                   titulo:
- *                     type: string
- *                     example: "Viaje a la montaña"
- *                   descripcion:
- *                     type: string
- *                     example: "Grupo para planear la salida de fin de semana"
- *       404:
- *         description: No se encontraron grupos asociados al usuario
- *       500:
- *         description: Error no definido
- */
-router.get('/mine', getMyGroups);
 
 module.exports = router;
