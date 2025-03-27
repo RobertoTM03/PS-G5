@@ -10,11 +10,12 @@ import AddMemberModal from './AddMemberModal.jsx';
 import Header from './Header.jsx';
 
 export default function GroupAdminView() {
-  const groupId = '1'; 
+  const groupId = '1';
   const [groupData, setGroupData] = useState({
     name: '',
     description: '',
     members: [],
+    isOwner: false,
   });
 
   const [openMenuIndex, setOpenMenuIndex] = useState(null);
@@ -36,6 +37,7 @@ export default function GroupAdminView() {
           id: user.userId,
           name: user.nombre,
         })),
+        isOwner: data.isOwner || false, // 👈 Guardamos si es el creador
       });
     } catch (error) {
       console.error('Error fetching group data:', error);
@@ -78,6 +80,31 @@ export default function GroupAdminView() {
     } catch (error) {
       console.error('Error eliminando miembro:', error.message || error);
       alert('Hubo un error al eliminar el miembro.');
+    }
+  };
+
+  const handleLeaveGroup = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/groups/${groupId}/leave`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.msg || 'No se pudo salir del grupo.');
+      }
+
+      alert('Saliste del grupo correctamente.');
+      window.location.href = '/vistaGrupos';
+    } catch (error) {
+      console.error('Error al salir del grupo:', error.message || error);
+      alert('Hubo un error al intentar salir del grupo.');
     }
   };
 
@@ -155,11 +182,15 @@ export default function GroupAdminView() {
             )}
           </div>
 
-          <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
-            ADD MEMBER
-          </button>
-
-      
+          {groupData.isOwner ? (
+            <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
+              ADD MEMBER
+            </button>
+          ) : (
+            <button className="add-member-btn" onClick={handleLeaveGroup}>
+              SALIR DEL GRUPO
+            </button>
+          )}
         </div>
 
         <div className="right-panel">
