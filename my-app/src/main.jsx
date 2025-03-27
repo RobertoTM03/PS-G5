@@ -19,6 +19,8 @@ function App() {
         <Route path="/IniciarSesion" element={<IniciarSesion />} />
         <Route path="/PasswordRecover" element={<PasswordRecover />} />
         <Route path="/Resetear" element={<ResetearContraseña />} />
+        <Route path="/vistaGrupos" element={<VistaGrupos />} />
+        <Route path="/GroupAdminView" element={<GroupAdminView />} />
       </Routes>
     </BrowserRouter>
   );

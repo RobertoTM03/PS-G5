@@ -3,6 +3,7 @@ import "./Registrarse.css";
 import Footer from "./Footer";
 import { Link, useNavigate } from 'react-router-dom';
 import Header from "./HeaderNoSigned";
+import VistaGrupos from "./vistaGrupos";
 
 export default function Registrarse() {
   const [formData, setFormData] = useState({
