@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "cors": "^2.8.5",
+    "font-awesome": "^4.7.0",
     "openssl": "^2.0.0"
   }
 }

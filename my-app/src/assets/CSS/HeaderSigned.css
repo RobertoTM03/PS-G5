@@ -1,0 +1,49 @@
+/* Header.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: white;  /* Fondo blanco */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra suave */
+    color: black;  /* Texto negro */
+    border-bottom: 1px solid #e0e0e0;  /* Línea inferior sutil */
+}
+
+.header .logo h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;  /* Color del texto del logo */
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    margin-left: 20px;
+    font-size: 24px;
+    color: #333;  /* Color negro para los iconos */
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease; /* Efecto de transición */
+}
+
+.icon:hover {
+    color: #61dafb;  /* Color azul claro al pasar el mouse */
+    transform: scale(1.1);  /* Agrandar ligeramente el icono */
+}
+
+.username {
+    margin-left: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.username:hover {
+    color: #61dafb; /* Cambiar color al pasar el mouse */
+}

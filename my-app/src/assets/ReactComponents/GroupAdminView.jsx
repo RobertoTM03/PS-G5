@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import './GroupAdminView.css';
-import Footer from './Footer';
-import money from '../pictures/money-bag.svg';
-import calendar from '../pictures/calendar.png';
-import location from '../pictures/location.svg';
-import document from '../pictures/document.svg';
-import chat from '../pictures/chat.svg';
-import AddMemberModal from './AddMemberModal'; // Importa tu modal
+import '../CSS/GroupAdminView.css';
+import Footer from './Footer.jsx';
+import money from '../../pictures/money-bag.svg';
+import calendar from '../../pictures/calendar.png';
+import location from '../../pictures/location.svg';
+import document from '../../pictures/document.svg';
+import chat from '../../pictures/chat.svg';
+import AddMemberModal from './AddMemberModal.jsx'; // Importa tu modal
 
 export default function GroupAdminView() {
   const [groupData, setGroupData] = useState({

@@ -1,3 +1,5 @@
+-- noinspection SqlNoDataSourceInspectionForFile
+
 CREATE TABLE users (
                        id SERIAL PRIMARY KEY,
                        name VARCHAR(100) UNIQUE NOT NULL,
@@ -9,7 +11,7 @@ CREATE TABLE groups (
             id SERIAL PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
             description VARCHAR(100),
-            idPropietary SERIAL NOT NULL
+            user_owner_id SERIAL NOT NULL
 );
 
 CREATE TABLE group_users (

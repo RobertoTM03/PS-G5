@@ -1,7 +1,7 @@
 import React from 'react';
-import './passwordRecoverStyle.css';
-import HeaderNoSigned from './HeaderNoSigned';
-import Footer from './Footer';
+import '../CSS/passwordRecoverStyle.css';
+import HeaderNoSigned from './HeaderNoSigned.jsx';
+import Footer from './Footer.jsx';
 
 export function PasswordRecover() {
     return (

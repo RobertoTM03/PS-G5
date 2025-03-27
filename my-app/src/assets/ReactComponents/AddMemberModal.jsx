@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './AddMemberModal.css';
+import '../CSS/AddMemberModal.css';
 
 export default function AddMemberModal({ onClose }) {
   const [username, setUsername] = useState('');

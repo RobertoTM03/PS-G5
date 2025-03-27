@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './signIn.css';
-import Footer from './Footer';
-import Header from './HeaderNoSigned';
+import '../CSS/signIn.css';
+import Footer from './Footer.jsx';
+import Header from './HeaderNoSigned.jsx';
 
 export default function SignIn() {
     return (

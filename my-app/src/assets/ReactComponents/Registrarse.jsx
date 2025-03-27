@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import "./Registrarse.css";
-import Footer from "./Footer";
+import "../CSS/Registrarse.css";
+import Footer from "./Footer.jsx";
 import { Link, useNavigate } from 'react-router-dom';
-import Header from "./HeaderNoSigned";
-import VistaGrupos from "./vistaGrupos";
+import Header from "./HeaderNoSigned.jsx";
+import VistaGrupos from "./vistaGrupos.jsx";
 
 export default function Registrarse() {
   const [formData, setFormData] = useState({

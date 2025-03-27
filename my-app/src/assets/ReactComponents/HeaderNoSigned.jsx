@@ -1,5 +1,5 @@
 import React from 'react'
-import "./HeaderNoSigned.css"; 
+import "../CSS/HeaderNoSigned.css";
 
 export default function HeaderNoSigned() {
     const handleSignupClick = () => {
