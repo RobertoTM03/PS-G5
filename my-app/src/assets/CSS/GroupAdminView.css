@@ -12,7 +12,7 @@ html, body {
   flex-direction: column;
   height: 100vh;
   width: 100%;
-  background-color: #edf1f8;
+  background: linear-gradient(to right, #d4d4e2, #85a1e1); 
 }
 
 .top-bar {
@@ -197,8 +197,8 @@ html, body {
 }
 
 .icon-btn img {
-  width: 80px;
-  height: 80px;
+  width: 110px;
+  height: 110px;
   object-fit: contain;
   transition: transform 0.3s ease;
 }
