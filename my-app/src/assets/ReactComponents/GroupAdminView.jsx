@@ -10,7 +10,7 @@ import AddMemberModal from './AddMemberModal.jsx';
 import Header from './Header.jsx';
 
 export default function GroupAdminView() {
-  const groupId = '1'; // 🔄 Make dynamic if needed
+  const groupId = '1'; 
   const [groupData, setGroupData] = useState({
     name: '',
     description: '',
@@ -20,24 +20,20 @@ export default function GroupAdminView() {
   const [openMenuIndex, setOpenMenuIndex] = useState(null);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
-  // 🔄 Fetch group data and make it reusable
   const fetchGroupData = async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:3000/groups/${groupId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
       });
 
       const data = await response.json();
-      console.log('Datos del grupo:', data);
 
       setGroupData({
         name: data.titulo || 'Unnamed Group',
         description: data.descripcion || 'No description provided.',
         members: (data.integrantes || []).map(user => ({
-          id: user.userId, // ✅ Fixed: using userId instead of user.id
+          id: user.userId,
           name: user.nombre,
         })),
       });
@@ -55,7 +51,6 @@ export default function GroupAdminView() {
 
     try {
       const token = localStorage.getItem('token');
-
       if (!token) {
         alert('Token no encontrado. Por favor, inicia sesión.');
         return;
@@ -67,19 +62,14 @@ export default function GroupAdminView() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          userId: String(memberToRemove.id),
-        }),
+        body: JSON.stringify({ userId: String(memberToRemove.id) }),
       });
 
       const responseData = await response.json();
 
       if (!response.ok) {
-        console.error('Respuesta del servidor:', responseData);
-        throw new Error(responseData.msg || 'Error al eliminar el miembro del servidor');
+        throw new Error(responseData.msg || 'Error al eliminar el miembro');
       }
-
-      console.log('✅ Miembro eliminado con éxito:', responseData);
 
       const updatedMembers = [...groupData.members];
       updatedMembers.splice(index, 1);
@@ -91,17 +81,53 @@ export default function GroupAdminView() {
     }
   };
 
+  const handleDeleteGroup = async () => {
+    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este grupo? Esta acción no se puede deshacer.');
+
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/groups/${groupId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+
+      const responseData = await response.json();
+
+      switch (response.status) {
+        case 200:
+          alert('Grupo eliminado exitosamente.');
+          window.location.href = '/';
+          break;
+        case 401:
+          alert('Fallo de autenticación. Por favor inicia sesión.');
+          break;
+        case 403:
+          alert('No tienes permiso para eliminar este grupo.');
+          break;
+        case 404:
+          alert('Grupo no encontrado.');
+          break;
+        case 500:
+        default:
+          alert('Error inesperado al intentar eliminar el grupo.');
+          break;
+      }
+    } catch (error) {
+      console.error('Error eliminando grupo:', error);
+      alert('Hubo un error al eliminar el grupo.');
+    }
+  };
+
   return (
     <div className="group-admin-wrapper">
       <Header />
       <div className="group-admin-container">
-        {/* Left panel */}
         <div className="left-panel">
-          <h2 className="group-title">{groupData.name || 'Group name'}</h2>
+          <h2 className="group-title">{groupData.name}</h2>
           <p className="description-title">DESCRIPTION</p>
-          <p className="group-description">
-            {groupData.description || 'Loading description...'}
-          </p>
+          <p className="group-description">{groupData.description}</p>
 
           <p className="members-title">GROUP MEMBERS</p>
           <div className="members-list">
@@ -132,9 +158,10 @@ export default function GroupAdminView() {
           <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
             ADD MEMBER
           </button>
+
+      
         </div>
 
-        {/* Right panel - Icon Buttons */}
         <div className="right-panel">
           <div className="icon-rows">
             <div className="icon-row">
@@ -165,12 +192,11 @@ export default function GroupAdminView() {
         </div>
       </div>
 
-      {/* Modal */}
       {showAddMemberModal && (
         <AddMemberModal
           onClose={() => {
             setShowAddMemberModal(false);
-            fetchGroupData(); // 🔄 Refresh members after adding
+            fetchGroupData();
           }}
           groupId={groupId}
         />

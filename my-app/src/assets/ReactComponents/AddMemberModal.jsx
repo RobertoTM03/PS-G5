@@ -11,7 +11,7 @@ export default function AddMemberModal({ onClose, groupId }) {
     setSuccess('');
 
     try {
-      const token = localStorage.getItem('token'); // 🟢 Now matching the remove logic
+      const token = localStorage.getItem('token'); 
 
       if (!token) {
         setError('🔒 Token no encontrado. Por favor inicia sesión.');
@@ -22,7 +22,7 @@ export default function AddMemberModal({ onClose, groupId }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // 🟢 Using token from localStorage
+          'Authorization': `Bearer ${token}`, 
         },
         body: JSON.stringify({ email }),
       });
@@ -33,19 +33,19 @@ export default function AddMemberModal({ onClose, groupId }) {
         console.error('Respuesta del servidor:', responseData);
         switch (response.status) {
           case 400:
-            setError('⚠️ El usuario ya es integrante o el email no es válido.');
+            setError(' El usuario ya es integrante o el email no es válido.');
             break;
           case 401:
-            setError('🔒 Fallo de autenticación. Verifica tu sesión.');
+            setError(' Fallo de autenticación. Verifica tu sesión.');
             break;
           case 403:
-            setError('🚫 No tienes permiso para realizar esta acción.');
+            setError(' No tienes permiso para realizar esta acción.');
             break;
           case 404:
-            setError('❌ Usuario no registrado o grupo no encontrado.');
+            setError(' Usuario no registrado o grupo no encontrado.');
             break;
           default:
-            setError('😵 Error desconocido del servidor.');
+            setError('Error desconocido del servidor.');
         }
         return;
       }
