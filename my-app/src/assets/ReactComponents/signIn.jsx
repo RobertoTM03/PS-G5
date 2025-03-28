@@ -38,11 +38,9 @@ export default function IniciarSesion() {
                 throw new Error(data.msg || "Error desconocido al iniciar sesión");
             }
 
-            // Guardar el token recibido
             localStorage.setItem("token", data.token);
 
-            // Redirigir a vistaGrupos
-            navigate("/GroupAdminView");
+            navigate("/vistaGrupos");
         } catch (error) {
             alert(`Error al iniciar sesión: ${error.message}`);
             console.error("Inicio de sesión fallido:", error);

@@ -1,4 +1,3 @@
-/* Global styles */
 body, html {
     margin: 0;
     padding: 0;
@@ -8,7 +7,6 @@ body, html {
     color: white; 
 }
 
-/* Contenedor principal */
 .container {
     display: flex;
     align-items: center;
@@ -19,36 +17,33 @@ body, html {
 }
 
 
-/* Secciones izquierda y derecha */
 .left-section, .right-section {
     flex: 1;
     padding: 20px;
     margin-top: 40px;
 }
 
-/* Ajuste del margen de la sección izquierda */
 .left-section {
     margin-left: 80px;
     
 }
 
-/* Títulos */
+
 .left-section h1 {
     font-size: 55px;
     font-weight: bold;
-    color: #133379; /* Texto en blanco para mayor contraste */
+    color: #133379;
 }
 
-/* Párrafos */
+
 .left-section p {
-    color: black; /* Un gris claro para mejor visibilidad */
+    color: black;
     font-size: 25px;
     margin-bottom: 20px;
     text-align: left;
 }
 
 
-/* Botones */
 .btn {
     display: block;
     width: 350px;
@@ -63,7 +58,6 @@ body, html {
     transition: 0.3s ease-in-out;
 }
 
-/* Estilos de los botones con efecto hover */
 .login-btn {
     background-color: #5a7ec7;
     color: white;
@@ -79,7 +73,6 @@ body, html {
     opacity: 0.9;
 }
 
-/* Sección derecha */
 .right-section {
     display: flex;
     align-items: center;
@@ -87,7 +80,6 @@ body, html {
     margin-right: 50px;
 }
 
-/* Placeholder de imagen con animación */
 .image-placeholder {
     width: 60%;
     max-width: 300px;
@@ -96,19 +88,18 @@ body, html {
     align-items: center;
     justify-content: center;
     opacity: 1;
-    animation: moverArribaAbajo 2s infinite ease-in-out; /* Agregado: animación de movimiento */
+    animation: moverArribaAbajo 2s infinite ease-in-out; 
 }
 
-/* Definir la animación de mover hacia arriba y hacia abajo */
 @keyframes moverArribaAbajo {
     0% {
-        transform: translateY(0); /* posición inicial */
+        transform: translateY(0); 
     }
     50% {
-        transform: translateY(-10px); /* mover hacia arriba */
+        transform: translateY(-10px); 
     }
     100% {
-        transform: translateY(0); /* volver a la posición inicial */
+        transform: translateY(0);
     }
 }
 
@@ -137,10 +128,10 @@ body, html {
 .right-section2 h1 {
     font-size: 55px;
     font-weight: bold;
-    color: #133379; /* Texto en blanco para mayor contraste */
+    color: #133379;
 }
 
-/* Párrafos */
+
 .right-section2 p {
     color: black;
     font-size: 25px;
@@ -200,6 +191,6 @@ body, html {
 }
 
 .inicio {
-    padding-top: 60px; /* Ajusta este valor al alto real del header */
+    padding-top: 60px; 
 }
   

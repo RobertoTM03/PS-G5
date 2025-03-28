@@ -12,13 +12,12 @@ export default function AddMemberModal({ onClose, groupId }) {
 
     try {
       const token = localStorage.getItem('token'); 
-
       if (!token) {
         setError('🔒 Token no encontrado. Por favor inicia sesión.');
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/groups/1/members`, {
+      const response = await fetch(`http://localhost:3000/groups/${groupId}/members`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,10 +49,12 @@ export default function AddMemberModal({ onClose, groupId }) {
         return;
       }
 
-      setSuccess(`✅ Usuario "${email}" añadido exitosamente al grupo.`);
       setEmail('');
+      onClose();
+
+
     } catch (err) {
-      setError('🌐 Error de red o del servidor. Intenta nuevamente.');
+      setError('Error de red o del servidor. Intenta nuevamente.');
       console.error('Error en la solicitud:', err);
     }
   };

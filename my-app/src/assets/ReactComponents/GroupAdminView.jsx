@@ -37,7 +37,7 @@ export default function GroupAdminView() {
           id: user.userId,
           name: user.nombre,
         })),
-        isOwner: data.isOwner || false, // 👈 Guardamos si es el creador
+        isOwner: data.isOwner || false,
       });
     } catch (error) {
       console.error('Error fetching group data:', error);
@@ -86,11 +86,15 @@ export default function GroupAdminView() {
   const handleLeaveGroup = async () => {
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Token no encontrado. Por favor, inicia sesión.');
+        return;
+      }
+
       const response = await fetch(`http://localhost:3000/groups/${groupId}/leave`, {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
       });
 
@@ -107,7 +111,6 @@ export default function GroupAdminView() {
       alert('Hubo un error al intentar salir del grupo.');
     }
   };
-
 
   return (
     <div className="group-admin-wrapper">

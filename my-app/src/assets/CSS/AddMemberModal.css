@@ -96,3 +96,30 @@
     transform: translateY(-2px);
   }
   
+
+  .cancel-btn {
+    background-color: #e6f0ff;
+    border: 2px solid #000000;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #d0e0ff;
+    transform: translateY(-2px);
+  }
+  
+  .error-text,
+  .success-text {
+    color: #000000;
+    font-weight: 500;
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+  }
+  
