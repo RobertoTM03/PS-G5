@@ -1,8 +1,39 @@
-import React from 'react';
-import '../CSS/HeaderSigned.css';  
+import React, { useEffect, useState } from 'react';
+import '../CSS/HeaderSigned.css';
 
 const Header = () => {
-    const username = localStorage.getItem("username"); 
+    const [username, setUsername] = useState('');
+
+    useEffect(() => {
+        const fetchUsername = async () => {
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                console.error('No token found');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/auth/my-information', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUsername(data.name);
+                } else {
+                    console.error('Error al obtener la información del usuario');
+                }
+            } catch (error) {
+                console.error('Error de red:', error);
+            }
+        };
+
+        fetchUsername();
+    }, []);
 
     return (
         <header className="header">
@@ -17,11 +48,11 @@ const Header = () => {
                     <i className="fas fa-user-circle"></i>
                 </div>
                 <div className="username">
-                    <span>{username ? username : "Guest"}</span>
+                    <span>{username}</span>
                 </div>
             </div>
         </header>
     );
-}
+};
 
 export default Header;
