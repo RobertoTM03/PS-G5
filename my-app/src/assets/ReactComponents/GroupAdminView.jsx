@@ -10,69 +10,69 @@ import AddMemberModal from './AddMemberModal.jsx';
 import Header from './Header.jsx';
 
 export default function GroupAdminView() {
+  const groupId = '1';
   const [groupData, setGroupData] = useState({
     name: '',
     description: '',
     members: [],
+    isOwner: false,
   });
 
   const [openMenuIndex, setOpenMenuIndex] = useState(null);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
-  useEffect(() => {
-    // Puedes descomentar esto si quieres hacer el fetch real más adelante
-    const fetchGroupData = async () => {
-      try {
-        const token = localStorage.getItem('token'); // o sessionStorage
-        const response = await fetch('http://localhost:3000/groups/1', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-    
-        const data = await response.json();
-        console.log('Datos del grupo:', data);
-    
-        setGroupData({
-          name: data.titulo || 'Unnamed Group',
-          description: data.descripcion || 'No description provided.',
-          members: (data.integrantes || []).map(user => ({ id: user.id, name: user.nombre })),
-        });
-      } catch (error) {
-        console.error('Error fetching group data:', error);
-      }
-    };
+  const fetchGroupData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/groups/${groupId}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
 
-     fetchGroupData();
+      const data = await response.json();
+
+      setGroupData({
+        name: data.titulo || 'Unnamed Group',
+        description: data.descripcion || 'No description provided.',
+        members: (data.integrantes || []).map(user => ({
+          id: user.userId,
+          name: user.nombre,
+        })),
+        isOwner: data.isOwner || false, // 👈 Guardamos si es el creador
+      });
+    } catch (error) {
+      console.error('Error fetching group data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGroupData();
   }, []);
 
   const handleRemoveMember = async (index) => {
     const memberToRemove = groupData.members[index];
-    const groupId = '1';
-  
+
     try {
       const token = localStorage.getItem('token');
-  
+      if (!token) {
+        alert('Token no encontrado. Por favor, inicia sesión.');
+        return;
+      }
+
       const response = await fetch(`http://localhost:3000/groups/${groupId}/members`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          userId: String(memberToRemove.id),
-        }),
+        body: JSON.stringify({ userId: String(memberToRemove.id) }),
       });
-  
-      const responseData = await response.json(); // <-- intenta leer la respuesta
-  
+
+      const responseData = await response.json();
+
       if (!response.ok) {
-        console.error('Respuesta del servidor:', responseData);
-        throw new Error(responseData.msg || 'Error al eliminar el miembro del servidor');
+        throw new Error(responseData.msg || 'Error al eliminar el miembro');
       }
-  
-      console.log('Miembro eliminado con éxito:', responseData);
-  
+
       const updatedMembers = [...groupData.members];
       updatedMembers.splice(index, 1);
       setGroupData({ ...groupData, members: updatedMembers });
@@ -82,20 +82,41 @@ export default function GroupAdminView() {
       alert('Hubo un error al eliminar el miembro.');
     }
   };
-  
-  
+
+  const handleLeaveGroup = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/groups/${groupId}/leave`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.msg || 'No se pudo salir del grupo.');
+      }
+
+      alert('Saliste del grupo correctamente.');
+      window.location.href = '/vistaGrupos';
+    } catch (error) {
+      console.error('Error al salir del grupo:', error.message || error);
+      alert('Hubo un error al intentar salir del grupo.');
+    }
+  };
+
 
   return (
     <div className="group-admin-wrapper">
       <Header />
       <div className="group-admin-container">
-        {/* Left panel */}
         <div className="left-panel">
-          <h2 className="group-title">{groupData.name || 'Group name'}</h2>
+          <h2 className="group-title">{groupData.name}</h2>
           <p className="description-title">DESCRIPTION</p>
-          <p className="group-description">
-            {groupData.description || 'Loading description...'}
-          </p>
+          <p className="group-description">{groupData.description}</p>
 
           <p className="members-title">GROUP MEMBERS</p>
           <div className="members-list">
@@ -123,12 +144,17 @@ export default function GroupAdminView() {
             )}
           </div>
 
-          <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
-            ADD MEMBER
-          </button>
+          {groupData.isOwner ? (
+            <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
+              ADD MEMBER
+            </button>
+          ) : (
+            <button className="add-member-btn" onClick={handleLeaveGroup}>
+              SALIR DEL GRUPO
+            </button>
+          )}
         </div>
 
-        {/* Right panel - Icon Buttons */}
         <div className="right-panel">
           <div className="icon-rows">
             <div className="icon-row">
@@ -159,9 +185,14 @@ export default function GroupAdminView() {
         </div>
       </div>
 
-      {/* Modal */}
       {showAddMemberModal && (
-        <AddMemberModal onClose={() => setShowAddMemberModal(false)} />
+        <AddMemberModal
+          onClose={() => {
+            setShowAddMemberModal(false);
+            fetchGroupData();
+          }}
+          groupId={groupId}
+        />
       )}
 
       <Footer />
