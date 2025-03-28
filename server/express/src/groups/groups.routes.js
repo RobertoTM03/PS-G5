@@ -277,6 +277,9 @@ router.delete('/:groupId/leave', leaveGroup);
  *             schema:
  *               type: object
  *               properties:
+ *                 isOwner:
+ *                   type: boolean
+ *                   example: true
  *                 titulo:
  *                   type: string
  *                   example: "Viaje a la montaña"
