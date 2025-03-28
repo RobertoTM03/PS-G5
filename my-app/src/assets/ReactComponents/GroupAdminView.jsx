@@ -108,44 +108,6 @@ export default function GroupAdminView() {
     }
   };
 
-  const handleDeleteGroup = async () => {
-    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este grupo? Esta acción no se puede deshacer.');
-
-    if (!confirmDelete) return;
-
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/groups/${groupId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-
-      const responseData = await response.json();
-
-      switch (response.status) {
-        case 200:
-          alert('Grupo eliminado exitosamente.');
-          window.location.href = '/';
-          break;
-        case 401:
-          alert('Fallo de autenticación. Por favor inicia sesión.');
-          break;
-        case 403:
-          alert('No tienes permiso para eliminar este grupo.');
-          break;
-        case 404:
-          alert('Grupo no encontrado.');
-          break;
-        case 500:
-        default:
-          alert('Error inesperado al intentar eliminar el grupo.');
-          break;
-      }
-    } catch (error) {
-      console.error('Error eliminando grupo:', error);
-      alert('Hubo un error al eliminar el grupo.');
-    }
-  };
 
   return (
     <div className="group-admin-wrapper">
