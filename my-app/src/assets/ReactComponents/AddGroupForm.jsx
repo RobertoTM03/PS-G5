@@ -60,7 +60,7 @@ const AddGroupForm = () => {
                 </div>
             </div>
             <div className="group-footer">
-                <button className="submit-button" onClick={handleSubmit}>
+                <button className="submit-button2" onClick={handleSubmit}>
                     Crear Grupo
                 </button>
             </div>
