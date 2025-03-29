@@ -27,6 +27,7 @@ html, body {
   align-items: center;
   padding-top: 100px; 
   padding-bottom: 50px;
+  background: linear-gradient(to right, #d4d4e2, #85a1e1);
 }
 
 

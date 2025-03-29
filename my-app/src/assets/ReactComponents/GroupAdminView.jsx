@@ -8,9 +8,11 @@ import document from '../../pictures/document.svg';
 import chat from '../../pictures/chat.svg';
 import AddMemberModal from './AddMemberModal.jsx';
 import Header from './Header.jsx';
+import { useParams } from 'react-router-dom';
 
 export default function GroupAdminView() {
-  const groupId = '1';
+  const { id } = useParams();
+  const groupId = id;
   const [groupData, setGroupData] = useState({
     name: '',
     description: '',

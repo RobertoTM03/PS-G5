@@ -21,8 +21,8 @@ function App() {
         <Route path="/PasswordRecover" element={<PasswordRecover />} />
         <Route path="/Resetear" element={<ResetearContraseña />} />
         <Route path="/vistaGrupos" element={<VistaGrupos />} />
-        <Route path="/GroupAdminView" element={<GroupAdminView />} />
-          <Route path="/AddGroupForm" element={<AddGroupForm />} />
+        <Route path="/GroupAdminView/:id" element={<GroupAdminView />} />
+        <Route path="/AddGroupForm" element={<AddGroupForm />} />
       </Routes>
     </BrowserRouter>
   );
