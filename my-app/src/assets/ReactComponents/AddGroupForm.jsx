@@ -21,7 +21,7 @@ const AddGroupForm = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert(`Grupo creado con éxito. ID: ${data.groupId}`);
+                alert(`Grupo creado con éxito.`);
                 setTitulo("");
                 setDescripcion("");
             } else {
