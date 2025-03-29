@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Importamos el hook useNavigate
 import '../CSS/vistaGrupos.css';
 import Footer from "./Footer.jsx";
 import Header from "./Header.jsx";
@@ -7,16 +8,11 @@ export default function VistaGrupos() {
     const [grupos, setGrupos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // ✅ Correcto: Declarar useNavigate() aquí, fuera de useEffect
 
     useEffect(() => {
         const token = localStorage.getItem("token");
         const url = 'http://localhost:3000/groups/mine';
-
-        if (!token) {
-            console.error("⚠️ No token found! Redirecting to login...");
-            window.location.href = "/login";
-            return;
-        }
 
         fetch(url, {
             method: 'GET',
@@ -52,6 +48,48 @@ export default function VistaGrupos() {
             });
     }, []);
 
+    // ✅ Función para navegar a la página de administración del grupo
+    const handleGroupClick = (groupId) => {
+       //let groupidds= localStorage.setItem('${groupId}');
+        navigate(`/GroupAdminView/`); // Navega a /group-admin/{id}
+
+    };
+    const handleGroupClick2 = () => {
+        //let groupidds= localStorage.setItem('${groupId}');
+        navigate(`/AddGroupForm`); // Navega a /group-admin/{id}
+
+    };
+    const handleDeleteGroup = (groupId) => {
+        const token = localStorage.getItem("token");
+        const url = `http://localhost:3000/groups/${groupId}`;  // Endpoint DELETE para eliminar el grupo
+
+        if (window.confirm("¿Estás seguro de que deseas eliminar este grupo?")) {
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`Error ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    // Después de eliminar, actualiza la lista de grupos
+                    setGrupos((prevGrupos) => prevGrupos.filter((grupo) => grupo.groupId !== groupId));
+                })
+                .catch((error) => {
+                    console.error('Error al eliminar el grupo:', error);
+                    alert("Hubo un error al eliminar el grupo.");
+                });
+        }
+    };
+
+
     return (
         <div>
             <Header />
@@ -68,9 +106,9 @@ export default function VistaGrupos() {
                     ) : grupos.length > 0 ? (
                         grupos.map((grupo) => (
                             <div className="groupDisplay" key={grupo.groupId}>
-                                <h1>{grupo.titulo}</h1>
-                                <p>{grupo.descripcion}</p>
-                                <button className="btn-showMore">. . .</button>
+                                <h1 onClick={() => handleGroupClick(grupo.groupId)}>{grupo.titulo}</h1>
+                                {/* ✅ El botón ahora usa navigate() */}
+                                <button onClick={() => handleDeleteGroup(grupo.groupId)} className="btn-showMore">. . .</button>
                             </div>
                         ))
                     ) : (
@@ -79,7 +117,7 @@ export default function VistaGrupos() {
                 </div>
 
                 <div className="bottom-text">
-                    <button className="btn-addGroup">Create Group</button>
+                    <button  onClick={handleGroupClick2} className="btn-addGroup">Create Group</button>
                 </div>
             </div>
             <Footer />

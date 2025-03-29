@@ -8,18 +8,21 @@ import { PasswordRecover } from "./passwordRecover.jsx";
 import ResetearContraseña from "./ResetearContraseña.jsx";
 import GroupAdminView from "./GroupAdminView.jsx";
 import VistaGrupos from "./vistaGrupos.jsx";
+import AddMemberModal from "./AddMemberModal.jsx";
+import AddGroupForm from "./AddGroupForm.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={< Inicio/>} />
+        <Route path="/" element={< Inicio />} />
         <Route path="/Registrarse" element={<Registrarse />} />
         <Route path="/IniciarSesion" element={<IniciarSesion />} />
         <Route path="/PasswordRecover" element={<PasswordRecover />} />
         <Route path="/Resetear" element={<ResetearContraseña />} />
         <Route path="/vistaGrupos" element={<VistaGrupos />} />
         <Route path="/GroupAdminView" element={<GroupAdminView />} />
+          <Route path="/AddGroupForm" element={<AddGroupForm />} />
       </Routes>
     </BrowserRouter>
   );
