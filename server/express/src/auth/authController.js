@@ -1,6 +1,7 @@
 const admin = require('./firebase');
 const axios = require('axios');
 const db = require("../database");
+const { getUserFromToken } = require("../auxiliary-functions")
 
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -129,3 +130,23 @@ exports.resetPassword = async (req, res) => {
     }
 };
 
+exports.getMyInformation = async (req, res) => {
+    try {
+        // Obtener el usuario autenticado desde el token
+        const user = await getUserFromToken(req.headers.authorization);
+
+        // Responder con los detalles del grupo
+        res.status(200).json({
+            name: user.name,
+            email: user.email,
+            id: user.id
+        });
+    } catch (err) {
+        if (err.statusCode === 401) {
+            return res.status(401).json({ msg: err.message });
+        }
+
+        console.error('Error al obtener detalles del grupo:', err);
+        res.status(500).json({ msg: 'Error no definido' });
+    }
+};

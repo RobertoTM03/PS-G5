@@ -8,38 +8,38 @@ import document from '../../pictures/document.svg';
 import chat from '../../pictures/chat.svg';
 import AddMemberModal from './AddMemberModal.jsx';
 import Header from './Header.jsx';
+import { useParams } from 'react-router-dom';
 
 export default function GroupAdminView() {
-  const groupId = '1'; // 🔄 Make dynamic if needed
+  const { id } = useParams();
+  const groupId = id;
   const [groupData, setGroupData] = useState({
     name: '',
     description: '',
     members: [],
+    isOwner: false,
   });
 
   const [openMenuIndex, setOpenMenuIndex] = useState(null);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
-  // 🔄 Fetch group data and make it reusable
   const fetchGroupData = async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:3000/groups/${groupId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
       });
 
       const data = await response.json();
-      console.log('Datos del grupo:', data);
 
       setGroupData({
         name: data.titulo || 'Unnamed Group',
         description: data.descripcion || 'No description provided.',
         members: (data.integrantes || []).map(user => ({
-          id: user.userId, // ✅ Fixed: using userId instead of user.id
+          id: user.userId,
           name: user.nombre,
         })),
+        isOwner: data.isOwner || false,
       });
     } catch (error) {
       console.error('Error fetching group data:', error);
@@ -55,7 +55,6 @@ export default function GroupAdminView() {
 
     try {
       const token = localStorage.getItem('token');
-
       if (!token) {
         alert('Token no encontrado. Por favor, inicia sesión.');
         return;
@@ -67,19 +66,14 @@ export default function GroupAdminView() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          userId: String(memberToRemove.id),
-        }),
+        body: JSON.stringify({ userId: String(memberToRemove.id) }),
       });
 
       const responseData = await response.json();
 
       if (!response.ok) {
-        console.error('Respuesta del servidor:', responseData);
-        throw new Error(responseData.msg || 'Error al eliminar el miembro del servidor');
+        throw new Error(responseData.msg || 'Error al eliminar el miembro');
       }
-
-      console.log('✅ Miembro eliminado con éxito:', responseData);
 
       const updatedMembers = [...groupData.members];
       updatedMembers.splice(index, 1);
@@ -91,17 +85,43 @@ export default function GroupAdminView() {
     }
   };
 
+  const handleLeaveGroup = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Token no encontrado. Por favor, inicia sesión.');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3000/groups/${groupId}/leave`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.msg || 'No se pudo salir del grupo.');
+      }
+
+      alert('Saliste del grupo correctamente.');
+      window.location.href = '/vistaGrupos';
+    } catch (error) {
+      console.error('Error al salir del grupo:', error.message || error);
+      alert('Hubo un error al intentar salir del grupo.');
+    }
+  };
+
   return (
     <div className="group-admin-wrapper">
       <Header />
       <div className="group-admin-container">
-        {/* Left panel */}
         <div className="left-panel">
-          <h2 className="group-title">{groupData.name || 'Group name'}</h2>
+          <h2 className="group-title">{groupData.name}</h2>
           <p className="description-title">DESCRIPTION</p>
-          <p className="group-description">
-            {groupData.description || 'Loading description...'}
-          </p>
+          <p className="group-description">{groupData.description}</p>
 
           <p className="members-title">GROUP MEMBERS</p>
           <div className="members-list">
@@ -129,12 +149,17 @@ export default function GroupAdminView() {
             )}
           </div>
 
-          <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
-            ADD MEMBER
-          </button>
+          {groupData.isOwner ? (
+            <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
+              ADD MEMBER
+            </button>
+          ) : (
+            <button className="add-member-btn" onClick={handleLeaveGroup}>
+              SALIR DEL GRUPO
+            </button>
+          )}
         </div>
 
-        {/* Right panel - Icon Buttons */}
         <div className="right-panel">
           <div className="icon-rows">
             <div className="icon-row">
@@ -165,12 +190,11 @@ export default function GroupAdminView() {
         </div>
       </div>
 
-      {/* Modal */}
       {showAddMemberModal && (
         <AddMemberModal
           onClose={() => {
             setShowAddMemberModal(false);
-            fetchGroupData(); // 🔄 Refresh members after adding
+            fetchGroupData();
           }}
           groupId={groupId}
         />

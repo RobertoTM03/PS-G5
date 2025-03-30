@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, resetPassword } = require('./authController');
-
+const { register, login, resetPassword, getMyInformation  } = require('./authController');
 /**
  * @openapi
  * /auth/login:
@@ -143,6 +142,41 @@ router.post('/register', register);
  *         description: Error no definido
  */
 router.post('/password-reset', resetPassword);
+
+
+/**
+ * @openapi
+ * /auth/my-information:
+ *   post:
+ *     summary: Obtener la información del usuario a travez del token.
+ *     security:
+ *       - bearerAuth: []
+ *     description: Permite a un usuario logueado obtener su información.
+ *     tags:
+ *       - Autenticación
+ *     responses:
+ *       200:
+ *         description: Detalles del usuario cargados exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                   example: "NombrePrueba"
+ *                 email:
+ *                   type: string
+ *                   example: "prueba@mail.com"
+ *                 id:
+ *                   type: string
+ *                   example: "64ac9b7b5f8e2c001fc45abc"
+ *       401:
+ *         description: Fallo de autenticación con el token del usuario
+ *       500:
+ *         description: Error no definido
+ */
+router.post('/my-information', getMyInformation);
 
 
 module.exports = router;

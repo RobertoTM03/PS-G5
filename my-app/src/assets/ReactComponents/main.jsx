@@ -7,7 +7,9 @@ import IniciarSesion from "./signIn.jsx";
 import PasswordRecovery from "./PasswordRecovery.jsx";
 import PasswordReset from "./PasswordReset.jsx";
 import GroupAdminView from "./GroupAdminView.jsx";
-import VistaGrupos from "./vistaGrupos.jsx"; 
+import VistaGrupos from "./vistaGrupos.jsx";
+import AddMemberModal from "./AddMemberModal.jsx";
+import AddGroupForm from "./AddGroupForm.jsx";
 
 import { FirebaseProvider } from './Firebase.jsx';
 
@@ -22,7 +24,8 @@ function App() {
           <Route path="/PasswordRecovery" element={<PasswordRecovery />} />
           <Route path="/PasswordReset" element={<PasswordReset />} />
           <Route path="/vistaGrupos" element={<VistaGrupos />} />
-          <Route path="/GroupAdminView" element={<GroupAdminView />} />
+          <Route path="/GroupAdminView/:id" element={<GroupAdminView />} />
+          <Route path="/AddGroupForm" element={<AddGroupForm />} />
         </Routes>
       </BrowserRouter>
     </FirebaseProvider>

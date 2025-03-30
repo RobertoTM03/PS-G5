@@ -1,34 +1,5 @@
 const db = require("../database");
-const admin = require('../auth/firebase');
-
-const getUserFromToken = async (authHeader) => {
-    if (!authHeader || typeof authHeader !== 'string' || !authHeader.startsWith('Bearer ')) {
-        const error = new Error('Falta el token de autorización o el formato es incorrecto');
-        error.statusCode = 401;
-        throw error;
-    }
-
-    const idToken = authHeader.split(' ')[1];
-
-    try {
-        const decodedToken = await admin.auth().verifyIdToken(idToken);
-        const firebaseUid = decodedToken.uid;
-
-        const user = await db.oneOrNone('SELECT * FROM users WHERE firebase_uid = $1', [firebaseUid]);
-        if (!user) {
-            const error = new Error('Usuario no encontrado');
-            error.statusCode = 401;
-            throw error;
-        }
-
-        return user;
-    } catch (err) {
-        const error = new Error('Token inválido o sesión caducada');
-        error.statusCode = 401;
-        throw error;
-    }
-};
-
+const { getUserFromToken } = require("../auxiliary-functions")
 
 exports.createGroup = async (req, res) => {
     const { titulo, descripcion } = req.body;
@@ -254,6 +225,7 @@ exports.getGroupDetails = async (req, res) => {
 
         // Responder con los detalles del grupo
         res.status(200).json({
+            isOwner: user.id == group.user_owner_id,
             titulo: group.name,
             descripcion: group.description,
             integrantes

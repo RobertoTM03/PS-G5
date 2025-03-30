@@ -11,18 +11,17 @@ export default function AddMemberModal({ onClose, groupId }) {
     setSuccess('');
 
     try {
-      const token = localStorage.getItem('token'); // 🟢 Now matching the remove logic
-
+      const token = localStorage.getItem('token'); 
       if (!token) {
         setError('🔒 Token no encontrado. Por favor inicia sesión.');
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/groups/1/members`, {
+      const response = await fetch(`http://localhost:3000/groups/${groupId}/members`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // 🟢 Using token from localStorage
+          'Authorization': `Bearer ${token}`, 
         },
         body: JSON.stringify({ email }),
       });
@@ -33,27 +32,29 @@ export default function AddMemberModal({ onClose, groupId }) {
         console.error('Respuesta del servidor:', responseData);
         switch (response.status) {
           case 400:
-            setError('⚠️ El usuario ya es integrante o el email no es válido.');
+            setError(' El usuario ya es integrante o el email no es válido.');
             break;
           case 401:
-            setError('🔒 Fallo de autenticación. Verifica tu sesión.');
+            setError(' Fallo de autenticación. Verifica tu sesión.');
             break;
           case 403:
-            setError('🚫 No tienes permiso para realizar esta acción.');
+            setError(' No tienes permiso para realizar esta acción.');
             break;
           case 404:
-            setError('❌ Usuario no registrado o grupo no encontrado.');
+            setError(' Usuario no registrado o grupo no encontrado.');
             break;
           default:
-            setError('😵 Error desconocido del servidor.');
+            setError('Error desconocido del servidor.');
         }
         return;
       }
 
-      setSuccess(`✅ Usuario "${email}" añadido exitosamente al grupo.`);
       setEmail('');
+      onClose();
+
+
     } catch (err) {
-      setError('🌐 Error de red o del servidor. Intenta nuevamente.');
+      setError('Error de red o del servidor. Intenta nuevamente.');
       console.error('Error en la solicitud:', err);
     }
   };
