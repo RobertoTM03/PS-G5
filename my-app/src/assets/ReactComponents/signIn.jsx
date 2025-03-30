@@ -90,7 +90,7 @@ export default function IniciarSesion() {
                             Don’t have an account? <Link to="/Registrarse">Sign Up</Link>
                         </p>
                         <p>
-                            <Link to="/Resetear">Forgot Password?</Link>
+                            <Link to="/PasswordRecovery">Forgot Password?</Link>
                         </p>
                     </div>
                 </section>

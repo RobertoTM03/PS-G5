@@ -4,24 +4,28 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Inicio from "./Inicio.jsx";
 import Registrarse from "./Registrarse.jsx";
 import IniciarSesion from "./signIn.jsx";
-import { PasswordRecover } from "./passwordRecover.jsx";
-import ResetearContraseña from "./ResetearContraseña.jsx";
+import PasswordRecovery from "./PasswordRecovery.jsx";
+import PasswordReset from "./PasswordReset.jsx";
 import GroupAdminView from "./GroupAdminView.jsx";
-import VistaGrupos from "./vistaGrupos.jsx";
+import VistaGrupos from "./vistaGrupos.jsx"; 
+
+import { FirebaseProvider } from './Firebase.jsx';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={< Inicio/>} />
-        <Route path="/Registrarse" element={<Registrarse />} />
-        <Route path="/IniciarSesion" element={<IniciarSesion />} />
-        <Route path="/PasswordRecover" element={<PasswordRecover />} />
-        <Route path="/Resetear" element={<ResetearContraseña />} />
-        <Route path="/vistaGrupos" element={<VistaGrupos />} />
-        <Route path="/GroupAdminView" element={<GroupAdminView />} />
-      </Routes>
-    </BrowserRouter>
+    <FirebaseProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={< Inicio/>} />
+          <Route path="/Registrarse" element={<Registrarse />} />
+          <Route path="/IniciarSesion" element={<IniciarSesion />} />
+          <Route path="/PasswordRecovery" element={<PasswordRecovery />} />
+          <Route path="/PasswordReset" element={<PasswordReset />} />
+          <Route path="/vistaGrupos" element={<VistaGrupos />} />
+          <Route path="/GroupAdminView" element={<GroupAdminView />} />
+        </Routes>
+      </BrowserRouter>
+    </FirebaseProvider>
   );
 }
 
