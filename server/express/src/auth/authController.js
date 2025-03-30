@@ -107,51 +107,6 @@ exports.login = async (req, res) => {
 };
 
 
-const nodemailer = require('nodemailer');
-
-exports.forgotPassword = async (req, res) => {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ msg: 'Email requerido' });
-
-    try {
-        const link = await admin.auth().generatePasswordResetLink(email, {
-            url: 'http://localhost:5173/PasswordRecover',
-            handleCodeInApp: true
-        });
-
-        // Configura el transportador de nodemailer
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASS
-            }
-        });
-
-        // Opciones del correo
-        const mailOptions = {
-            from: `"TripCollab" <${process.env.MAIL_USER}>`,
-            to: email,
-            subject: 'Recupera tu contraseña en TripCollab',
-            html: `
-                <p>Hola,</p>
-                <p>Has solicitado restablecer tu contraseña en TripCollab. Haz clic en el enlace de abajo para continuar:</p>
-                <a href="${link}">Restablecer contraseña</a>
-                <p>Si no solicitaste restablecer tu contraseña, puedes ignorar este mensaje.</p>
-            `
-        };
-
-        // Enviar el correo
-        await transporter.sendMail(mailOptions);
-
-        res.json({ msg: 'Se ha enviado el correo de recuperación' });
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ msg: 'Error al generar o enviar el enlace' });
-    }
-};
-
-
 
 exports.resetPassword = async (req, res) => {
     const { oobCode, newPassword } = req.body;
@@ -162,10 +117,15 @@ exports.resetPassword = async (req, res) => {
             oobCode,
             newPassword
         });
-
+        console.log(`Password reset requested[${res.status}]: ${res}`);
         res.status(200).json({ msg: 'Contraseña actualizada correctamente' });
     } catch (err) {
-        res.status(500).json({ msg: 'Error al cambiar la contraseña' });
+        console.log(err);
+        if (err.response.status == 400) {
+            res.status(400).json({ msg: 'Código de reestablecimiento expirado' });
+        } else {
+            res.status(500).json({ msg: 'Error al cambiar la contraseña' });
+        }
     }
 };
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, forgotPassword, resetPassword } = require('./authController');
+const { register, login, resetPassword } = require('./authController');
 
 /**
  * @openapi
@@ -106,38 +106,7 @@ router.post('/register', register);
 
 /**
  * @openapi
- * /auth/forgot-password:
- *   post:
- *     summary: Solicitar restablecer contraseña
- *     description: Permite a un usuario solicitar el restablecimiento de su contraseña
- *     tags:
- *       - Autenticación
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *             properties:
- *               email:
- *                 type: string
- *                 description: Correo electrónico registrado
- *                 example: prueba@mail.com
- *     responses:
- *       200:
- *         description: Se ha enviado un correo con instrucciones (aunque el email no esté registrado, por seguridad no se informa)
- *       400:
- *         description: Falta el campo email o es inválido
- *       500:
- *         description: Error no definido
- */
-router.post('/forgot-password', forgotPassword);
-
-/**
- * @openapi
- * /auth/reset-password:
+ * /auth/password-reset:
  *   post:
  *     summary: Cambiar la contraseña después de la solicitud de restablecimiento
  *     description: Permite al usuario cambiar su contraseña usando el token de restablecimiento
@@ -173,6 +142,7 @@ router.post('/forgot-password', forgotPassword);
  *       500:
  *         description: Error no definido
  */
-router.post('/reset-password', resetPassword);
+router.post('/password-reset', resetPassword);
+
 
 module.exports = router;
