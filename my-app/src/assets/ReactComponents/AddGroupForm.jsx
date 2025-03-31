@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import '../CSS/AddGroupForm.css';
 
-const AddGroupForm = () => {
+const AddGroupForm = ({ onClose, onGroupCreated }) => {
     const [titulo, setTitulo] = useState("");
     const [descripcion, setDescripcion] = useState("");
 
     const handleSubmit = async () => {
         try {
-            const token = localStorage.getItem("token"); // Obtener el token desde localStorage
+            const token = localStorage.getItem("token");
 
             const response = await fetch("http://localhost:3000/groups", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}` // Usar el token desde localStorage
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({ titulo, descripcion })
             });
@@ -24,6 +24,8 @@ const AddGroupForm = () => {
                 alert(`Grupo creado con éxito.`);
                 setTitulo("");
                 setDescripcion("");
+                if (onGroupCreated) onGroupCreated();
+                if (onClose) onClose();
             } else {
                 alert(`Error: ${data.msg}`);
             }
@@ -62,6 +64,9 @@ const AddGroupForm = () => {
             <div className="group-footer">
                 <button className="submit-button2" onClick={handleSubmit}>
                     Crear Grupo
+                </button>
+                <button className="cancel-button2" onClick={onClose}>
+                    Cancelar
                 </button>
             </div>
         </div>

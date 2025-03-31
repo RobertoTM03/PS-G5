@@ -3,16 +3,19 @@ import { useNavigate } from "react-router-dom";
 import '../CSS/vistaGrupos.css';
 import Footer from "./Footer.jsx";
 import Header from "./Header.jsx";
+import AddGroupForm from "./AddGroupForm.jsx"; 
 
 export default function VistaGrupos() {
     const [grupos, setGrupos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [errorType, setErrorType] = useState(null); // Para almacenar el tipo de error
-    const [noGroupsFound, setNoGroupsFound] = useState(false); // Para gestionar "No se encontraron grupos"
+    const [errorType, setErrorType] = useState(null);
+    const [noGroupsFound, setNoGroupsFound] = useState(false);
+    const [showAddGroupForm, setShowAddGroupForm] = useState(false); 
     const navigate = useNavigate();
 
-    useEffect(() => {
+  
+    const fetchGroups = () => {
         const token = localStorage.getItem("token");
         const url = 'http://localhost:3000/groups/mine';
 
@@ -30,7 +33,7 @@ export default function VistaGrupos() {
                     throw new Error('Error 401: No autorizado. Redirigiendo a login...');
                 }
                 if (response.status === 404) {
-                    setNoGroupsFound(true); // No se encontraron grupos
+                    setNoGroupsFound(true);
                     setLoading(false);
                     return;
                 }
@@ -53,14 +56,16 @@ export default function VistaGrupos() {
                 setError(error.message);
                 setLoading(false);
             });
+    };
+
+    useEffect(() => {
+        fetchGroups();
     }, []);
 
     const handleGroupClick = (groupId) => {
         navigate(`/GroupAdminView/${groupId}`);
     };
-    const handleGroupClick2 = () => {
-        navigate(`/AddGroupForm`);
-    };
+
     const handleDeleteGroup = (groupId) => {
         const token = localStorage.getItem("token");
         const url = `http://localhost:3000/groups/${groupId}`;
@@ -95,7 +100,7 @@ export default function VistaGrupos() {
             <Header />
             <div className="vistaGrupos">
                 <div className="top-text">
-                    <h1 className={"Title-group"}>Your Groups:</h1>
+                    <h1 className={"Title-group"}>Tus Grupos:</h1>
                 </div>
                 <div className={"groupTray"}>
                     <div className={"ScrollMaster"}>
@@ -104,9 +109,9 @@ export default function VistaGrupos() {
                         ) : error ? (
                             <div className={`error-message ${errorType === '401' || errorType === '500' ? 'error' : ''}`}>
                                 {error}
-                            </div>  // Estilo de error cuando hay un verdadero problema
+                            </div>
                         ) : noGroupsFound ? (
-                            <div className="error-message no-groups-found">No se encontraron grupos.</div> // Estilo similar al error para el "No se encontraron grupos"
+                            <div className="error-message no-groups-found">No se encontraron grupos.</div>
                         ) : grupos.length > 0 ? (
                             grupos.map((grupo) => (
                                 <div className="groupDisplay" key={grupo.groupId}>
@@ -124,10 +129,21 @@ export default function VistaGrupos() {
                 </div>
 
                 <div className="bottom-text2">
-                    <button onClick={handleGroupClick2} className="btn-addGroup">Create Group</button>
+                    <button onClick={() => setShowAddGroupForm(true)} className="btn-addGroup">
+                        Crear Grupo
+                    </button>
                 </div>
+
+                {showAddGroupForm && (
+                    <div className="modal-group-form">
+                        <AddGroupForm
+                            onClose={() => setShowAddGroupForm(false)}
+                            onGroupCreated={() => fetchGroups()}
+                        />
+                    </div>
+                )}
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 }
