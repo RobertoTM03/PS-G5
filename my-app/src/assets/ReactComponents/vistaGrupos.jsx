@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import '../CSS/vistaGrupos.css';
 import Footer from "./Footer.jsx";
 import Header from "./Header.jsx";
-import AddGroupForm from "./AddGroupForm.jsx"; 
+import AddGroupForm from "./AddGroupForm.jsx";
 
 export default function VistaGrupos() {
     const [grupos, setGrupos] = useState([]);
@@ -11,10 +11,9 @@ export default function VistaGrupos() {
     const [error, setError] = useState(null);
     const [errorType, setErrorType] = useState(null);
     const [noGroupsFound, setNoGroupsFound] = useState(false);
-    const [showAddGroupForm, setShowAddGroupForm] = useState(false); 
+    const [showAddGroupForm, setShowAddGroupForm] = useState(false);
     const navigate = useNavigate();
 
-  
     const fetchGroups = () => {
         const token = localStorage.getItem("token");
         const url = 'http://localhost:3000/groups/mine';
@@ -80,17 +79,30 @@ export default function VistaGrupos() {
                 },
             })
                 .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(`Error ${response.status}: ${response.statusText}`);
+                    if (response.status === 200) {
+                        alert("Grupo eliminado exitosamente");
+                        return response.json();
                     }
-                    return response.json();
+                    if (response.status === 401) {
+                        throw new Error("Fallo de autenticación con el token del usuario");
+                    }
+                    if (response.status === 403) {
+                        throw new Error("El usuario no tiene permiso para realizar la operación");
+                    }
+                    if (response.status === 404) {
+                        throw new Error("Grupo no encontrado");
+                    }
+                    if (response.status === 500) {
+                        throw new Error("Error no definido");
+                    }
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
                 })
                 .then(() => {
                     setGrupos((prevGrupos) => prevGrupos.filter((grupo) => grupo.groupId !== groupId));
                 })
                 .catch((error) => {
                     console.error('Error al eliminar el grupo:', error);
-                    alert("Hubo un error al eliminar el grupo.");
+                    alert(error.message);
                 });
         }
     };
@@ -127,13 +139,11 @@ export default function VistaGrupos() {
                         )}
                     </div>
                 </div>
-
                 <div className="bottom-text2">
                     <button onClick={() => setShowAddGroupForm(true)} className="btn-addGroup">
                         Crear Grupo
                     </button>
                 </div>
-
                 {showAddGroupForm && (
                     <div className="modal-group-form">
                         <AddGroupForm
