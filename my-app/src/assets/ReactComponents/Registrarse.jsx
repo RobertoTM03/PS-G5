@@ -90,31 +90,32 @@ export default function Registrarse() {
                 />
               </div>
               <div className="form-group">
-                <label>Password</label>
+                <label>Contraseña</label>
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Enter password"
+                  placeholder="Introduce tu contraseña"
                   required
                 />
               </div>
               <div className="form-group">
-                <label>Confirm Password</label>
+                <label>Confirmar contraseña</label>
                 <input
                   type="password"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  placeholder="Repeat the password"
+                  placeholder="Repite la contraseña"
                   required
                 />
               </div>
-              <button type="submit" className="btn-register">Sign Up</button>
+              <button type="submit" className="btn-register">Registrarse</button>
             </form>
             <p>
-              Already have an account? <Link to="/IniciarSesion">Login</Link>
+            ¿Ya tienes una cuenta? <Link to="/IniciarSesion">Iniciar sesión
+            </Link>
             </p>
           </div>
         </div>
