@@ -7,8 +7,8 @@ const Footer = () => {
       <div className="footer-container">
         <div className="footer-section">
           <h4>Sobre Nosotros</h4>
-          <p>Lorem ipsum</p>
-          <p>Lorem ipsum</p>
+          <p>FAQ</p>
+          <p>Quienes somos?</p>
         </div>
         <div className="footer-section">
           <h4>Contacto</h4>
