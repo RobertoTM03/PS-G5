@@ -65,27 +65,27 @@ export default function Registrarse() {
       <div className="content">
         <div className="registro-container">
           <div className="registro-box">
-            <h2>Join us!</h2>
+            <h2>¡Únete a nosotros!</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Username</label>
+                <label>Nombre de usuario</label>
                 <input
                   type="text"
                   name="username"
                   value={formData.username}
                   onChange={handleChange}
-                  placeholder="Enter your username"
+                  placeholder="Introduce tu nombre de usuario"
                   required
                 />
               </div>
               <div className="form-group">
-                <label>Email Address</label>
+                <label>Correo electrónico</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter email address"
+                  placeholder="Introduce tu correo electrónico"
                   required
                 />
               </div>

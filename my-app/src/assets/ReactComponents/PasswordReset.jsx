@@ -63,44 +63,50 @@ export default function PasswordReset() {
             <HeaderNoSigned />
             <div className="content">
                 <form className="password-form" onSubmit={handleSubmit}>
-                    <h1 id="title-password">Introduce new password</h1>
+  <h1 id="title-password">Introduce nueva contraseña</h1>
 
-                    <div className="input-group">
-                        <label>New Password</label>
-                        <input
-                            className="passwordblock"
-                            type="password"
-                            name="password"
-                            onChange={handlePasswordChange}
-                            placeholder="Enter password"
-                            required
-                        />
-                    </div>
+  <div className="input-group">
+      <label>Nueva contraseña</label>
+      <input
+          className="passwordblock"
+          type="password"
+          name="password"
+          onChange={handlePasswordChange}
+          placeholder="Enter password"
+          required
+      />
+  </div>
 
-                    <div className="input-group">
-                        <label>Confirm Your New Password</label>
-                        <input
-                            className="passwordblock"
-                            type="password"
-                            name="confirmedPassword"
-                            onChange={handleConfirmedPasswordChange}
-                            placeholder="Repeat the password"
-                            required
-                        />
-                    </div>
-                    <span className={`${passwordChanged? "":"hidden "}form-submit form-submit-success`}>
-                        Your password has been changed successfully!
-                    </span>
-                    <span className={`${!passwordsMatch & isFormSubmitted & !passwordChanged & !passwordChangeFailed? "":"hidden "}form-submit form-submit-error`}>
-                        Passwords don't match!
-                    </span>
-                    <span className={`${oobCodeEpired? "":"hidden "}form-submit form-submit-error`}>
-                        The passwor reset code has expired. Please request a password recovery again.
-                    </span>
-                    <span className={`${passwordChangeFailed? "":"hidden "}form-submit form-submit-error`}>
-                        Something went wrong. Please try again later
-                    </span>
-                    <button id="passwordButton" type="submit" className={`${passwordChanged | oobCodeEpired | passwordChangeFailed? "disabled ":""}confirm-button`}>Change Password</button>
+  <div className="input-group">
+      <label>Confirma la nueva contraseña</label>
+      <input
+          className="passwordblock"
+          type="password"
+          name="confirmedPassword"
+          onChange={handleConfirmedPasswordChange}
+          placeholder="Repeat the password"
+          required
+      />
+  </div>
+  <span className={`${passwordChanged ? "" : "hidden "}form-submit form-submit-success`}>
+  ¡Tu contraseña se ha cambiado correctamente!
+</span>
+
+<span className={`${!passwordsMatch && isFormSubmitted && !passwordChanged && !passwordChangeFailed ? "" : "hidden "}form-submit form-submit-error`}>
+  ¡Las contraseñas no coinciden!
+</span>
+
+<span className={`${oobCodeEpired ? "" : "hidden "}form-submit form-submit-error`}>
+  El código para restablecer la contraseña ha expirado. Por favor, solicita un nuevo restablecimiento.
+</span>
+
+<span className={`${passwordChangeFailed ? "" : "hidden "}form-submit form-submit-error`}>
+  Ha ocurrido un error. Intenta nuevamente más tarde.
+</span>
+
+<button id="passwordButton" type="submit" className={`${passwordChanged || oobCodeEpired || passwordChangeFailed ? "disabled " : ""}confirm-button`}>
+  Cambiar contraseña
+</button>
                 </form>
             </div>
             <Footer />

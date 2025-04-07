@@ -27,27 +27,23 @@ export default function PasswordRecovery () {
     <div className="reset-password-container">
       <HeaderNoSigned />
       <div className="reset-password-box">
-        <h1>Reset password</h1>
+        <h1>Resetear contraseña</h1>
         <p>
-          Enter your user account's verified email address and we will send you
-          a password reset link:
-        </p>
+        Introduce tu dirección de correo electrónico para recibir un enlace de restablecimiento de contraseña.        </p>
         <form action={handleSubmit}>
           <input
             type="email"
             onChange={handleEmailChange}
-            placeholder="Enter email address"
+            placeholder="Introduce tu correo electrónico"
             required
           />
           <span className={`${isRequestSubmitted? "":"hidden "}form-submit form-submit-success`}>
-            If the account exists you will receive a email soon
-          </span>
+          Si el correo existe, recibirás un mensaje con instrucciones.          </span>
           <button type="submit" className={`${isRequestSubmitted? "disabled ":""}confirm-button`}>
-            Confirm Email Address
-          </button>
+          Confirmar correo electrónico          </button>
         </form>
         <p className="go-to-login">
-          Go to <Link to="/IniciarSesion">Login</Link>
+          ir a <Link to="/IniciarSesion">inicio  de sesión</Link>
         </p>
       </div>
       <Footer />

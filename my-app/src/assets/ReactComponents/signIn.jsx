@@ -53,42 +53,43 @@ export default function IniciarSesion() {
             <div className="content">
                 <section className="sign-box">
                     <div className="title-text">
-                        <h1>Welcome back</h1>
+                        <h1>Bienvenido</h1>
                     </div>
                     <section className="sign-entry-form">
                         <form id="loginFormUser" onSubmit={handleSubmit}>
-                            <label htmlFor="identifier">Username/Email</label>
+                            <label htmlFor="identifier">Usuario o correo electrónico
+                            </label>
                             <input
                                 type="text"
                                 id="identifier"
                                 name="identifier"
                                 required
-                                placeholder="Enter username or email"
+                                placeholder="Introduce tu usuario o correo"
                                 value={formData.identifier}
                                 onChange={handleChange}
                             />
 
-                            <label htmlFor="password">Password</label>
+                            <label htmlFor="password">Contraseña</label>
                             <input
                                 type="password"
                                 id="password"
                                 name="password"
                                 required
-                                placeholder="Enter password"
+                                placeholder="Introduce tu contraseña"
                                 value={formData.password}
                                 onChange={handleChange}
                             />
 
-                            <button type="submit" className="submit-button">Login</button>
+                            <button type="submit" className="submit-button">Iniciar sesión</button>
                         </form>
                     </section>
 
                     <div className="bottom-text">
                         <p>
-                            Don’t have an account? <Link to="/Registrarse">Sign Up</Link>
+                        ¿No tienes cuenta? <Link to="/Registrarse">Regístrate</Link>
                         </p>
                         <p>
-                            <Link to="/PasswordRecovery">Forgot Password?</Link>
+                            <Link to="/PasswordRecovery">¿Olvidaste tu contraseña?</Link>
                         </p>
                     </div>
                 </section>

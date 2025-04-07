@@ -120,10 +120,10 @@ export default function GroupAdminView() {
       <div className="group-admin-container">
         <div className="left-panel">
           <h2 className="group-title">{groupData.name}</h2>
-          <p className="description-title">DESCRIPTION</p>
+          <p className="description-title">DESCRIPCIÓN</p>
           <p className="group-description">{groupData.description}</p>
 
-          <p className="members-title">GROUP MEMBERS</p>
+          <p className="members-title">MIEMBROS</p>
           <div className="members-list">
             {groupData.members.length > 0 ? (
               groupData.members.map((member, index) => (

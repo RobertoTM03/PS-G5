@@ -34,10 +34,10 @@ export default function Inicio() {
                         ¡Inicia sesión y empieza a organizar tu viaje en grupo!
                     </p>
                     <button className="btn login-btn" onClick={handleSignInClick}>
-                        Login
+                        Iniciar sesión
                     </button>
                     <button className="btn signup-btn" onClick={handleSignupClick}>
-                        Sign Up
+                        registrarse
                     </button>
                 </div>
 

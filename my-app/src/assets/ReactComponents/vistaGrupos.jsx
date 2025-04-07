@@ -135,7 +135,7 @@ export default function VistaGrupos() {
                                 </div>
                             ))
                         ) : (
-                            <p>No groups found.</p>
+                            <p>No hay grupos</p>
                         )}
                     </div>
                 </div>
