@@ -145,14 +145,13 @@ export default function GroupAdminView() {
                 </div>
               ))
             ) : (
-              <p>No members yet.</p>
+              <p>No hay miembros.</p>
             )}
           </div>
 
           {groupData.isOwner ? (
             <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
-              ADD MEMBER
-            </button>
+             Añadir miembro              </button>
           ) : (
             <button className="add-member-btn" onClick={handleLeaveGroup}>
               SALIR DEL GRUPO
@@ -165,21 +164,21 @@ export default function GroupAdminView() {
             <div className="icon-row">
               <button className="icon-btn">
                 <img src={money} alt="Finance" />
-                <p className="icon-label">Finance</p>
+                <p className="icon-label">Gastos</p>
               </button>
               <button className="icon-btn">
                 <img src={calendar} alt="Calendar" />
-                <p className="icon-label">Calendar</p>
+                <p className="icon-label">Calendario</p>
               </button>
               <button className="icon-btn">
                 <img src={location} alt="Location" />
-                <p className="icon-label">Location</p>
+                <p className="icon-label">Mapa</p>
               </button>
             </div>
             <div className="icon-row center">
               <button className="icon-btn">
                 <img src={document} alt="Documents" />
-                <p className="icon-label">Documents</p>
+                <p className="icon-label">Documentos</p>
               </button>
               <button className="icon-btn">
                 <img src={chat} alt="Chat" />
