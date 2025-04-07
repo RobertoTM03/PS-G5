@@ -16,12 +16,11 @@ export default function HeaderNoSigned() {
       <div>
         <header className="main-header">
           <div className="header-left">
-            <h2 className="logo">TripCollab</h2>
-            <button className="btn main-btn" onClick={handleMainClick}>MAIN</button>
+          <button className="btn main-btn" onClick={handleMainClick}>TripCollab</button>
           </div>
           <div className="header-right">
-            <button className="btn header-btn" onClick={handleSignInClick}>Login</button>
-            <button className="btn header-btn signup" onClick={handleSignupClick}>Sign Up</button>
+            <button className="btn header-btn" onClick={handleSignInClick}>Iniciar Sesión</button>
+            <button className="btn header-btn signup" onClick={handleSignupClick}>Registrarse</button>
           </div>
         </header>
       </div>

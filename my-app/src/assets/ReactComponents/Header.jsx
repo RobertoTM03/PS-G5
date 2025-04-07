@@ -3,6 +3,9 @@ import '../CSS/HeaderSigned.css';
 
 const Header = () => {
     const [username, setUsername] = useState('');
+    const handleMainClick = () => {
+        window.location.href = "./";
+    };
 
     useEffect(() => {
         const fetchUsername = async () => {
@@ -38,8 +41,7 @@ const Header = () => {
     return (
         <header className="header">
             <div className="logo">
-                <h1>TripCollab</h1>
-            </div>
+                <button className="btn main-btn-signed" onClick={handleMainClick}>TripCollab</button>            </div>
             <div className="header-icons">
                 <div className="icon">
                     <i className="fas fa-bell"></i>

@@ -47,3 +47,16 @@
 .username:hover {
     color: #61dafb;
 }
+
+.main-btn-signed {
+    background-color: transparent; /* mismo color del header */
+    color: black;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 5px 20px;
+    font-size: 30px;
+    border-radius: 3px;
+    transition: 0.3s ease;
+    width: 150px;
+}
