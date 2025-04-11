@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 export default function GroupAdminView() {
   const { id } = useParams();
   const groupId = id;
+
   const [groupData, setGroupData] = useState({
     name: '',
     description: '',
@@ -20,7 +21,6 @@ export default function GroupAdminView() {
     isOwner: false,
   });
 
-  const [openMenuIndex, setOpenMenuIndex] = useState(null);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
   const fetchGroupData = async () => {
@@ -53,6 +53,9 @@ export default function GroupAdminView() {
   const handleRemoveMember = async (index) => {
     const memberToRemove = groupData.members[index];
 
+    const confirmDelete = window.confirm(`¿Estás seguro de que deseas eliminar a ${memberToRemove.name} del grupo?`);
+    if (!confirmDelete) return;
+
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -78,7 +81,6 @@ export default function GroupAdminView() {
       const updatedMembers = [...groupData.members];
       updatedMembers.splice(index, 1);
       setGroupData({ ...groupData, members: updatedMembers });
-      setOpenMenuIndex(null);
     } catch (error) {
       console.error('Error eliminando miembro:', error.message || error);
       alert('Hubo un error al eliminar el miembro.');
@@ -86,6 +88,9 @@ export default function GroupAdminView() {
   };
 
   const handleLeaveGroup = async () => {
+    const confirmLeave = window.confirm('¿Estás seguro de que quieres salir del grupo?');
+    if (!confirmLeave) return;
+
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -129,19 +134,15 @@ export default function GroupAdminView() {
               groupData.members.map((member, index) => (
                 <div key={index} className="member-item">
                   <span>{member.name}</span>
-                  <div style={{ position: 'relative' }}>
+                  {groupData.isOwner && (
                     <button
-                      className="dots-button"
-                      onClick={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
+                      className="trash-button"
+                      onClick={() => handleRemoveMember(index)}
+                      title="Eliminar miembro"
                     >
-                      ⋮
+                      🗑️
                     </button>
-                    {openMenuIndex === index && (
-                      <div className="member-menu">
-                        <button onClick={() => handleRemoveMember(index)}>Eliminar miembro</button>
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
               ))
             ) : (
@@ -151,7 +152,8 @@ export default function GroupAdminView() {
 
           {groupData.isOwner ? (
             <button className="add-member-btn" onClick={() => setShowAddMemberModal(true)}>
-             Añadir miembro              </button>
+              Añadir miembro
+            </button>
           ) : (
             <button className="add-member-btn" onClick={handleLeaveGroup}>
               SALIR DEL GRUPO

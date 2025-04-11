@@ -6,9 +6,9 @@
     text-align: left;
     width: 100%;
     background: linear-gradient(to right, #d4d4e2, #85a1e1);
-    height:800px;
-
+    height:600px;
 }
+
 .Title-group{
     font: bold 25px Georgia;
     color: #1a1a1a;
@@ -21,9 +21,9 @@
     text-align: left;
 }
 .top-text h1{
-    font: bold 54px Georgia;
+    font: bold 40px Georgia;
     color: #1a1a1a;
-    margin: 20px;
+    margin: 5px;
 }
 
 .groupTray{
@@ -77,8 +77,8 @@
         border-color:#8ea7cc;
 }
 .fas.fa-ellipsis-h {
-    font-size: 25px;  /* Ajusta el tamaño del icono */
-    color: black;      /* Cambia el color si lo necesitas */
+    font-size: 25px; 
+    color: black;     
     background-color: #8ea7cc;
 }
 
@@ -93,11 +93,10 @@
     margin-bottom: 0px;
     margin-top:25px;
 
-
 }
 
 .btn-addGroup{
-    font: bold 30px Georgia;
+    font: bold 25px Georgia;
     border: 1px #1a1a1a solid;
     border-radius: 5px;
     background-color: #8ea7cc;
@@ -106,8 +105,6 @@
     margin-bottom: 0px;
 }
 
-
-/* Para los errores 401 y 500 */
 .error-message.error {
     background-color: #f8d7da;
     color: #000;
@@ -121,11 +118,10 @@
 
 }
 
-/* Para el error 404 (No se encontraron grupos) */
 .error-message.no-groups-found {
-    background-color: #E8EDF4; /* Fondo suave de color para destacar el error */
-    color: #000; /* Texto en color negro */
-    font-weight: bold; /* Texto en negrita */
+    background-color: #E8EDF4; 
+    color: #000; 
+    font-weight: bold; 
     padding: 15px;
     border: 2px solid #E8EDF4;
     border-radius: 5px;
@@ -135,13 +131,11 @@
 
 }
 
-/* Animación de desvanecimiento */
 @keyframes fadeIn {
     0% { opacity: 0; }
     100% { opacity: 1; }
 }
 
-/* Fondo borroso detrás del modal de grupo */
 .modal-group-form {
     position: fixed;
     top: 0;
@@ -157,7 +151,6 @@
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Animación para aparición suave */
 @keyframes fadeIn {
     from {
         opacity: 0;

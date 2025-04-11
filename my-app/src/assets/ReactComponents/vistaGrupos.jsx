@@ -129,9 +129,10 @@ export default function VistaGrupos() {
                                 <div className="groupDisplay" key={grupo.groupId}>
                                     <h2 className={"Title-group"}
                                         onClick={() => handleGroupClick(grupo.groupId)}>{grupo.titulo}</h2>
-                                    <button onClick={() => handleDeleteGroup(grupo.groupId)} className="btn-showMore">
-                                        <i className="fas fa-ellipsis-h"></i>
+                                    <button onClick={() => handleDeleteGroup(grupo.groupId)} className="trash-button" title="Eliminar grupo">
+                                        🗑️
                                     </button>
+                                    
                                 </div>
                             ))
                         ) : (

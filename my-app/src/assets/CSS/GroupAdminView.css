@@ -235,3 +235,18 @@ html, body {
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.3) transparent;
 }
+
+.trash-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 10px;
+  color: #c00;
+  transition: transform 0.1s;
+}
+
+.trash-button:hover {
+  transform: scale(1.2);
+}
+
