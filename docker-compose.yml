@@ -6,6 +6,7 @@ services:
         build: ./my-app
         restart: always
         volumes:
+            - ./my-app/assets:/app/assets
             - ./my-app/src:/app/src
         ports:
             - 80:80
