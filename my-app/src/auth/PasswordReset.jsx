@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useSearchParams } from "react-router"
+import './PasswordReset.css';
 
-import '../CSS/PasswordReset.css';
-import HeaderNoSigned from './HeaderNoSigned.jsx';
-import Footer from './Footer.jsx';
+import HeaderNoSigned from '../layout/HeaderNoSigned.jsx';
+import Footer from '../layout/Footer.jsx';
 
 export default function PasswordReset() {
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../CSS/AddMemberModal.css';
+import './AddMemberModal.css';
 
 export default function AddMemberModal({ onClose, groupId }) {
   const [email, setEmail] = useState('');

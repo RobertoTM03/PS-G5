@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import '../CSS/AddGroupForm.css';
+import './AddGroupForm.css';
 
 const AddGroupForm = ({ onClose, onGroupCreated }) => {
     const [titulo, setTitulo] = useState("");

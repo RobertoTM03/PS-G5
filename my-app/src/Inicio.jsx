@@ -1,13 +1,15 @@
 import React from "react";
-import "../CSS/Inicio.css";
-import Footer from "./Footer.jsx";
-import mundo from "../../pictures/mundo.png";
-import money from "../../pictures/money.png";
-import calendar from "../../pictures/calendar.png";
-import mapa from "../../pictures/mapa.png";
-import documentos from "../../pictures/docs.png";
-import chat from "../../pictures/chatea.png";
-import Header from "./HeaderNoSigned.jsx";
+import "./Inicio.css";
+
+import Header from "./layout/HeaderNoSigned.jsx";
+import Footer from "./layout/Footer.jsx";
+
+import mundo from "../assets/pictures/mundo.png";
+import money from "../assets/pictures/money.png";
+import calendar from "../assets/pictures/calendar.png";
+import mapa from "../assets/pictures/mapa.png";
+import documentos from "../assets/pictures/docs.png";
+import chat from "../assets/pictures/chatea.png";
 
 export default function Inicio() {
     const handleSignupClick = () => {

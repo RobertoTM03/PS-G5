@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import '../CSS/vistaGrupos.css';
-import Footer from "./Footer.jsx";
-import Header from "./Header.jsx";
+import './vistaGrupos.css';
+
+import Header from "../layout/Header.jsx";
+import Footer from "../layout/Footer.jsx";
+
 import AddGroupForm from "./AddGroupForm.jsx";
 
 export default function VistaGrupos() {

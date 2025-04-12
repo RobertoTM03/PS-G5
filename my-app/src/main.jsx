@@ -2,14 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Inicio from "./Inicio.jsx";
-import Registrarse from "./Registrarse.jsx";
-import IniciarSesion from "./signIn.jsx";
-import PasswordRecovery from "./PasswordRecovery.jsx";
-import PasswordReset from "./PasswordReset.jsx";
-import GroupAdminView from "./GroupAdminView.jsx";
-import VistaGrupos from "./vistaGrupos.jsx";
-import AddMemberModal from "./AddMemberModal.jsx";
-import AddGroupForm from "./AddGroupForm.jsx";
+import Registrarse from "./auth/Registrarse.jsx";
+import IniciarSesion from "./auth/signIn.jsx";
+import PasswordRecovery from "./auth/PasswordRecovery.jsx";
+import PasswordReset from "./auth/PasswordReset.jsx";
+import GroupAdminView from "./groups/GroupAdminView.jsx";
+import VistaGrupos from "./groups/vistaGrupos.jsx";
+import AddMemberModal from "./groups/AddMemberModal.jsx";
+import AddGroupForm from "./groups/AddGroupForm.jsx";
 
 import { FirebaseProvider } from './Firebase.jsx';
 

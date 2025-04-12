@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import "../CSS/PasswordRecovery.css";
-import Footer from "./Footer.jsx";
 import { Link } from "react-router-dom";
-import HeaderNoSigned from "./HeaderNoSigned.jsx";
+import "./PasswordRecovery.css";
 
-import {useFirebase} from "./Firebase";
+import HeaderNoSigned from "../layout/HeaderNoSigned.jsx";
+import Footer from "../layout/Footer.jsx";
+
+import {useFirebase} from "../Firebase.jsx";
 import { sendPasswordResetEmail } from "firebase/auth";
 
 export default function PasswordRecovery () {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../CSS/HeaderSigned.css';
+import './HeaderSigned.css';
 
 const Header = () => {
     const [username, setUsername] = useState('');

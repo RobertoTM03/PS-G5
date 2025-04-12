@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../CSS/signIn.css';
-import Footer from './Footer.jsx';
-import Header from './HeaderNoSigned.jsx';
+import './signIn.css';
+
+import Header from '../layout/HeaderNoSigned.jsx';
+import Footer from '../layout/Footer.jsx';
 
 export default function IniciarSesion() {
     const [formData, setFormData] = useState({
