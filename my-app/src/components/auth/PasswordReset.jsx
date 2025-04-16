@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams } from "react-router"
 import './PasswordReset.css';
-
+import "../../styles.css";
 import HeaderNoSigned from '../layout/HeaderNoSigned.jsx';
 import Footer from '../layout/Footer.jsx';
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import './vistaGrupos.css';
+import './viewgroupscss.css';
 
 import Header from "../layout/Header.jsx";
 import Footer from "../layout/Footer.jsx";
@@ -142,7 +142,7 @@ export default function VistaGrupos() {
                         )}
                     </div>
                 </div>
-                <div className="bottom-text2">
+                <div className="bottom-text-view-groups">
                     <button onClick={() => setShowAddGroupForm(true)} className="btn-addGroup">
                         Crear Grupo
                     </button>

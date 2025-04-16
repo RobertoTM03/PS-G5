@@ -62,10 +62,10 @@ const AddGroupForm = ({ onClose, onGroupCreated }) => {
                 </div>
             </div>
             <div className="group-footer">
-                <button className="submit-button2" onClick={handleSubmit}>
+                <button className="submit-button-add-group" onClick={handleSubmit}>
                     Crear Grupo
                 </button>
-                <button className="cancel-button2" onClick={onClose}>
+                <button className="cancel-button-add-group" onClick={onClose}>
                     Cancelar
                 </button>
             </div>

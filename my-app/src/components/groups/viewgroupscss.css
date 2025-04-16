@@ -6,7 +6,7 @@
     text-align: left;
     width: 100%;
     background: linear-gradient(to right, #d4d4e2, #85a1e1);
-    height:600px;
+    height:800px;
 }
 
 .Title-group{
@@ -27,7 +27,6 @@
 }
 
 .groupTray{
-    margin-top:50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -35,14 +34,23 @@
     width: 100%;
     scrollbar-width: thin; /* Hacer la barra de desplazamiento más delgada */
     scrollbar-color: #E8EDF4 #E8EDF4; /* Hacer el pulgar y la pista blancos */
+    height:500px;
+
 
 
 }
+.groupTray h1{
+    font: bold 30px Georgia;
+    color: #1a1a1a;
+    margin: 20px;
+
+}
+
 .ScrollMaster{
     display: flex;
     flex-direction: column;
     width: 70%;
-    height:300px;
+    height:400px;
     border : 1px solid black;
     overflow-y: auto;
     border-radius: 5px;
@@ -50,15 +58,8 @@
 
 
 }
-
-.groupTray h1{
-    font: bold 30px Georgia;
-    color: #1a1a1a;
-    margin: 20px;
-
-}
 .groupDisplay{
-    border: 1px #1a1a1a solid;
+    border: 1px white solid;
     padding: 10px;
     width: 100%;
     display: grid;
@@ -66,6 +67,7 @@
     background-color: white;
     margin-bottom: 5px;
     border-radius: 5px;
+
 
 }
 
@@ -76,17 +78,17 @@
         border-radius: 5px;
         border-color:#8ea7cc;
 }
-.fas.fa-ellipsis-h {
-    font-size: 25px; 
-    color: black;     
-    background-color: #8ea7cc;
-}
-
 .btn-showMore:hover{
     color: #5185d1;
 }
 
-.bottom-text2{
+.fas.fa-ellipsis-h {
+    font-size: 25px;
+    color: black;
+    background-color: #8ea7cc;
+}
+
+.bottom-text-view-groups{
     padding: 0 30px 0 30px;
     text-align: center;
     justify-content: center;

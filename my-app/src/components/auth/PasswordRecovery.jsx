@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import "../../styles.css";
 import "./PasswordRecovery.css";
 
 import HeaderNoSigned from "../layout/HeaderNoSigned.jsx";
 import Footer from "../layout/Footer.jsx";
 
-import {useFirebase} from "../Firebase.jsx";
+import {useFirebase} from "../../Firebase.jsx";
 import { sendPasswordResetEmail } from "firebase/auth";
 
 export default function PasswordRecovery () {
@@ -16,13 +17,13 @@ export default function PasswordRecovery () {
 
   function handleEmailChange(e) {
     setEmail(e.target.value);
-  };
+  }
 
   async function handleSubmit() {
     console.log(`Sending email to ${email}`);
     await sendPasswordResetEmail(auth, email);
     setIsRequestSubmitted(true);
-  };
+  }
 
   return (
     <div className="reset-password-container">
