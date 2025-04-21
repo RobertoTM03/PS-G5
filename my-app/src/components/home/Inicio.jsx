@@ -1,15 +1,15 @@
 import React from "react";
 import "./Inicio.css";
 
-import Header from "./layout/HeaderNoSigned.jsx";
-import Footer from "./layout/Footer.jsx";
+import Header from "../layout/HeaderNoSigned.jsx";
+import Footer from "../layout/Footer.jsx";
 
-import mundo from "../assets/pictures/mundo.png";
-import money from "../assets/pictures/money.png";
-import calendar from "../assets/pictures/calendar.png";
-import mapa from "../assets/pictures/mapa.png";
-import documentos from "../assets/pictures/docs.png";
-import chat from "../assets/pictures/chatea.png";
+import mundo from "../../../assets/pictures/mundo.png";
+import money from "../../../assets/pictures/money.png";
+import calendar from "../../../assets/pictures/calendar.png";
+import mapa from "../../../assets/pictures/mapa.png";
+import documentos from "../../../assets/pictures/docs.png";
+import chat from "../../../assets/pictures/chatea.png";
 
 export default function Inicio() {
     const handleSignupClick = () => {
@@ -22,7 +22,7 @@ export default function Inicio() {
     return (
         
         <div className="inicio">
-            <Header />
+            <Header/>
 
 
             <div className="container">
@@ -36,10 +36,10 @@ export default function Inicio() {
                         ¡Inicia sesión y empieza a organizar tu viaje en grupo!
                     </p>
                     <button className="btn login-btn" onClick={handleSignInClick}>
-                        Iniciar sesión
+                       Acceder
                     </button>
                     <button className="btn signup-btn" onClick={handleSignupClick}>
-                        registrarse
+                        Registrarse
                     </button>
                 </div>
 

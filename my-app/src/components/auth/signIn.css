@@ -1,9 +1,6 @@
-html, body, #root {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
 
+
+/**Solo dejar lo del margin-top**/
 .sign-page-container {
     display: flex;
     flex-direction: column;
@@ -12,8 +9,8 @@ html, body, #root {
     width: 100%;
     margin-top: 40px;
 }
-
-.content {
+/**Solo dejar lo del paddings **/
+.content-singIn {
     flex: 1;
     display: flex;
     justify-content: center;

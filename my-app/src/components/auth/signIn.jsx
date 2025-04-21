@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './signIn.css';
+import '../../styles.css';
 
 import Header from '../layout/HeaderNoSigned.jsx';
 import Footer from '../layout/Footer.jsx';
@@ -51,7 +52,7 @@ export default function IniciarSesion() {
     return (
         <main className="sign-page-container">
             <Header />
-            <div className="content">
+            <div className="content-singIn">
                 <section className="sign-box">
                     <div className="title-text">
                         <h1>Bienvenido</h1>

@@ -63,7 +63,7 @@
     padding-bottom: 30px;
 }
 
-.submit-button2 {
+.submit-button-add-group {
     background-color: #2c5aa0;
     color: white;
     border: none;
@@ -78,11 +78,11 @@
 
 }
 
-.submit-button:hover {
+.submit-button-add-group:hover {
     background-color: #1f4a84;
 }
 
-.cancel-button2 {
+.cancel-button-add-group {
     background-color: #2c5aa0;
     color: white;
     border: none;
@@ -96,7 +96,7 @@
     margin-top: 20px;
 }
 
-.cancel-button2:hover {
+.cancel-button-add-group:hover {
     background-color: #1f4a84;
 }
 

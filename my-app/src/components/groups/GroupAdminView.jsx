@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './GroupAdminView.css';
+import '../../styles.css';
 
 import Header from '../layout/Header.jsx';
 import Footer from '../layout/Footer.jsx';
 
 import AddMemberModal from './AddMemberModal.jsx';
 
-import money from '../../assets/pictures/money-bag.svg';
-import calendar from '../../assets/pictures/calendar.png';
-import location from '../../assets/pictures/location.svg';
-import document from '../../assets/pictures/document.svg';
-import chat from '../../assets/pictures/chat.svg';
+import money from '../../../assets/pictures/money-bag.svg';
+import calendar from '../../../assets/pictures/calendar.png';
+import location from '../../../assets/pictures/location.svg';
+import document from '../../../assets/pictures/document.svg';
+import chat from '../../../assets/pictures/chat.svg';
 
 export default function GroupAdminView() {
   const { id } = useParams();

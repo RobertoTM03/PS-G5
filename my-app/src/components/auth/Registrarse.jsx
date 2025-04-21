@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import "./Registrarse.css";
+import '../../styles.css';
 
 import Footer from "../layout/Footer.jsx";
 import Header from "../layout/HeaderNoSigned.jsx";
-import VistaGrupos from "../groups/vistaGrupos.jsx";
 
 export default function Registrarse() {
   const [formData, setFormData] = useState({
@@ -61,11 +61,11 @@ export default function Registrarse() {
   
 
   return (
-    <div className="main-container">
+    <div className="display-register">
       <Header />
       <div className="content">
-        <div className="registro-container">
-          <div className="registro-box">
+        <div className="register-big-box">
+          <div className="register-box">
             <h2>¡Únete a nosotros!</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
