@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 /**
  * @openapi
- * /group/{groupId}/expenses:
+ * /groups/{groupId}/expenses:
  *   get:
  *     summary: Get expense list
  *     description: Allows access to a given group expense list
