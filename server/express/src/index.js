@@ -43,9 +43,13 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 const authenticationRoutes = require('./auth/auth.routes');
 app.use('/auth', authenticationRoutes);
 
-// Rutas de grupos (creación y añadir integrantes)
+// Rutas de grupos
 const groupsRoutes = require('./groups/groups.routes');
 app.use('/groups', groupsRoutes);
+
+//rutas de actividades de un grupo
+const calendarRoutes = require('./calendar/calendar.routes');
+app.use('/groups', calendarRoutes);
 
 // Ruta base de prueba
 app.get('/', (req, res) => {

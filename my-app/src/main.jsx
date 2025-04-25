@@ -11,7 +11,7 @@ import AddMemberModal from "./components/groups/AddMemberModal.jsx";
 import AddGroupForm from "./components/groups/AddGroupForm.jsx";
 import { FirebaseProvider } from './Firebase.jsx';
 import VistaGrupos from "./components/groups/viewgroups.jsx";
-
+import Calendar from "./components/calendar/calendar.jsx";
 function App() {
   return (
     <FirebaseProvider>
@@ -25,6 +25,7 @@ function App() {
           <Route path="/vistaGrupos" element={<VistaGrupos />} />
           <Route path="/GroupAdminView/:id" element={<GroupAdminView />} />
           <Route path="/AddGroupForm" element={<AddGroupForm />} />
+          <Route path="/Calendar" element={<Calendar />} />
         </Routes>
       </BrowserRouter>
     </FirebaseProvider>
