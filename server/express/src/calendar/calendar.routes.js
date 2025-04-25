@@ -6,12 +6,12 @@ const router = express.Router();
  * @openapi
  * /groups/{groupId}/activities:
  *   post:
- *     summary: Añadir una actividad al calendario del grupo
+ *     summary: Add activities to Calendar
  *     security:
  *       - bearerAuth: []
- *     description: Permite a un integrante del grupo añadir una actividad con fecha de inicio y fin.
+ *     description: Allows a group member to add an activity with a start and end date.
  *     tags:
- *       - Actividades
+ *       - Activities
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -25,21 +25,27 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - titulo
- *               - fechaInicio
- *               - fechaFin
+ *               - tittle
+ *               - startDate
+ *               - endDate
  *             properties:
- *               titulo:
+ *               tittle:
  *                 type: string
- *               fechaInicio:
+ *               startDate:
  *                 type: string
  *                 format: date-time
- *               fechaFin:
+ *               endDate:
  *                 type: string
  *                 format: date-time
  *     responses:
  *       201:
- *         description: Actividad añadida exitosamente
+ *         description: Activity correctly added
+ *       401:
+ *         description: Authentication failure with user token
+ *       403:
+ *         description: The user does not have permission to perform the operation
+ *       500:
+ *         description: Error not defined
  */
 router.post('/:groupId/activities', endpointDePrueba);
 
@@ -47,12 +53,12 @@ router.post('/:groupId/activities', endpointDePrueba);
  * @openapi
  * /groups/{groupId}/activities/{activityId}:
  *   get:
- *     summary: Obtener detalles de una actividad del calendario
+ *     summary: Get details of a calendar activity
  *     security:
  *       - bearerAuth: []
- *     description: Devuelve los detalles de una actividad, incluyendo la lista de participantes.
+ *     description: Returns the details of an activity, including the list of participants.
  *     tags:
- *       - Actividades
+ *       - Activities
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -68,7 +74,7 @@ router.post('/:groupId/activities', endpointDePrueba);
  *           example: "66304650b012fd001e53d7cb"
  *     responses:
  *       200:
- *         description: Detalles de la actividad
+ *         description: Activity details
  *         content:
  *           application/json:
  *             schema:
@@ -76,29 +82,35 @@ router.post('/:groupId/activities', endpointDePrueba);
  *               properties:
  *                 id:
  *                   type: string
- *                 titulo:
+ *                 tittle:
  *                   type: string
- *                 descripcion:
+ *                 description:
  *                   type: string
- *                 fechaInicio:
- *                   type: string
- *                   format: date-time
- *                 fechaFin:
+ *                 startDate:
  *                   type: string
  *                   format: date-time
- *                 participantes:
+ *                 endDate:
+ *                   type: string
+ *                   format: date-time
+ *                 participants:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
  *                       id:
  *                         type: string
- *                       nombre:
+ *                       name:
  *                         type: string
  *                       email:
  *                         type: string
+ *       401:
+ *         description: Authentication failure with user token
+ *       403:
+ *         description: The user does not have permission to perform the operation
  *       404:
- *         description: Actividad no encontrada
+ *         description: Activity not found
+ *       500:
+ *         description: Error not defined
  */
 router.get('/:groupId/activities/:activityId', endpointDePrueba);
 
@@ -106,12 +118,12 @@ router.get('/:groupId/activities/:activityId', endpointDePrueba);
  * @openapi
  * /groups/{groupId}/activities/{activityId}:
  *   put:
- *     summary: Editar una actividad del calendario
+ *     summary: Edit a calendar activity
  *     security:
  *       - bearerAuth: []
- *     description: Permite modificar los detalles de una actividad existente del grupo.
+ *     description: Allows you to modify the details of an existing group activity.
  *     tags:
- *       - Actividades
+ *       - Activities
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -132,32 +144,36 @@ router.get('/:groupId/activities/:activityId', endpointDePrueba);
  *           schema:
  *             type: object
  *             properties:
- *               titulo:
+ *               tittle:
  *                 type: string
- *                 example: "Reunión de revisión"
- *               descripcion:
+ *                 example: "Review meeting"
+ *               description:
  *                 type: string
- *                 example: "Cambio de objetivos para la semana"
- *               fechaInicio:
+ *                 example: "Change of objectives for the week"
+ *               startDate:
  *                 type: string
  *                 format: date-time
  *                 example: "2025-04-28T14:00:00Z"
- *               fechaFin:
+ *               endDate:
  *                 type: string
  *                 format: date-time
  *                 example: "2025-04-28T15:00:00Z"
- *               ubicacion:
+ *               location:
  *                 type: string
- *                 example: "Sala 3 o Google Meet"
+ *                 example: "Room 3 or Google Meet"
  *     responses:
  *       200:
- *         description: Actividad actualizada correctamente
+ *         description: Activity correctly updated
  *       400:
- *         description: Datos inválidos
+ *         description: Invalid data
+ *       401:
+ *         description: Authentication failure with user token
+ *       403:
+ *         description: The user does not have permission to perform the operation
  *       404:
- *         description: Actividad no encontrada
+ *         description: Activity not found
  *       500:
- *         description: Error interno del servidor
+ *         description: Error not defined
  */
 router.put('/:groupId/activities/:activityId', endpointDePrueba);
 
@@ -165,12 +181,12 @@ router.put('/:groupId/activities/:activityId', endpointDePrueba);
  * @openapi
  * /groups/{groupId}/activities/{activityId}:
  *   delete:
- *     summary: Eliminar una actividad del calendario del grupo
+ *     summary: Delete an activity from the group calendar
  *     security:
  *       - bearerAuth: []
- *     description: Elimina una actividad específica del calendario del grupo.
+ *     description: Removes a specific activity from the group's calendar.
  *     tags:
- *       - Actividades
+ *       - Activities
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -184,9 +200,15 @@ router.put('/:groupId/activities/:activityId', endpointDePrueba);
  *           type: string
  *     responses:
  *       200:
- *         description: Actividad eliminada correctamente
+ *         description: Activity successfully deleted
+ *       401:
+ *         description: Authentication failure with user token
+ *       403:
+ *         description: The user does not have permission to perform the operation
  *       404:
- *         description: Actividad no encontrada
+ *         description: Activity not found
+ *       500:
+ *         description: Error not defined
  */
 router.delete('/:groupId/activities/:activityId', endpointDePrueba);
 
@@ -194,12 +216,12 @@ router.delete('/:groupId/activities/:activityId', endpointDePrueba);
  * @openapi
  * /groups/{groupId}/activities/{activityId}/join:
  *   post:
- *     summary: Unirse a una actividad del calendario
+ *     summary: Join a calendar activity
  *     security:
  *       - bearerAuth: []
- *     description: Permite a un integrante del grupo unirse a una actividad para participar en ella.
+ *     description: Allows a group member to join an activity to participate in it.
  *     tags:
- *       - Actividades
+ *       - Activities
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -215,13 +237,17 @@ router.delete('/:groupId/activities/:activityId', endpointDePrueba);
  *           example: "66304650b012fd001e53d7cb"
  *     responses:
  *       200:
- *         description: Usuario añadido como participante del evento
+ *         description: User added as event participant
  *       404:
- *         description: Evento no encontrado
+ *         description: Event not found
  *       400:
- *         description: Solicitud inválida
+ *         description: Invalid application
+ *       401:
+ *         description: Authentication failure with user token
+ *       403:
+ *         description: The user does not have permission to perform the operation
  *       500:
- *         description: Error interno del servidor
+ *         description: Error not defined
  */
 router.post('/:groupId/activities/:activityId/join', endpointDePrueba);
 
@@ -229,12 +255,12 @@ router.post('/:groupId/activities/:activityId/join', endpointDePrueba);
  * @openapi
  * /groups/{groupId}/activities/{activityId}/participants:
  *   delete:
- *     summary: Eliminar un participante de una actividad
+ *     summary: Remove a participant from an activity
  *     security:
  *       - bearerAuth: []
- *     description: Permite eliminar a un participante específico de una actividad mediante su ID, enviado en el cuerpo.
+ *     description: Allows you to remove a specific participant from an activity using his or her ID, sent in the body.
  *     tags:
- *       - Actividades
+ *       - Activities
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -260,13 +286,17 @@ router.post('/:groupId/activities/:activityId/join', endpointDePrueba);
  *                 example: "66304865b012fd001e53d7e9"
  *     responses:
  *       200:
- *         description: Participante eliminado correctamente
+ *         description: Participant successfully eliminated
  *       404:
- *         description: Participante o actividad no encontrada
+ *         description: Participant or activity not found
  *       400:
- *         description: ID inválido o faltante
+ *         description: Invalid or missing ID
+ *       401:
+ *         description: Authentication failure with user token
+ *       403:
+ *         description: The user does not have permission to perform the operation
  *       500:
- *         description: Error interno del servidor
+ *         description: Error not defined
  */
 router.delete('/:groupId/activities/:activityId/participants', endpointDePrueba);
 
@@ -274,12 +304,12 @@ router.delete('/:groupId/activities/:activityId/participants', endpointDePrueba)
  * @openapi
  * /groups/{groupId}/activities/{activityId}/leave:
  *   post:
- *     summary: Salirse de una actividad
+ *     summary: Exiting an activity
  *     security:
  *       - bearerAuth: []
- *     description: Permite que un usuario se elimine a sí mismo como participante de una actividad del grupo.
+ *     description: Allows a user to remove himself/herself as a participant in a group activity.
  *     tags:
- *       - Actividades
+ *       - Activities
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -295,13 +325,15 @@ router.delete('/:groupId/activities/:activityId/participants', endpointDePrueba)
  *           example: "66304650b012fd001e53d7cb"
  *     responses:
  *       200:
- *         description: Usuario eliminado correctamente de la actividad
+ *         description: User successfully removed from the activity
+ *       401:
+ *         description: Authentication failure with user token
  *       403:
- *         description: El usuario no está registrado como participante
+ *         description: The user does not have permission to perform the operation
  *       404:
- *         description: Actividad no encontrada
+ *         description: Activity not found
  *       500:
- *         description: Error interno del servidor
+ *         description: Error not defined
  */
 router.post('/:groupId/activities/:activityId/leave', endpointDePrueba);
 
