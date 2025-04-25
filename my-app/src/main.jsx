@@ -12,8 +12,7 @@ import AddGroupForm from "./components/groups/AddGroupForm.jsx";
 import { FirebaseProvider } from './Firebase.jsx';
 import VistaGrupos from "./components/groups/viewgroups.jsx";
 import Calendar from "./components/calendar/calendar.jsx";
-import AddExpense from "./components/expenses/AddExpense.jsx";
-import ExpenseView from "./components/expenses/ExpenseView.jsx";
+
 function App() {
   return (
     <FirebaseProvider>
@@ -28,8 +27,7 @@ function App() {
           <Route path="/GroupAdminView/:id" element={<GroupAdminView />} />
           <Route path="/AddGroupForm" element={<AddGroupForm />} />
           <Route path="/Calendar" element={<Calendar />} />
-          <Route path="/AddExpense" element={< AddExpense/>} />
-          <Route path="/ExpenseView" element={< ExpenseView/>} />
+
         </Routes>
       </BrowserRouter>
     </FirebaseProvider>
