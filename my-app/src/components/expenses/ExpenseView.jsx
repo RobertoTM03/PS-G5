@@ -34,8 +34,114 @@ export default function ExpenseView() {
                <h2 className= "color-expense">Lista de gastos:</h2>
            </div>
            <div className="expense-list-display">
-               <div className="covered-expense"></div>
-               <div className="pending-expense"></div>
+               <div className="covered-expense">
+                   <div className="name-expense">
+                   <h5 className= "color-expense gap-tag">name</h5>
+                   </div>
+                   <div className="amount-expense">
+                        <h5 className= "color-expense gap-tag">Amount:50.000$</h5>
+                   </div>
+                   <div>
+                    <h5 className= "color-expense gap-tag">Cubierto:P </h5>
+                   </div>
+                   <div className= "edition-expense gap-tag">
+                   <button>Editar</button>
+                   </div>
+                    <div className= "delete-expense gap-tag ">
+                    <button>Eliminar</button>
+                    </div>
+               </div>
+
+               <div className="pending-expense">
+                   <div className="name-expense">
+                       <h5 className= "color-expense gap-tag">name</h5>
+                   </div>
+                   <div className="amount-expense">
+                       <h5 className= "color-expense gap-tag">Amount:50.000$</h5>
+                   </div>
+                   <div className= "contribute-expense gap-tag">
+                       <button>Contribute</button>
+                   </div>
+                   <div className= "edition-expense gap-tag">
+                       <button>Editar</button>
+                   </div>
+                   <div className= "delete-expense gap-tag">
+                       <button>Eliminar</button>
+                   </div>
+
+               </div>
+               <div className="covered-expense">
+                   <div className="name-expense">
+                       <h5 className= "color-expense gap-tag">name</h5>
+                   </div>
+                   <div className="amount-expense">
+                       <h5 className= "color-expense gap-tag">Amount:50.000$</h5>
+                   </div>
+                   <div>
+                       <h5 className= "color-expense gap-tag">Cubierto: </h5>
+                   </div>
+                   <div className= "edition-expense gap-tag">
+                       <button>Editar</button>
+                   </div>
+                   <div className= "delete-expense gap-tag ">
+                       <button>Eliminar</button>
+                   </div>
+               </div>
+
+               <div className="pending-expense">
+                   <div className="name-expense">
+                       <h5 className= "color-expense gap-tag">name</h5>
+                   </div>
+                   <div className="amount-expense">
+                       <h5 className= "color-expense gap-tag">Amount:50.000$</h5>
+                   </div>
+                   <div className= "contribute-expense gap-tag">
+                       <button>Contribute</button>
+                   </div>
+                   <div className= "edition-expense gap-tag">
+                       <button>Editar</button>
+                   </div>
+                   <div className= "delete-expense gap-tag">
+                       <button>Eliminar</button>
+                   </div>
+
+               </div>
+               <div className="covered-expense">
+                   <div className="name-expense">
+                       <h5 className= "color-expense gap-tag">name</h5>
+                   </div>
+                   <div className="amount-expense">
+                       <h5 className= "color-expense gap-tag">Amount:50.000$</h5>
+                   </div>
+                   <div>
+                       <h5 className= "color-expense gap-tag">Cubierto: </h5>
+                   </div>
+                   <div className= "edition-expense gap-tag">
+                       <button>Editar</button>
+                   </div>
+                   <div className= "delete-expense gap-tag ">
+                       <button>Eliminar</button>
+                   </div>
+               </div>
+
+               <div className="pending-expense">
+                   <div className="name-expense">
+                       <h5 className= "color-expense gap-tag">name</h5>
+                   </div>
+                   <div className="amount-expense">
+                       <h5 className= "color-expense gap-tag">Amount:50.000$</h5>
+                   </div>
+                   <div className= "contribute-expense gap-tag">
+                       <button>Contribute</button>
+                   </div>
+                   <div className= "edition-expense gap-tag">
+                       <button>Editar</button>
+                   </div>
+                   <div className= "delete-expense gap-tag">
+                       <button>Eliminar</button>
+                   </div>
+
+               </div>
            </div>
            <div className="expense-list-button">
                <h2 className="color-expense">Añadir Gasto</h2>

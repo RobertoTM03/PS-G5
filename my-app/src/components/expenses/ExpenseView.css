@@ -51,6 +51,8 @@
     width: fit-content;
     padding: 10px;
     background-color: #8ea7cc;
+    margin-left: 700px;
+
 }
 
 .expense-calculation{
@@ -71,4 +73,26 @@
     padding: 5px;
     border: 1px solid #000000;
     border-radius: 10px;
+}
+.covered-expense{
+    border: 1px solid black;
+    height:40px;
+    display: flex;
+    align-content: space-around;
+    gap: 300px;
+    margin-bottom:10px;
+}
+.pending-expense{
+    border: 1px solid black;
+    height:40px;
+    display: flex;
+    align-content: space-around;
+    gap: 300px;
+}
+.gap-tag{
+    margin-top: 10px;
+}
+.expense-list-display{
+    height:500px;
+    border: 1px solid black;
 }

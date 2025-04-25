@@ -11,13 +11,15 @@ import AddMemberModal from "./components/groups/AddMemberModal.jsx";
 import AddGroupForm from "./components/groups/AddGroupForm.jsx";
 import { FirebaseProvider } from './Firebase.jsx';
 import VistaGrupos from "./components/groups/viewgroups.jsx";
+import ExpenseView from "./components/expenses/ExpenseView.jsx";
+import AddExpense from "./components/expenses/AddExpense.jsx";
 
 function App() {
   return (
     <FirebaseProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={< Inicio/>} />
+          <Route path="/" element={< AddExpense/>} />
           <Route path="/Registrarse" element={<Registrarse />} />
           <Route path="/IniciarSesion" element={<IniciarSesion />} />
           <Route path="/PasswordRecovery" element={<PasswordRecovery />} />
