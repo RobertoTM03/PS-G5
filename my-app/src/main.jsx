@@ -13,13 +13,12 @@ import { FirebaseProvider } from './Firebase.jsx';
 import VistaGrupos from "./components/groups/viewgroups.jsx";
 import Calendar from "./components/calendar/calendar.jsx";
 
-
 function App() {
   return (
     <FirebaseProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={< Inicio/>} />
+          <Route path="/" element={< Inicio />} />
           <Route path="/Registrarse" element={<Registrarse />} />
           <Route path="/IniciarSesion" element={<IniciarSesion />} />
           <Route path="/PasswordRecovery" element={<PasswordRecovery />} />
