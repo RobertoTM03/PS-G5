@@ -1,0 +1,85 @@
+/* nuevoEvento.css */
+
+/* fuerza el texto negro en todo el modal */
+.ne-modal {
+    color: #000;
+  }
+  
+  /* inputs y placeholders en negro */
+  .ne-modal input,
+  .ne-modal label,
+  .ne-modal h3,
+  .ne-modal .ne-save,
+  .ne-modal .ne-close {
+    color: #000;
+  }
+  
+  /* los placeholders de los inputs también en gris oscuro */
+  .ne-modal input::placeholder {
+    color: #666;
+  }
+  
+  /* resto de estilos */
+  .ne-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  .ne-modal {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 6px;
+    width: 320px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .ne-close {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .ne-modal h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .ne-modal label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+  }
+  .ne-modal input[type="text"],
+  .ne-modal input[type="datetime-local"] {
+    width: 100%;
+    padding: 6px 8px;
+    margin-top: 4px;
+    box-sizing: border-box;
+  }
+  .ne-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .ne-save {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    background: #047bfe;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .ne-save:hover {
+    background: #0366c5;
+  }
+  

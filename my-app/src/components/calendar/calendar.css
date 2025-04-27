@@ -1,0 +1,77 @@
+/* Layout general */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.calendar-page {
+  flex: 1;
+  background: linear-gradient(to right, #d4d4e2, #85a1e1);
+  padding: 2rem;
+}
+
+/* Wrapper blanco del calendario */
+.calendar-wrapper {
+  background: #fff;
+  border-radius: 6px;
+  padding: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Navegación superior */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  /* Dejamos espacio a la izquierda para el botón Today */
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Botón Today */
+.calendar-nav .today-btn {
+  padding: 4px 12px;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  background: #fff;
+  color: #000;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.calendar-nav .today-btn:hover {
+  background: #f0f0f0;
+}
+
+/* Flechas de navegación */
+.calendar-nav .nav-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  background: #fff;
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.calendar-nav .nav-btn:hover {
+  background: #f0f0f0;
+}
+
+/* Título de mes y año */
+.calendar-nav .calendar-title {
+  margin-left: 1rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #000;
+}
+
+/* Área donde se renderiza el calendario */
+.calendar-body {
+  height: 800px;
+  background: #fff;
+}
