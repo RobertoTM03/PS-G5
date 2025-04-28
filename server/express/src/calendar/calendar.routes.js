@@ -339,4 +339,129 @@ router.delete('/:groupId/activities/:activityId/participants', endpointDePrueba)
  */
 router.post('/:groupId/activities/:activityId/leave', endpointDePrueba);
 
+/**
+ * @openapi
+ * /groups/{groupId}/activities/day/{date}:
+ *   get:
+ *     summary: Get activities of a specific day
+ *     security:
+ *       - bearerAuth: []
+ *     description: Returns all activities scheduled for a specific date within a group.
+ *     tags:
+ *       - Activities
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "64ac9b7b5f8e2c001fc45def"
+ *       - in: path
+ *         name: date
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2025-04-28"
+ *     responses:
+ *       200:
+ *         description: List of activities for the specified date
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   tittle:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   startDate:
+ *                     type: string
+ *                     format: date-time
+ *                   endDate:
+ *                     type: string
+ *                     format: date-time
+ *       400:
+ *         description: Invalid date format
+ *       401:
+ *         description: Authentication failure with user token
+ *       403:
+ *         description: The user does not have permission to perform the operation
+ *       404:
+ *         description: No activities found for the given date
+ *       500:
+ *         description: Error not defined
+ */
+router.get('/:groupId/activities/day/:date', endpointDePrueba);
+
+/**
+ * @openapi
+ * /groups/{groupId}/activities/range:
+ *   get:
+ *     summary: Get activities within a date range
+ *     security:
+ *       - bearerAuth: []
+ *     description: Returns all activities scheduled between two dates for a specific group.
+ *     tags:
+ *       - Activities
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "64ac9b7b5f8e2c001fc45def"
+ *       - in: query
+ *         name: startDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2025-04-28"
+ *       - in: query
+ *         name: endDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2025-05-05"
+ *     responses:
+ *       200:
+ *         description: List of activities within the specified date range (closed range)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   tittle:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   startDate:
+ *                     type: string
+ *                     format: date-time
+ *                   endDate:
+ *                     type: string
+ *                     format: date-time
+ *       400:
+ *         description: Invalid date range or missing dates
+ *       401:
+ *         description: Authentication failure with user token
+ *       403:
+ *         description: The user does not have permission to perform the operation
+ *       404:
+ *         description: No activities found in the given range
+ *       500:
+ *         description: Error not defined
+ */
+router.get('/:groupId/activities/range', endpointDePrueba);
+
 module.exports = router;
