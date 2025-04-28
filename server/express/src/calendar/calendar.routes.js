@@ -31,6 +31,8 @@ const router = express.Router();
  *             properties:
  *               tittle:
  *                 type: string
+ *               description:
+ *                  type: string
  *               startDate:
  *                 type: string
  *                 format: date-time

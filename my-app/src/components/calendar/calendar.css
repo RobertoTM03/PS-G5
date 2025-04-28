@@ -1,97 +1,77 @@
-/* calendar.css */
+/* Layout general */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
-/* Estilo global para el calendario */
+.calendar-page {
+  flex: 1;
+  background: linear-gradient(to right, #d4d4e2, #85a1e1);
+  padding: 2rem;
+}
+
+/* Wrapper blanco del calendario */
 .calendar-wrapper {
-    background: linear-gradient(to right, #cbd4e1, #8fa7df);
-    min-height: 100vh;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .calendar-container {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 1rem;
-    background: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .calendar-header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .calendar-header button {
-    padding: 0.75rem 1.5rem;
-    background-color: #FF5722;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s, transform 0.3s;
-    font-size: 1.2rem;
-  }
-  
-  .calendar-header button:hover {
-    background-color: #e64a19;
-    transform: scale(1.1);
-  }
-  
-  .calendar-header strong {
-    margin: 0 1rem;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  #calendar {
-    height: 700px;
-    background-color: #fff;
-    border-radius: 12px;
-    border: 1px solid #ccc;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  button:focus {
-    outline: none;
-  }
-  
-  button:disabled {
-    background-color: #ddd;
-    cursor: not-allowed;
-  }
-  
-  button:disabled:hover {
-    background-color: #ddd;
-  }
-  
-  /* Estilos del calendario para botones de navegación */
-  button.button-style {
-    margin-left: 1rem;
-    padding: 0.75rem 1.5rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s, transform 0.3s;
-    font-size: 1rem;
-  }
-  
-  button.button-style:hover {
-    background-color: #388E3C;
-    transform: scale(1.05);
-  }
-  
-  /* Botón "Hoy" */
-  button.button-style-today {
-    background-color: #FF9800;
-  }
-  
-  button.button-style-today:hover {
-    background-color: #F57C00;
-  }
-  
+  background: #fff;
+  border-radius: 6px;
+  padding: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Navegación superior */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  /* Dejamos espacio a la izquierda para el botón Today */
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Botón Today */
+.calendar-nav .today-btn {
+  padding: 4px 12px;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  background: #fff;
+  color: #000;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.calendar-nav .today-btn:hover {
+  background: #f0f0f0;
+}
+
+/* Flechas de navegación */
+.calendar-nav .nav-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  background: #fff;
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.calendar-nav .nav-btn:hover {
+  background: #f0f0f0;
+}
+
+/* Título de mes y año */
+.calendar-nav .calendar-title {
+  margin-left: 1rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #000;
+}
+
+/* Área donde se renderiza el calendario */
+.calendar-body {
+  height: 800px;
+  background: #fff;
+}

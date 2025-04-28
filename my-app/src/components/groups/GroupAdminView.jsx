@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './GroupAdminView.css';
 import '../../styles.css';
+import Calendar from '../calendar/calendar.jsx';
 
 import Header from '../layout/Header.jsx';
 import Footer from '../layout/Footer.jsx';
@@ -15,6 +16,7 @@ import document from '../../../assets/pictures/document.svg';
 import chat from '../../../assets/pictures/chat.svg';
 
 export default function GroupAdminView() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const groupId = id;
 
@@ -172,7 +174,7 @@ export default function GroupAdminView() {
                 <img src={money} alt="Finance" />
                 <p className="icon-label">Gastos</p>
               </button>
-              <button className="icon-btn">
+              <button className="icon-btn" onClick={() => navigate('/Calendar')}>
                 <img src={calendar} alt="Calendar" />
                 <p className="icon-label">Calendario</p>
               </button>

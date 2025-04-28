@@ -1,33 +1,29 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from '../layout/Header.jsx';
 import Footer from '../layout/Footer.jsx';
-import './calendar.css'; // Importa el archivo CSS aquí
+import NuevoEvento from './NuevoEvento.jsx';
+import './calendar.css';
 
 // -----------------------------
 // 1. MODELO
 // -----------------------------
 class CalendarEvent {
-  constructor({ id, calendarId, title, category, start, end }) {
-    this.id = id;
-    this.calendarId = calendarId;
-    this.title = title;
-    this.category = category;
-    this.start = start;
-    this.end = end;
+  constructor({ id, calendarId, title, location, start, end, isAllDay }) {
+    Object.assign(this, { id, calendarId, title, location, start, end, isAllDay });
   }
 }
 
 function fetchInitialEvents() {
   const now = new Date();
-  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
   return [
     new CalendarEvent({
       id: '1',
       calendarId: '1',
       title: 'Reunión de equipo',
-      category: 'time',
+      location: '',
       start: now.toISOString(),
-      end: oneHourLater.toISOString(),
+      end: new Date(now.getTime() + 3600_000).toISOString(),
+      isAllDay: false,
     }),
   ];
 }
@@ -37,158 +33,144 @@ function fetchInitialEvents() {
 // -----------------------------
 function useCalendarViewModel() {
   const calendarRef = useRef(null);
-  const [calendar, setCalendar] = useState(null);
+  const [inst, setInst] = useState(null);
   const [currentDate, setCurrentDate] = useState('');
 
-  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  // nuevo estado para controlar el popup propio
+  const [showNuevo, setShowNuevo] = useState(false);
+  const [nuevoData, setNuevoData] = useState({ start: null, end: null });
 
-  const updateCurrentDate = (cal) => {
+  // formatea “YYYY.MM”
+  const updateTitle = cal => {
     const d = cal.getDate();
-    const month = d.toLocaleString('es-ES', { month: 'long' });
-    const year = d.getFullYear();
-    setCurrentDate(`${capitalize(month)} ${year}`);
-  };
-
-  const initCalendar = (CalendarLib) => {
-    const container = calendarRef.current;
-    if (!container) return;
-
-    const cal = new CalendarLib(container, {
-      defaultView: 'month',
-      useCreationPopup: true,
-      useDetailPopup: true,
-      calendars: [
-        {
-          id: '1',
-          name: 'Eventos',
-          color: '#ffffff',
-          bgColor: '#047bfe',
-          dragBgColor: '#047bfe',
-          borderColor: '#047bfe',
-        },
-      ],
-    });
-
-    cal.createEvents(fetchInitialEvents());
-    cal.render();
-    setCalendar(cal);
-    updateCurrentDate(cal);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    setCurrentDate(`${yyyy}.${mm}`);
   };
 
   useEffect(() => {
-    let isMounted = true;
+    if (!calendarRef.current || !window.tui?.Calendar) return;
+    const Calendar = window.tui.Calendar;
+    const c = new Calendar(calendarRef.current, {
+      defaultView: 'month',
+      // desactivamos popups nativos
+      useCreationPopup: false,
+      useDetailPopup: false,
+      popupContainer: document.body,
+      gridSelection: { enableClick: true },
+      calendars: [{
+        id: '1',
+        name: 'Eventos',
+        color: '#ffffff',
+        bgColor: '#047bfe',
+        dragBgColor: '#047bfe',
+        borderColor: '#047bfe',
+      }],
+    });
 
-    const loadCSS = () =>
-      new Promise((resolve, reject) => {
-        if (document.querySelector('link[href*="toastui-calendar.min.css"]')) {
-          resolve();
-          return;
-        }
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css';
-        link.onload = () => resolve();
-        link.onerror = () => reject(new Error('No se pudo cargar CSS de Calendar'));
-        document.head.appendChild(link);
-      });
+    // 1) carga inicial
+    c.createEvents(fetchInitialEvents());
 
-    const loadScript = () =>
-      new Promise((resolve, reject) => {
-        if (document.querySelector('script[src*="toastui-calendar.min.js"]')) {
-          resolve();
-          return;
-        }
-        const script = document.createElement('script');
-        script.src = 'https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js';
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error('No se pudo cargar JS de Calendar'));
-        document.body.appendChild(script);
-      });
+    // 2) click en celda vacía → abrimos nuestro modal
+    c.on('selectDateTime', info => {
+      setNuevoData({ start: info.start, end: info.end });
+      setShowNuevo(true);
+      c.clearGridSelections();
+    });
 
-    loadCSS()
-      .then(() => loadScript())
-      .then(() => {
-        const waitForLib = setInterval(() => {
-          if (window.tui?.Calendar && isMounted) {
-            clearInterval(waitForLib);
-            initCalendar(window.tui.Calendar);
-          }
-        }, 100);
-      })
-      .catch((err) => console.error(err));
+    // 3) click en evento existente → gratuito: podría abrir detalle propio
+    // (omito para centrarnos en creación)
 
-    return () => {
-      isMounted = false;
-      if (calendar) calendar.destroy();
-      document.querySelectorAll('script[src*="toastui-calendar"]').forEach(s => s.remove());
-      document.querySelectorAll('link[href*="toastui-calendar"]').forEach(l => l.remove());
-    };
-  }, [calendar]);
+    c.render();
+    setInst(c);
+    updateTitle(c);
 
-  const goToPrev = () => {
-    if (!calendar) return;
-    calendar.prev();
-    calendar.render();
-    updateCurrentDate(calendar);
+    return () => c.destroy();
+  }, []);
+
+  // llamadas de navegación
+  const goPrev  = () => inst && (inst.prev(), inst.render(), updateTitle(inst));
+  const goNext  = () => inst && (inst.next(), inst.render(), updateTitle(inst));
+  const goToday = () => inst && (inst.today(), inst.render(), updateTitle(inst));
+
+  // manejar guardado desde nuestro modal
+  const handleSaveNuevo = ({ title, location, start, end, isAllDay }) => {
+    const id = String(Date.now());
+    inst.createEvents([{
+      id,
+      calendarId: '1',
+      title,
+      category: isAllDay ? 'allday' : 'time',
+      start: start.toISOString(),
+      end: end.toISOString(),
+      location,
+      isAllDay,
+    }]);
+    setShowNuevo(false);
   };
 
-  const goToNext = () => {
-    if (!calendar) return;
-    calendar.next();
-    calendar.render();
-    updateCurrentDate(calendar);
-  };
+  const handleCloseNuevo = () => setShowNuevo(false);
 
-  const goToToday = () => {
-    if (!calendar) return;
-    calendar.today();
-    updateCurrentDate(calendar);
+  return {
+    calendarRef,
+    currentDate,
+    goPrev,
+    goNext,
+    goToday,
+    showNuevo,
+    nuevoData,
+    handleSaveNuevo,
+    handleCloseNuevo,
   };
-
-  return { calendarRef, currentDate, goToPrev, goToNext, goToToday };
 }
 
 // -----------------------------
 // 3. VISTA
 // -----------------------------
-function CalendarView({ calendarRef, currentDate, goToPrev, goToNext, goToToday }) {
+function CalendarInner({
+  calendarRef,
+  currentDate,
+  goPrev,
+  goNext,
+  goToday,
+  showNuevo,
+  nuevoData,
+  handleSaveNuevo,
+  handleCloseNuevo,
+}) {
   return (
     <div className="calendar-wrapper">
-      <div style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1rem' }}>
-        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-          <button onClick={goToPrev} className="button-style">❮</button>
-          <strong style={{ margin: '0 1rem', fontSize: '1.2rem' }}>{currentDate}</strong>
-          <button onClick={goToNext} className="button-style">❯</button>
-          <button onClick={goToToday} className="button-style">Hoy</button>
-        </div>
-
-        <div
-          id="calendar"
-          ref={calendarRef}
-          style={{
-            height: '700px',
-            backgroundColor: '#fff',
-            borderRadius: '10px',
-            border: '1px solid #ccc',
-            overflow: 'hidden',
-          }}
-        />
+      <div className="calendar-nav">
+        <button onClick={goToday} className="today-btn">Today</button>
+        <button onClick={goPrev} className="nav-btn">❮</button>
+        <button onClick={goNext} className="nav-btn">❯</button>
+        <span className="calendar-title">{currentDate}</span>
       </div>
+      <div ref={calendarRef} className="calendar-body" />
+      {showNuevo && (
+        <NuevoEvento
+          start={nuevoData.start}
+          end={nuevoData.end}
+          onSave={handleSaveNuevo}
+          onClose={handleCloseNuevo}
+        />
+      )}
     </div>
   );
 }
 
 // -----------------------------
-// 4. CONTENEDOR
+// 4. CONTAINER + LAYOUT
 // -----------------------------
-export default function MyCalendar() {
+export default function CalendarPage() {
   const vm = useCalendarViewModel();
-
   return (
-    <>
+    <div className="page-container">
       <Header />
-      <CalendarView {...vm} />
+      <main className="calendar-page">
+        <CalendarInner {...vm} />
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }

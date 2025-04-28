@@ -12,12 +12,13 @@ import AddGroupForm from "./components/groups/AddGroupForm.jsx";
 import { FirebaseProvider } from './Firebase.jsx';
 import VistaGrupos from "./components/groups/viewgroups.jsx";
 import Calendar from "./components/calendar/calendar.jsx";
+
 function App() {
   return (
     <FirebaseProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={< Inicio/>} />
+          <Route path="/" element={< Inicio />} />
           <Route path="/Registrarse" element={<Registrarse />} />
           <Route path="/IniciarSesion" element={<IniciarSesion />} />
           <Route path="/PasswordRecovery" element={<PasswordRecovery />} />
@@ -25,7 +26,7 @@ function App() {
           <Route path="/vistaGrupos" element={<VistaGrupos />} />
           <Route path="/GroupAdminView/:id" element={<GroupAdminView />} />
           <Route path="/AddGroupForm" element={<AddGroupForm />} />
-          <Route path="/Calendar" element={<Calendar />} />
+          <Route path="/Calendar" element={<Calendar />} />
         </Routes>
       </BrowserRouter>
     </FirebaseProvider>

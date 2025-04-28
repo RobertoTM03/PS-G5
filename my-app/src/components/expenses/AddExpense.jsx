@@ -28,7 +28,7 @@ const AddExpense = () => {
                     <input
                         type="text"
                         className="form-input"
-                        placeholder="Título"
+                        placeholder="Maldivas"
                     />
                 </div>
                 <div className="form-label">
