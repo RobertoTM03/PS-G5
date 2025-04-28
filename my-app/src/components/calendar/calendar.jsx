@@ -1,51 +1,80 @@
+// src/components/Calendar.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import Header from '../layout/Header.jsx';
 import Footer from '../layout/Footer.jsx';
 import NuevoEvento from './NuevoEvento.jsx';
+import DisplayEvents from './displayEvents.jsx';
 import './calendar.css';
 
 // -----------------------------
 // 1. MODELO
 // -----------------------------
 class CalendarEvent {
-  constructor({ id, calendarId, title, location, start, end, isAllDay }) {
-    Object.assign(this, { id, calendarId, title, location, start, end, isAllDay });
+  constructor({ id, title, location, description, start, end, isAllDay }) {
+    Object.assign(this, { id, title, location, description, start, end, isAllDay });
   }
 }
 
-function fetchInitialEvents() {
+// Genera algunos eventos iniciales
+function getInitialEvents() {
   const now = new Date();
   return [
     new CalendarEvent({
       id: '1',
-      calendarId: '1',
       title: 'Reunión de equipo',
-      location: '',
+      location: 'Sala A',
+      description: 'Revisión semanal de avances',
       start: now.toISOString(),
-      end: new Date(now.getTime() + 3600_000).toISOString(),
+      end: new Date(now.getTime() + 60 * 60 * 1000).toISOString(),
+      isAllDay: false,
+    }),
+    new CalendarEvent({
+      id: '2',
+      title: 'Lunch con Juan',
+      location: 'Cafetería',
+      description: '',
+      start: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 13, 0).toISOString(),
+      end:   new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 0).toISOString(),
+      isAllDay: false,
+    }),
+    new CalendarEvent({
+      id: '3',
+      title: 'Workshop',
+      location: 'Auditorio',
+      description: 'Taller de React avanzado',
+      start: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 10, 0).toISOString(),
+      end:   new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 12, 30).toISOString(),
       isAllDay: false,
     }),
   ];
 }
 
 // -----------------------------
-// 2. VIEWMODEL
+// 2. PÁGINA / VIEWMODEL
 // -----------------------------
-function useCalendarViewModel() {
+export default function CalendarPage() {
   const calendarRef = useRef(null);
-  const [inst, setInst] = useState(null);
+  const [inst, setInst]             = useState(null);
   const [currentDate, setCurrentDate] = useState('');
 
-  // nuevo estado para controlar el popup propio
-  const [showNuevo, setShowNuevo] = useState(false);
-  const [nuevoData, setNuevoData] = useState({ start: null, end: null });
+  // eventos en estado, para pasarlos a DisplayEvents
+  const [events, setEvents] = useState(getInitialEvents());
 
-  // formatea “YYYY.MM”
-  const updateTitle = cal => {
-    const d = cal.getDate();
-    const yyyy = d.getFullYear();
+  // para DisplayEvents
+  const [showDisplay, setShowDisplay]     = useState(false);
+  const [displayDate, setDisplayDate]     = useState(null);
+  const [displayEvents, setDisplayEvents] = useState([]);
+
+  // para NuevoEvento
+  const [showNuevo, setShowNuevo]       = useState(false);
+  const [nuevoData, setNuevoData]       = useState({ start: null, end: null });
+
+  // formatea el título "YYYY.MM"
+  const updateTitle = calendarInst => {
+    const d  = calendarInst.getDate();
+    const yy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
-    setCurrentDate(`${yyyy}.${mm}`);
+    setCurrentDate(`${yy}.${mm}`);
   };
 
   useEffect(() => {
@@ -53,122 +82,139 @@ function useCalendarViewModel() {
     const Calendar = window.tui.Calendar;
     const c = new Calendar(calendarRef.current, {
       defaultView: 'month',
-      // desactivamos popups nativos
       useCreationPopup: false,
       useDetailPopup: false,
       popupContainer: document.body,
       gridSelection: { enableClick: true },
-      calendars: [{
-        id: '1',
-        name: 'Eventos',
-        color: '#ffffff',
-        bgColor: '#047bfe',
-        dragBgColor: '#047bfe',
-        borderColor: '#047bfe',
-      }],
+      calendars: [
+        {
+          id: '1',
+          name: 'Eventos',
+          color: '#ffffff',
+          bgColor: '#047bfe',
+          dragBgColor: '#047bfe',
+          borderColor: '#047bfe',
+        },
+      ],
     });
 
-    // 1) carga inicial
-    c.createEvents(fetchInitialEvents());
+    // 1) Pintamos los eventos iniciales
+    c.createEvents(
+      events.map(ev => ({
+        id: ev.id,
+        calendarId: '1',
+        title: ev.title,
+        category: ev.isAllDay ? 'allday' : 'time',
+        start: ev.start,
+        end:   ev.end,
+        location: ev.location,
+        isAllDay: ev.isAllDay,
+      }))
+    );
 
-    // 2) click en celda vacía → abrimos nuestro modal
+    // 2) Al hacer clic en una celda (día) del mes
     c.on('selectDateTime', info => {
-      setNuevoData({ start: info.start, end: info.end });
-      setShowNuevo(true);
+      const clicked = info.start;
+      // filtramos los eventos por la fecha clicada
+      const evs = events.filter(ev =>
+        new Date(ev.start).toDateString() === clicked.toDateString()
+      );
+      setDisplayDate(clicked);
+      setDisplayEvents(evs);
+      setShowDisplay(true);
       c.clearGridSelections();
     });
-
-    // 3) click en evento existente → gratuito: podría abrir detalle propio
-    // (omito para centrarnos en creación)
 
     c.render();
     setInst(c);
     updateTitle(c);
 
     return () => c.destroy();
-  }, []);
+  }, [events]);
 
-  // llamadas de navegación
+  // controles de navegación
   const goPrev  = () => inst && (inst.prev(), inst.render(), updateTitle(inst));
   const goNext  = () => inst && (inst.next(), inst.render(), updateTitle(inst));
   const goToday = () => inst && (inst.today(), inst.render(), updateTitle(inst));
 
-  // manejar guardado desde nuestro modal
-  const handleSaveNuevo = ({ title, location, start, end, isAllDay }) => {
+  // cierra el popup de DisplayEvents
+  const handleCloseDisplay = () => setShowDisplay(false);
+
+  // crea un nuevo evento desde DisplayEvents
+  const handleCreateFromDisplay = date => {
+    // rango de todo el día
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
+
+    setNuevoData({ start, end });
+    setShowDisplay(false);
+    setShowNuevo(true);
+  };
+
+  // guardar el NuevoEvento
+  const handleSaveNuevo = ({ title, location, description, start, end, isAllDay }) => {
     const id = String(Date.now());
-    inst.createEvents([{
-      id,
-      calendarId: '1',
-      title,
-      category: isAllDay ? 'allday' : 'time',
+    const newEv = new CalendarEvent({
+      id, title, location, description,
       start: start.toISOString(),
-      end: end.toISOString(),
-      location,
-      isAllDay,
-    }]);
+      end:   end.toISOString(),
+      isAllDay
+    });
+
+    // 1) lo añadimos al estado de React
+    setEvents(prev => [...prev, newEv]);
+
+    // 2) y al calendario TUI
+    if (inst) {
+      inst.createEvents([{
+        id,
+        calendarId: '1',
+        title,
+        category: isAllDay ? 'allday' : 'time',
+        start: newEv.start,
+        end:   newEv.end,
+        location,
+        isAllDay,
+      }]);
+    }
+
     setShowNuevo(false);
   };
-
   const handleCloseNuevo = () => setShowNuevo(false);
 
-  return {
-    calendarRef,
-    currentDate,
-    goPrev,
-    goNext,
-    goToday,
-    showNuevo,
-    nuevoData,
-    handleSaveNuevo,
-    handleCloseNuevo,
-  };
-}
-
-// -----------------------------
-// 3. VISTA
-// -----------------------------
-function CalendarInner({
-  calendarRef,
-  currentDate,
-  goPrev,
-  goNext,
-  goToday,
-  showNuevo,
-  nuevoData,
-  handleSaveNuevo,
-  handleCloseNuevo,
-}) {
-  return (
-    <div className="calendar-wrapper">
-      <div className="calendar-nav">
-        <button onClick={goToday} className="today-btn">Today</button>
-        <button onClick={goPrev} className="nav-btn">❮</button>
-        <button onClick={goNext} className="nav-btn">❯</button>
-        <span className="calendar-title">{currentDate}</span>
-      </div>
-      <div ref={calendarRef} className="calendar-body" />
-      {showNuevo && (
-        <NuevoEvento
-          start={nuevoData.start}
-          end={nuevoData.end}
-          onSave={handleSaveNuevo}
-          onClose={handleCloseNuevo}
-        />
-      )}
-    </div>
-  );
-}
-
-// -----------------------------
-// 4. CONTAINER + LAYOUT
-// -----------------------------
-export default function CalendarPage() {
-  const vm = useCalendarViewModel();
   return (
     <div className="page-container">
       <Header />
       <main className="calendar-page">
-        <CalendarInner {...vm} />
+        <div className="calendar-wrapper">
+          <div className="calendar-nav">
+            <button onClick={goToday} className="today-btn">Today</button>
+            <button onClick={goPrev}  className="nav-btn">❮</button>
+            <button onClick={goNext}  className="nav-btn">❯</button>
+            <span className="calendar-title">{currentDate}</span>
+          </div>
+          <div ref={calendarRef} className="calendar-body" />
+
+          {showDisplay && (
+            <DisplayEvents
+              date={displayDate}
+              events={displayEvents}
+              onClose={handleCloseDisplay}
+              onCreate={handleCreateFromDisplay}
+            />
+          )}
+
+          {showNuevo && (
+            <NuevoEvento
+              start={nuevoData.start}
+              end={nuevoData.end}
+              onSave={handleSaveNuevo}
+              onClose={handleCloseNuevo}
+            />
+          )}
+        </div>
       </main>
       <Footer />
     </div>

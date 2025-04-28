@@ -5,6 +5,7 @@ import './nuevoEvento.css';
 export default function NuevoEvento({ start, end, onSave, onClose }) {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
+  const [description, setDescription] = useState('');  // <-- estado para descripción
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
   const [isAllDay, setIsAllDay] = useState(false);
@@ -31,6 +32,7 @@ export default function NuevoEvento({ start, end, onSave, onClose }) {
     onSave({
       title,
       location,
+      description,           // <-- añadimos descripción al payload
       start: new Date(fechaInicio),
       end:   new Date(fechaFin),
       isAllDay
@@ -43,7 +45,7 @@ export default function NuevoEvento({ start, end, onSave, onClose }) {
         <button className="ne-close" onClick={onClose}>×</button>
         <h3>Nuevo Evento</h3>
         <label>
-          Título
+          Título*
           <input
             type="text"
             value={title}
@@ -52,7 +54,7 @@ export default function NuevoEvento({ start, end, onSave, onClose }) {
           />
         </label>
         <label>
-          Ubicación
+          Ubicación (Opcional)
           <input
             type="text"
             value={location}
@@ -61,7 +63,16 @@ export default function NuevoEvento({ start, end, onSave, onClose }) {
           />
         </label>
         <label>
-          Fecha inicio
+          Descripción (Opcional)
+          <textarea
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder="Describe el evento"
+            rows={4}
+          />
+        </label>
+        <label>
+          Fecha inicio*
           <input
             type="datetime-local"
             value={fechaInicio}
@@ -69,7 +80,7 @@ export default function NuevoEvento({ start, end, onSave, onClose }) {
           />
         </label>
         <label>
-          Fecha fin
+          Fecha fin*
           <input
             type="datetime-local"
             value={fechaFin}
