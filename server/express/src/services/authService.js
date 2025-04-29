@@ -1,10 +1,10 @@
-const db = require("./database");
-const admin = require('./auth/firebase');
+const db = require("../database")
+const admin = require("../auth/firebase");
 
 exports.getUserFromToken = async (authHeader) => {
     if (!authHeader || typeof authHeader !== 'string' || !authHeader.startsWith('Bearer ')) {
         const error = new Error('Falta el token de autorización o el formato es incorrecto');
-        error.statusCode = 401;
+        error.status = 401;
         throw error;
     }
 
@@ -17,29 +17,14 @@ exports.getUserFromToken = async (authHeader) => {
         const user = await db.oneOrNone('SELECT * FROM users WHERE firebase_uid = $1', [firebaseUid]);
         if (!user) {
             const error = new Error('Usuario no encontrado');
-            error.statusCode = 401;
+            error.status = 401;
             throw error;
         }
 
         return user;
     } catch (err) {
         const error = new Error('Token inválido o sesión caducada');
-        error.statusCode = 401;
+        error.status = 401;
         throw error;
     }
-};
-
-exports.isValidISODate = (dateStr) => {
-    return /^\d{4}-\d{2}-\d{2}$/.test(dateStr) && !isNaN(new Date(dateStr));
-};
-
-exports.isValidISODateTime = (dateTimeStr) => {
-    const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-
-    if (!isoRegex.test(dateTimeStr)) {
-        return false;
-    }
-
-    const date = new Date(dateTimeStr);
-    return !isNaN(date.getTime());
 };

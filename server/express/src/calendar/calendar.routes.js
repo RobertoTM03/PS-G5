@@ -1,6 +1,12 @@
 const express = require('express');
-const endpointDePrueba = require('./calendarController');
+const calendarController = require('./calendarController');
+const authMiddleware = require('../middlewares/authMiddleware');
+const groupMembershipMiddleware = require('../middlewares/groupMembershipMiddleware');
+
 const router = express.Router();
+
+router.use(authMiddleware);
+router.use('/:groupId', groupMembershipMiddleware);
 
 /**
  * @openapi
@@ -17,7 +23,7 @@ const router = express.Router();
  *         name: groupId
  *         required: true
  *         schema:
- *           type: string
+ *           type: integer
  *     requestBody:
  *       required: true
  *       content:
@@ -25,14 +31,16 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - tittle
+ *               - title
  *               - startDate
  *               - endDate
  *             properties:
- *               tittle:
+ *               title:
  *                 type: string
  *               description:
- *                  type: string
+ *                 type: string
+ *               location:
+ *                 type: string
  *               startDate:
  *                 type: string
  *                 format: date-time
@@ -40,16 +48,143 @@ const router = express.Router();
  *                 type: string
  *                 format: date-time
  *     responses:
- *       201:
+ *       200:
  *         description: Activity correctly added
+ *       400:
+ *         description: Missing params
  *       401:
- *         description: Authentication failure with user token
+ *         description: Authentication failure
  *       403:
- *         description: The user does not have permission to perform the operation
+ *         description: Unauthorized
  *       500:
- *         description: Error not defined
+ *         description: Server error
  */
-router.post('/:groupId/activities', endpointDePrueba);
+router.post('/:groupId/activities', calendarController.createActivity);
+
+/**
+ * @openapi
+ * /groups/{groupId}/activities/day/{date}:
+ *   get:
+ *     summary: Get activities by day
+ *     security:
+ *       - bearerAuth: []
+ *     description: Returns all activities for a specific day.
+ *     tags:
+ *       - Activities
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: date
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: 2025-04-30
+ *     responses:
+ *       200:
+ *         description: List of activities
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   tittle:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   location:
+ *                     type: string
+ *                   startDate:
+ *                     type: string
+ *                     format: date-time
+ *                   endDate:
+ *                     type: string
+ *                     format: date-time
+ *       400:
+ *         description: Invalid date
+ *       401:
+ *         description: Authentication failure
+ *       403:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.get('/:groupId/activities/day/:date', calendarController.getActivitiesByDay);
+
+/**
+ * @openapi
+ * /groups/{groupId}/activities/range:
+ *   get:
+ *     summary: Get activities in a date range
+ *     security:
+ *       - bearerAuth: []
+ *     description: Returns all activities scheduled within a date range.
+ *     tags:
+ *       - Activities
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: startDate
+ *         required: true
+ *         description: Start date in YYYY-MM-DD format
+ *         schema:
+ *           type: string
+ *           format: date
+ *       - in: query
+ *         name: endDate
+ *         required: true
+ *         description: End date in YYYY-MM-DD format
+ *         schema:
+ *           type: string
+ *           format: date
+ *     responses:
+ *       200:
+ *         description: List of activities within the specified date range (closed range)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   tittle:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   location:
+ *                     type: string
+ *                   startDate:
+ *                     type: string
+ *                     format: date-time
+ *                   endDate:
+ *                     type: string
+ *                     format: date-time
+ *       400:
+ *         description: Invalid range
+ *       401:
+ *         description: Authentication failure
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: No activities found
+ *       500:
+ *         description: Server error
+ */
+router.get('/:groupId/activities/range', calendarController.getActivitiesByRange);
 
 /**
  * @openapi
@@ -58,7 +193,7 @@ router.post('/:groupId/activities', endpointDePrueba);
  *     summary: Get details of a calendar activity
  *     security:
  *       - bearerAuth: []
- *     description: Returns the details of an activity, including the list of participants.
+ *     description: Returns the details of an activity, including participants.
  *     tags:
  *       - Activities
  *     parameters:
@@ -66,14 +201,12 @@ router.post('/:groupId/activities', endpointDePrueba);
  *         name: groupId
  *         required: true
  *         schema:
- *           type: string
- *           example: "64ac9b7b5f8e2c001fc45def"
+ *           type: integer
  *       - in: path
  *         name: activityId
  *         required: true
  *         schema:
- *           type: string
- *           example: "66304650b012fd001e53d7cb"
+ *           type: integer
  *     responses:
  *       200:
  *         description: Activity details
@@ -83,10 +216,12 @@ router.post('/:groupId/activities', endpointDePrueba);
  *               type: object
  *               properties:
  *                 id:
- *                   type: string
+ *                   type: integer
  *                 tittle:
  *                   type: string
  *                 description:
+ *                   type: string
+ *                 location:
  *                   type: string
  *                 startDate:
  *                   type: string
@@ -106,15 +241,15 @@ router.post('/:groupId/activities', endpointDePrueba);
  *                       email:
  *                         type: string
  *       401:
- *         description: Authentication failure with user token
+ *         description: Authentication failure
  *       403:
- *         description: The user does not have permission to perform the operation
+ *         description: Unauthorized
  *       404:
  *         description: Activity not found
  *       500:
- *         description: Error not defined
+ *         description: Server error
  */
-router.get('/:groupId/activities/:activityId', endpointDePrueba);
+router.get('/:groupId/activities/:activityId', calendarController.getActivityById);
 
 /**
  * @openapi
@@ -123,7 +258,7 @@ router.get('/:groupId/activities/:activityId', endpointDePrueba);
  *     summary: Edit a calendar activity
  *     security:
  *       - bearerAuth: []
- *     description: Allows you to modify the details of an existing group activity.
+ *     description: Allows you to modify an existing group activity.
  *     tags:
  *       - Activities
  *     parameters:
@@ -131,14 +266,12 @@ router.get('/:groupId/activities/:activityId', endpointDePrueba);
  *         name: groupId
  *         required: true
  *         schema:
- *           type: string
- *           example: "64ac9b7b5f8e2c001fc45def"
+ *           type: integer
  *       - in: path
  *         name: activityId
  *         required: true
  *         schema:
- *           type: string
- *           example: "66304650b012fd001e53d7cb"
+ *           type: integer
  *     requestBody:
  *       required: true
  *       content:
@@ -146,47 +279,42 @@ router.get('/:groupId/activities/:activityId', endpointDePrueba);
  *           schema:
  *             type: object
  *             properties:
- *               tittle:
+ *               title:
  *                 type: string
- *                 example: "Review meeting"
  *               description:
  *                 type: string
- *                 example: "Change of objectives for the week"
+ *               location:
+ *                 type: string
  *               startDate:
  *                 type: string
  *                 format: date-time
- *                 example: "2025-04-28T14:00:00Z"
  *               endDate:
  *                 type: string
  *                 format: date-time
- *                 example: "2025-04-28T15:00:00Z"
- *               location:
- *                 type: string
- *                 example: "Room 3 or Google Meet"
  *     responses:
  *       200:
- *         description: Activity correctly updated
+ *         description: Activity updated
  *       400:
- *         description: Invalid data
+ *         description: Invalid input
  *       401:
- *         description: Authentication failure with user token
+ *         description: Authentication failure
  *       403:
- *         description: The user does not have permission to perform the operation
+ *         description: Unauthorized
  *       404:
  *         description: Activity not found
  *       500:
- *         description: Error not defined
+ *         description: Server error
  */
-router.put('/:groupId/activities/:activityId', endpointDePrueba);
+router.put('/:groupId/activities/:activityId', calendarController.updateActivity);
 
 /**
  * @openapi
  * /groups/{groupId}/activities/{activityId}:
  *   delete:
- *     summary: Delete an activity from the group calendar
+ *     summary: Delete a calendar activity
  *     security:
  *       - bearerAuth: []
- *     description: Removes a specific activity from the group's calendar.
+ *     description: Deletes a group calendar activity.
  *     tags:
  *       - Activities
  *     parameters:
@@ -194,25 +322,25 @@ router.put('/:groupId/activities/:activityId', endpointDePrueba);
  *         name: groupId
  *         required: true
  *         schema:
- *           type: string
+ *           type: integer
  *       - in: path
  *         name: activityId
  *         required: true
  *         schema:
- *           type: string
+ *           type: integer
  *     responses:
  *       200:
- *         description: Activity successfully deleted
+ *         description: Activity deleted
  *       401:
- *         description: Authentication failure with user token
+ *         description: Authentication failure
  *       403:
- *         description: The user does not have permission to perform the operation
+ *         description: Unauthorized
  *       404:
  *         description: Activity not found
  *       500:
- *         description: Error not defined
+ *         description: Server error
  */
-router.delete('/:groupId/activities/:activityId', endpointDePrueba);
+router.delete('/:groupId/activities/:activityId', calendarController.deleteActivity);
 
 /**
  * @openapi
@@ -221,7 +349,7 @@ router.delete('/:groupId/activities/:activityId', endpointDePrueba);
  *     summary: Join a calendar activity
  *     security:
  *       - bearerAuth: []
- *     description: Allows a group member to join an activity to participate in it.
+ *     description: Allows a user to join a calendar activity.
  *     tags:
  *       - Activities
  *     parameters:
@@ -229,29 +357,64 @@ router.delete('/:groupId/activities/:activityId', endpointDePrueba);
  *         name: groupId
  *         required: true
  *         schema:
- *           type: string
- *           example: "64ac9b7b5f8e2c001fc45def"
+ *           type: integer
  *       - in: path
  *         name: activityId
  *         required: true
  *         schema:
- *           type: string
- *           example: "66304650b012fd001e53d7cb"
+ *           type: integer
  *     responses:
  *       200:
- *         description: User added as event participant
- *       404:
- *         description: Event not found
+ *         description: User joined
  *       400:
- *         description: Invalid application
+ *         description: Already joined
  *       401:
- *         description: Authentication failure with user token
+ *         description: Authentication failure
  *       403:
- *         description: The user does not have permission to perform the operation
+ *         description: Unauthorized
+ *       404:
+ *         description: Activity not found
  *       500:
- *         description: Error not defined
+ *         description: Server error
  */
-router.post('/:groupId/activities/:activityId/join', endpointDePrueba);
+router.post('/:groupId/activities/:activityId/join', calendarController.joinActivity);
+
+/**
+ * @openapi
+ * /groups/{groupId}/activities/{activityId}/leave:
+ *   post:
+ *     summary: Leave a calendar activity
+ *     security:
+ *       - bearerAuth: []
+ *     description: Allows a user to leave a calendar activity.
+ *     tags:
+ *       - Activities
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: activityId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: User left
+ *       400:
+ *         description: Not participating
+ *       401:
+ *         description: Authentication failure
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Activity not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/:groupId/activities/:activityId/leave', calendarController.leaveActivity);
 
 /**
  * @openapi
@@ -260,7 +423,7 @@ router.post('/:groupId/activities/:activityId/join', endpointDePrueba);
  *     summary: Remove a participant from an activity
  *     security:
  *       - bearerAuth: []
- *     description: Allows you to remove a specific participant from an activity using his or her ID, sent in the body.
+ *     description: Allows the creator to remove a participant.
  *     tags:
  *       - Activities
  *     parameters:
@@ -268,12 +431,12 @@ router.post('/:groupId/activities/:activityId/join', endpointDePrueba);
  *         name: groupId
  *         required: true
  *         schema:
- *           type: string
+ *           type: integer
  *       - in: path
  *         name: activityId
  *         required: true
  *         schema:
- *           type: string
+ *           type: integer
  *     requestBody:
  *       required: true
  *       content:
@@ -284,184 +447,21 @@ router.post('/:groupId/activities/:activityId/join', endpointDePrueba);
  *               - participantId
  *             properties:
  *               participantId:
- *                 type: string
- *                 example: "66304865b012fd001e53d7e9"
+ *                 type: integer
  *     responses:
  *       200:
- *         description: Participant successfully eliminated
- *       404:
- *         description: Participant or activity not found
+ *         description: Participant removed
  *       400:
- *         description: Invalid or missing ID
+ *         description: Invalid participant
  *       401:
- *         description: Authentication failure with user token
+ *         description: Authentication failure
  *       403:
- *         description: The user does not have permission to perform the operation
- *       500:
- *         description: Error not defined
- */
-router.delete('/:groupId/activities/:activityId/participants', endpointDePrueba);
-
-/**
- * @openapi
- * /groups/{groupId}/activities/{activityId}/leave:
- *   post:
- *     summary: Exiting an activity
- *     security:
- *       - bearerAuth: []
- *     description: Allows a user to remove himself/herself as a participant in a group activity.
- *     tags:
- *       - Activities
- *     parameters:
- *       - in: path
- *         name: groupId
- *         required: true
- *         schema:
- *           type: string
- *           example: "64ac9b7b5f8e2c001fc45def"
- *       - in: path
- *         name: activityId
- *         required: true
- *         schema:
- *           type: string
- *           example: "66304650b012fd001e53d7cb"
- *     responses:
- *       200:
- *         description: User successfully removed from the activity
- *       401:
- *         description: Authentication failure with user token
- *       403:
- *         description: The user does not have permission to perform the operation
+ *         description: Unauthorized
  *       404:
- *         description: Activity not found
+ *         description: Participant not found
  *       500:
- *         description: Error not defined
+ *         description: Server error
  */
-router.post('/:groupId/activities/:activityId/leave', endpointDePrueba);
-
-/**
- * @openapi
- * /groups/{groupId}/activities/day/{date}:
- *   get:
- *     summary: Get activities of a specific day
- *     security:
- *       - bearerAuth: []
- *     description: Returns all activities scheduled for a specific date within a group.
- *     tags:
- *       - Activities
- *     parameters:
- *       - in: path
- *         name: groupId
- *         required: true
- *         schema:
- *           type: string
- *           example: "64ac9b7b5f8e2c001fc45def"
- *       - in: path
- *         name: date
- *         required: true
- *         schema:
- *           type: string
- *           format: date
- *           example: "2025-04-28"
- *     responses:
- *       200:
- *         description: List of activities for the specified date
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                   tittle:
- *                     type: string
- *                   description:
- *                     type: string
- *                   startDate:
- *                     type: string
- *                     format: date-time
- *                   endDate:
- *                     type: string
- *                     format: date-time
- *       400:
- *         description: Invalid date format
- *       401:
- *         description: Authentication failure with user token
- *       403:
- *         description: The user does not have permission to perform the operation
- *       404:
- *         description: No activities found for the given date
- *       500:
- *         description: Error not defined
- */
-router.get('/:groupId/activities/day/:date', endpointDePrueba);
-
-/**
- * @openapi
- * /groups/{groupId}/activities/range:
- *   get:
- *     summary: Get activities within a date range
- *     security:
- *       - bearerAuth: []
- *     description: Returns all activities scheduled between two dates for a specific group.
- *     tags:
- *       - Activities
- *     parameters:
- *       - in: path
- *         name: groupId
- *         required: true
- *         schema:
- *           type: string
- *           example: "64ac9b7b5f8e2c001fc45def"
- *       - in: query
- *         name: startDate
- *         required: true
- *         schema:
- *           type: string
- *           format: date
- *           example: "2025-04-28"
- *       - in: query
- *         name: endDate
- *         required: true
- *         schema:
- *           type: string
- *           format: date
- *           example: "2025-05-05"
- *     responses:
- *       200:
- *         description: List of activities within the specified date range (closed range)
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                   tittle:
- *                     type: string
- *                   description:
- *                     type: string
- *                   startDate:
- *                     type: string
- *                     format: date-time
- *                   endDate:
- *                     type: string
- *                     format: date-time
- *       400:
- *         description: Invalid date range or missing dates
- *       401:
- *         description: Authentication failure with user token
- *       403:
- *         description: The user does not have permission to perform the operation
- *       404:
- *         description: No activities found in the given range
- *       500:
- *         description: Error not defined
- */
-router.get('/:groupId/activities/range', endpointDePrueba);
+router.delete('/:groupId/activities/:activityId/participants', calendarController.removeParticipant);
 
 module.exports = router;
