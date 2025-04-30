@@ -27,7 +27,7 @@ function App() {
           <Route path="/vistaGrupos" element={<VistaGrupos />} />
           <Route path="/GroupAdminView/:id" element={<GroupAdminView />} />
           <Route path="/AddGroupForm" element={<AddGroupForm />} />
-          <Route path="/Calendar" element={<Calendar />} />
+          <Route path="/Calendar/:id" element={<Calendar />} />
           <Route path="/displayEvents" element={<DisplayEvents />} />
         </Routes>
       </BrowserRouter>
