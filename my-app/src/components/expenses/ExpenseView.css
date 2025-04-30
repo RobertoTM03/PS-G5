@@ -13,6 +13,7 @@
     background-color:  white;
     border-bottom: 1px solid #d3d3d3;
     padding: 16px;
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
 }
 .color-expense{
     color: black;
@@ -34,7 +35,7 @@
 .expense-overwiew{
     padding: 16px;
     border-bottom: 1px solid #d3d3d3;
-    background-color: white;
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
 
 }
 
@@ -42,7 +43,7 @@
     padding: 10px;
     width: 100%;
     border-bottom: 1px solid #d3d3d3;
-    background-color: white;
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
 }
 
 .expense-list-button{
