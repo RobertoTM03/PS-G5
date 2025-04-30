@@ -13,7 +13,7 @@ export default function ExpenseView() {
     useEffect(() => {
         async function fetchExpenses() {
             try {
-                const response = await fetch('http://localhost:3000/groups/{groupID}/expenses');
+                const response = await fetch(``);
                 const data = await response.json();
                 setExpenses(data); // Aquí ya tienes tu array de gastos
             } catch (error) {

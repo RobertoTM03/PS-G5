@@ -13,6 +13,8 @@ import { FirebaseProvider } from './Firebase.jsx';
 import VistaGrupos from "./components/groups/viewgroups.jsx";
 import Calendar from "./components/calendar/calendar.jsx";
 import DisplayEvents from "./components/calendar/displayEvents.jsx";
+import ExpenseView from "./components/expenses/ExpenseView.jsx";
+import AddExpense from "./components/expenses/AddExpense.jsx";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="/AddGroupForm" element={<AddGroupForm />} />
           <Route path="/Calendar" element={<Calendar />} />
           <Route path="/displayEvents" element={<DisplayEvents />} />
+          <Route path="/Gastos" element={<ExpenseView />} />
+          <Route path="/AñadirGastos" element={<AddExpense />} />
         </Routes>
       </BrowserRouter>
     </FirebaseProvider>

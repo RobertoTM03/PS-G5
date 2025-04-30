@@ -3,7 +3,7 @@ import './AddExpense.css';
 import {useNavigate} from "react-router-dom";
 
 const ExpenseType = {
-    RESTAURANT: 'Restaurante',
+    RESTAURANT: 'Comida',
     TRANSPORT: 'Transporte',
     FESTIVAL: 'Festival',
     PROVISIONES: 'Provisiones',
