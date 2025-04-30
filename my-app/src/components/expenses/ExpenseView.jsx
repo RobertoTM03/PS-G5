@@ -50,19 +50,16 @@ export default function ExpenseView() {
             <Header/>
 
             <div className="previous-page-expense">
-                <button className="arrow" onClick={() => navigate('/GroupAdminView/')}>
-                    <i className="fa-solid fa-arrow-left icon-black"></i>
-                </button>
                 <div className="text-prev-page">
-                    <h2 className="color-expense">Gastos</h2>
+                    <h1 className="color-expense">Gastos</h1>
                 </div>
             </div>
 
             <div className="expense-overwiew">
-                <h3 className="color-expense">Resumen de gastos:</h3>
+                <h2 className="color-expense">Resumen de gastos:</h2>
                 <div className="expense-calculation">
                     <div className="expense-calculation-text">
-                        <h2 className="color-expense">Gasto Total:</h2>
+                        <h3 className="color-expense">Gasto Total:</h3>
                     </div>
                     <div className="expense-calculation-display">
                         <h2 className="color-expense">{totalExpense.toFixed(2)}€</h2>
