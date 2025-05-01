@@ -50,6 +50,11 @@ export default function CalendarPage() {
   const [userId, setUserId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  const handleDeleteEvent = (deletedEvent) => {
+    setEvents((prevEvents) => prevEvents.filter(event => event.id !== deletedEvent.id));
+    
+  };
+  
   // Leer userId y rol del token (JWT asumido)
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -257,6 +262,8 @@ export default function CalendarPage() {
                 setEditEventData(e);
                 setShowEdit(true);
               }}
+              onDelete={handleDeleteEvent}  // Pasamos la función onDelete
+
               currentUserId={userId}
               isAdmin={isAdmin}
             />

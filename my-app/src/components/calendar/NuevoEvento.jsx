@@ -11,7 +11,6 @@ export default function NuevoEvento({ start, end, onClose }) {
   const [fechaFin, setFechaFin] = useState('');
   const [isAllDay, setIsAllDay] = useState(false);
 
-  // Formatea un objeto Date a "YYYY-MM-DDTHH:mm" para el input
   const formatLocalIso = date => {
     const dt = new Date(date);
     const pad = n => String(n).padStart(2, '0');
@@ -24,10 +23,9 @@ export default function NuevoEvento({ start, end, onClose }) {
     );
   };
 
-  // Convierte un string tipo datetime-local a UTC ISO 8601 correctamente
   const toUTCISOStringPreservingLocalTime = datetimeStr => {
     const localDate = new Date(datetimeStr);
-    const timezoneOffset = localDate.getTimezoneOffset(); // en minutos
+    const timezoneOffset = localDate.getTimezoneOffset();
     const correctedDate = new Date(localDate.getTime() - timezoneOffset * 60000);
     return correctedDate.toISOString();
   };
@@ -69,7 +67,7 @@ export default function NuevoEvento({ start, end, onClose }) {
         throw new Error(data.msg || 'Error al crear el evento');
       }
 
-      window.location.reload(); // opcional: puedes usar mejor manejo de estado en lugar de recargar
+      window.location.reload(); 
     } catch (err) {
       console.error('Error al crear evento:', err.message || err);
       alert('Hubo un error al guardar el evento.');

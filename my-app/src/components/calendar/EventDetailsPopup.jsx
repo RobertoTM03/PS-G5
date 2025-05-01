@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom'; 
 import './EventDetailsPopup.css';
+import ParticipantsPopup from './ParticipantsPopup';
 
 const EventDetailsPopup = ({ event, onClose, onEdit, onDelete, onViewParticipants }) => {
+  const { id } = useParams();  // groupId
   const [showMenu, setShowMenu] = useState(false);
+  const [showParticipants, setShowParticipants] = useState(false);
   const menuRef = useRef(null);
 
   if (!event) return null;
@@ -14,24 +18,43 @@ const EventDetailsPopup = ({ event, onClose, onEdit, onDelete, onViewParticipant
   const handleMenuOption = (action) => {
     setShowMenu(false);
     if (action === 'edit') onEdit?.(event);
-    else if (action === 'delete') onDelete?.(event);
-    else if (action === 'participants') onViewParticipants?.(event);
+    else if (action === 'delete') handleDelete(event);
+    else if (action === 'participants') setShowParticipants(true);
   };
 
-  // 👇 Detectar clic fuera del menú
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setShowMenu(false);
-      }
-    };
-    if (showMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
+  // Función para eliminar el evento llamando a la API
+  const handleDelete = async (event) => {
+    const groupId = id;  // groupId obtenido de useParams
+    const activityId = event.id;   // activityId del evento
+
+    if (!groupId || !activityId) {
+      console.error('Error: El evento no tiene un groupId o activityId válido');
+      alert('No se puede eliminar el evento. Faltan datos necesarios.');
+      return;
     }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showMenu]);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/groups/${groupId}/activities/${activityId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar el evento');
+      }
+
+      // Llama al callback onDelete (si está definido) para actualizar el estado en el componente padre
+      onDelete(event); // Actualizar la lista de eventos en el componente padre
+      onClose(); // Cierra el popup después de eliminar
+    } catch (error) {
+      console.error('Error al eliminar evento:', error.message || error);
+      alert('Hubo un error al eliminar el evento.');
+    }
+  };
 
   return (
     <div className="popup-overlay" onClick={onClose}>
@@ -78,6 +101,13 @@ const EventDetailsPopup = ({ event, onClose, onEdit, onDelete, onViewParticipant
           <button className="close-btn" onClick={onClose}>Cerrar</button>
         </div>
       </div>
+
+      {showParticipants && (
+        <ParticipantsPopup 
+          event={event}
+          onClose={() => setShowParticipants(false)} 
+        />
+      )}
     </div>
   );
 };

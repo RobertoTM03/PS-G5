@@ -1,9 +1,7 @@
-/* fuerza el texto negro en todo el modal */
 .ne-modal {
   color: #000;
 }
 
-/* inputs, textarea y placeholders en negro */
 .ne-modal input,
 .ne-modal label,
 .ne-modal h3,
@@ -12,18 +10,16 @@
   color: #000;
 }
 
-/* los placeholders de los inputs también en gris oscuro */
 .ne-modal input::placeholder,
 .ne-modal textarea::placeholder {
   color: #666;
 }
 
-/* textarea para Descripción */
 .ne-modal textarea {
   width: 100%;
   padding: 6px 8px;
   margin-top: 4px;
-  margin-bottom: 0.75rem; /* igual espaciado que los inputs */
+  margin-bottom: 0.75rem; 
   box-sizing: border-box;
   font-family: inherit;
   font-size: 0.9rem;
@@ -31,7 +27,6 @@
   resize: vertical;
 }
 
-/* resto de estilos */
 .ne-backdrop {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;

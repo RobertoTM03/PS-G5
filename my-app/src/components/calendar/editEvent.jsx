@@ -73,7 +73,7 @@ export default function EditEvent({ event, onClose }) {
         throw new Error(data.msg || 'Error al editar el evento');
       }
 
-      window.location.reload(); // o actualizar estado si prefieres
+      window.location.reload(); 
     } catch (err) {
       console.error('Error al editar evento:', err.message || err);
       alert('Hubo un error al guardar los cambios.');
