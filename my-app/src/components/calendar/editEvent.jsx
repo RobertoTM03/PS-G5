@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './nuevoEvento.css';
 
-export default function NuevoEvento({ start, end, onClose }) {
+export default function EditEvent({ event, onClose }) {
   const { id } = useParams(); // groupId
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
@@ -31,9 +31,15 @@ export default function NuevoEvento({ start, end, onClose }) {
   };
 
   useEffect(() => {
-    if (start) setFechaInicio(formatLocalIso(start));
-    if (end)   setFechaFin(formatLocalIso(end));
-  }, [start, end]);
+    if (event) {
+      setTitle(event.title || '');
+      setLocation(event.location || '');
+      setDescription(event.description || '');
+      setIsAllDay(event.isAllDay || false);
+      setFechaInicio(formatLocalIso(event.start));
+      setFechaFin(formatLocalIso(event.end));
+    }
+  }, [event]);
 
   const handleSubmit = async () => {
     if (!title || !fechaInicio || !fechaFin) {
@@ -52,8 +58,8 @@ export default function NuevoEvento({ start, end, onClose }) {
         isAllDay
       };
 
-      const response = await fetch(`http://localhost:3000/groups/${id}/activities`, {
-        method: 'POST',
+      const response = await fetch(`http://localhost:3000/groups/${id}/activities/${event.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -64,13 +70,13 @@ export default function NuevoEvento({ start, end, onClose }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.msg || 'Error al crear el evento');
+        throw new Error(data.msg || 'Error al editar el evento');
       }
 
       window.location.reload(); 
     } catch (err) {
-      console.error('Error al crear evento:', err.message || err);
-      alert('Hubo un error al guardar el evento.');
+      console.error('Error al editar evento:', err.message || err);
+      alert('Hubo un error al guardar los cambios.');
     }
   };
 
@@ -78,7 +84,7 @@ export default function NuevoEvento({ start, end, onClose }) {
     <div className="ne-backdrop" onClick={onClose}>
       <div className="ne-modal" onClick={e => e.stopPropagation()}>
         <button className="ne-close" onClick={onClose}>×</button>
-        <h3>Nuevo Evento</h3>
+        <h3>Editar Evento</h3>
 
         <label>
           Título*
@@ -86,7 +92,6 @@ export default function NuevoEvento({ start, end, onClose }) {
             type="text"
             value={title}
             onChange={e => setTitle(e.target.value)}
-            placeholder="Escribe el asunto"
           />
         </label>
 
@@ -96,7 +101,6 @@ export default function NuevoEvento({ start, end, onClose }) {
             type="text"
             value={location}
             onChange={e => setLocation(e.target.value)}
-            placeholder="Escribe la ubicación"
           />
         </label>
 
@@ -105,7 +109,6 @@ export default function NuevoEvento({ start, end, onClose }) {
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
-            placeholder="Describe el evento"
             rows={4}
           />
         </label>
@@ -137,7 +140,7 @@ export default function NuevoEvento({ start, end, onClose }) {
           Día completo
         </label>
 
-        <button className="ne-save" onClick={handleSubmit}>Guardar</button>
+        <button className="ne-save" onClick={handleSubmit}>Guardar cambios</button>
       </div>
     </div>
   );

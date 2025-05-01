@@ -1,4 +1,3 @@
-/* fondo semitransparente */
 .de-backdrop {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -9,7 +8,6 @@
     z-index: 3000;
   }
   
-  /* contenedor del modal */
   .de-modal {
     background: #fff;
     padding: 1.5rem;
@@ -22,7 +20,6 @@
     color: #000;
   }
   
-  /* botón de cerrar */
   .de-close {
     position: absolute;
     top: 8px; right: 8px;
@@ -33,19 +30,16 @@
     color: #000;
   }
   
-  /* título */
   .de-modal h3 {
     margin-top: 0;
     margin-bottom: 1rem;
     text-align: center;
   }
   
-  /* lista de eventos */
   .de-events-list {
     margin-bottom: 1rem;
   }
   
-  /* cada evento */
   .de-event-item {
     border-bottom: 1px solid #ddd;
     padding-bottom: 0.75rem;
@@ -58,34 +52,29 @@
     padding-bottom: 0;
   }
   
-  /* título de evento */
   .de-event-title {
     margin: 0 0 0.25rem;
     font-size: 1rem;
   }
   
-  /* descripción */
   .de-event-desc {
     margin: 0 0 0.5rem;
     font-size: 0.9rem;
     color: #333;
   }
   
-  /* rango horario */
   .de-event-time {
     margin: 0;
     font-size: 0.85rem;
     color: #555;
   }
   
-  /* texto si no hay eventos */
   .de-no-events {
     font-style: italic;
     color: #666;
     text-align: center;
   }
   
-  /* botón Crear evento */
   .de-create-btn {
     display: block;
     width: 100%;

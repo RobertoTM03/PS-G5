@@ -1,0 +1,119 @@
+/* Fondo del popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+ 
+  
+  /* Encabezado del popup */
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .popup-header h2 {
+    margin: 0;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #888;
+  }
+  
+  .popup-content {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .participants-list {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  
+  .participant-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .participant-item p {
+    margin: 5px 0;
+  }
+  
+  .participant-item strong {
+    font-weight: bold;
+  }
+  
+  .popup-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .footer-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px; 
+  }
+  
+  button:disabled {
+    background-color: #ccc; 
+    cursor: not-allowed;    
+  }
+  
+  .join-btn {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .join-btn:hover:not(:disabled) {
+    background-color: #0056b3;
+  }
+  
+  .leave-btn {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .leave-btn:hover:not(:disabled) {
+    background-color: #c82333;
+  }
+  
+  .close-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    color: #333;
+  }
+  
+  .close-btn:hover {
+    background-color: #e2e6ea;
+  }
+  

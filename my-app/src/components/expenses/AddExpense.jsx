@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import './AddExpense.css';
+import {useNavigate} from "react-router-dom";
 
 const ExpenseType = {
-    RESTAURANT: 'Restaurante',
+    RESTAURANT: 'Comida',
     TRANSPORT: 'Transporte',
     FESTIVAL: 'Festival',
     PROVISIONES: 'Provisiones',
@@ -12,7 +13,7 @@ const ExpenseType = {
 
 const AddExpense = () => {
     const [selectedType, setSelectedType] = useState('');
-
+    const navigate = useNavigate();
     const handleChange = (e) => {
         setSelectedType(e.target.value);
     };
@@ -48,7 +49,7 @@ const AddExpense = () => {
                 <button className="submit-button-add-group">
                     Añadir gasto
                 </button>
-                <button className="cancel-button-add-group">
+                <button className="cancel-button-add-group" onClick={() => navigate('/Gastos')}>
                     Cancelar
                 </button>
             </div>
