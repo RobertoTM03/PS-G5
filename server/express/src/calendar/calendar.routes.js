@@ -96,7 +96,7 @@ router.post('/:groupId/activities', calendarController.createActivity);
  *                 properties:
  *                   id:
  *                     type: string
- *                   tittle:
+ *                   title:
  *                     type: string
  *                   description:
  *                     type: string
@@ -108,6 +108,8 @@ router.post('/:groupId/activities', calendarController.createActivity);
  *                   endDate:
  *                     type: string
  *                     format: date-time
+ *                   createdBy:
+ *                     type: string
  *       400:
  *         description: Invalid date
  *       401:
@@ -161,7 +163,7 @@ router.get('/:groupId/activities/day/:date', calendarController.getActivitiesByD
  *                 properties:
  *                   id:
  *                     type: string
- *                   tittle:
+ *                   title:
  *                     type: string
  *                   description:
  *                     type: string
@@ -173,6 +175,8 @@ router.get('/:groupId/activities/day/:date', calendarController.getActivitiesByD
  *                   endDate:
  *                     type: string
  *                     format: date-time
+ *                   createdBy:
+ *                     type: string
  *       400:
  *         description: Invalid range
  *       401:
@@ -217,7 +221,7 @@ router.get('/:groupId/activities/range', calendarController.getActivitiesByRange
  *               properties:
  *                 id:
  *                   type: integer
- *                 tittle:
+ *                 title:
  *                   type: string
  *                 description:
  *                   type: string
@@ -240,6 +244,8 @@ router.get('/:groupId/activities/range', calendarController.getActivitiesByRange
  *                         type: string
  *                       email:
  *                         type: string
+ *                 createdBy:
+ *                     type: string
  *       401:
  *         description: Authentication failure
  *       403:
