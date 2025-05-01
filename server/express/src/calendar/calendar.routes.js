@@ -1,7 +1,7 @@
 const express = require('express');
 const calendarController = require('./calendarController');
-const authMiddleware = require('../middlewares/authMiddleware');
-const groupMembershipMiddleware = require('../middlewares/groupMembershipMiddleware');
+const authMiddleware = require('../auth/authMiddleware');
+const groupMembershipMiddleware = require('../groups/groupMembershipMiddleware');
 
 const router = express.Router();
 

@@ -12,26 +12,26 @@ exports.create = async (activityData) => {
     } = activityData;
 
     const activity = await db.one(`
-    INSERT INTO activities (group_id, title, description, start_date, end_date, location, created_by)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING *;
-  `, [groupId, title, description, startDate, endDate, location, createdBy]);
+        INSERT INTO activities (group_id, title, description, start_date, end_date, location, created_by)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *;
+    `, [groupId, title, description, startDate, endDate, location, createdBy]);
 
     await db.none(`
-    INSERT INTO activity_participants (activity_id, user_id)
-    VALUES ($1, $2)
-  `, [activity.id, createdBy]);
+        INSERT INTO activity_participants (activity_id, user_id)
+        VALUES ($1, $2)
+    `, [activity.id, createdBy]);
 
     return activity;
 };
 
 exports.findById = async (groupId, activityId) => {
     const query = `
-    SELECT id, group_id AS "groupId", title, description, start_date AS "startDate",
-           end_date AS "endDate", location, created_by AS "createdBy"
-    FROM activities
-    WHERE id = $1 AND group_id = $2
-  `;
+        SELECT id, group_id AS "groupId", title, description, start_date AS "startDate",
+               end_date AS "endDate", location, created_by AS "createdBy"
+        FROM activities
+        WHERE id = $1 AND group_id = $2
+    `;
 
     return await db.oneOrNone(query, [activityId, groupId]);
 };
@@ -49,9 +49,9 @@ exports.getParticipants = async (activityId) => {
 
 exports.userBelongsToGroup = async (groupId, userId) => {
     const result = await db.oneOrNone(`
-    SELECT 1 FROM group_users
-    WHERE group_id = $1 AND user_id = $2
-  `, [groupId, userId]);
+        SELECT 1 FROM group_users
+        WHERE group_id = $1 AND user_id = $2
+    `, [groupId, userId]);
 
     return !!result;
 };
@@ -66,19 +66,19 @@ exports.update = async (activityId, updateData) => {
     } = updateData;
 
     const query = `
-    UPDATE activities
-    SET 
-      title = COALESCE($1, title),
-      description = COALESCE($2, description),
-      start_date = COALESCE($3, start_date),
-      end_date = COALESCE($4, end_date),
-      location = COALESCE($5, location)
-    WHERE id = $6
-    RETURNING id, group_id AS "groupId", title, description, start_date AS "startDate",
-              end_date AS "endDate", location, created_by AS "createdBy";
-  `;
+        UPDATE activities
+        SET 
+          title = COALESCE($1, title),
+          description = COALESCE($2, description),
+          start_date = COALESCE($3, start_date),
+          end_date = COALESCE($4, end_date),
+          location = COALESCE($5, location)
+        WHERE id = $6
+        RETURNING id, group_id AS "groupId", title, description, start_date AS "startDate",
+                  end_date AS "endDate", location, created_by AS "createdBy";
+    `;
 
-    const result = await db.one(query, [
+    return await db.one(query, [
         title ?? null,
         description ?? null,
         startDate ?? null,
@@ -86,8 +86,6 @@ exports.update = async (activityId, updateData) => {
         location ?? null,
         activityId
     ]);
-
-    return result;
 };
 
 exports.delete = async (activityId) => {
@@ -100,9 +98,9 @@ exports.delete = async (activityId) => {
 exports.addParticipant = async (activityId, userId) => {
     try {
         await db.none(`
-      INSERT INTO activity_participants (activity_id, user_id)
-      VALUES ($1, $2)
-    `, [activityId, userId]);
+            INSERT INTO activity_participants (activity_id, user_id)
+            VALUES ($1, $2)
+        `, [activityId, userId]);
     } catch (error) {
         if (error.code === '23505') { // Código de error UNIQUE VIOLATION en PostgreSQL
             const err = new Error('Ya estás unido a esta actividad');
@@ -115,9 +113,9 @@ exports.addParticipant = async (activityId, userId) => {
 
 exports.removeParticipant = async (activityId, userId) => {
     const result = await db.result(`
-    DELETE FROM activity_participants
-    WHERE activity_id = $1 AND user_id = $2
-  `, [activityId, userId]);
+        DELETE FROM activity_participants
+        WHERE activity_id = $1 AND user_id = $2
+    `, [activityId, userId]);
 
     if (result.rowCount === 0) {
         const error = new Error('No estás inscrito en esta actividad');
@@ -128,13 +126,13 @@ exports.removeParticipant = async (activityId, userId) => {
 
 exports.findByDay = async (groupId, date) => {
     const query = `
-    SELECT id, group_id AS "groupId", title, description, start_date AS "startDate",
-           end_date AS "endDate", location, created_by AS "createdBy"
-    FROM activities
-    WHERE group_id = $1
-      AND start_date::date = $2::date
-    ORDER BY start_date ASC;
-  `;
+        SELECT id, group_id AS "groupId", title, description, start_date AS "startDate",
+               end_date AS "endDate", location, created_by AS "createdBy"
+        FROM activities
+        WHERE group_id = $1
+          AND start_date::date = $2::date
+        ORDER BY start_date ASC;
+    `;
 
     return await db.any(query, [groupId, date]);
 };
@@ -142,21 +140,13 @@ exports.findByDay = async (groupId, date) => {
 
 exports.findByRange = async (groupId, startDate, endDate) => {
     const query = `
-    SELECT id, group_id AS "groupId", title, description, start_date AS "startDate",
-           end_date AS "endDate", location, created_by AS "createdBy"
-    FROM activities
-    WHERE group_id = $1
-      AND start_date::date BETWEEN $2::date AND $3::date
-    ORDER BY start_date ASC;
-  `;
+        SELECT id, group_id AS "groupId", title, description, start_date AS "startDate",
+               end_date AS "endDate", location, created_by AS "createdBy"
+        FROM activities
+        WHERE group_id = $1
+          AND start_date::date BETWEEN $2::date AND $3::date
+        ORDER BY start_date ASC;
+    `;
 
     return await db.any(query, [groupId, startDate, endDate]);
-};
-
-exports.isGroupOwner = async (groupId, userId) => {
-    const result = await db.oneOrNone(
-        `SELECT 1 FROM groups WHERE id = $1 AND user_owner_id = $2`,
-        [groupId, userId]
-    );
-    return !!result;
 };

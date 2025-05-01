@@ -1,5 +1,6 @@
 const activityRepository = require('../activityRepository');
 const { isValidISODateTime } = require('../../auxiliary-functions');
+const {isGroupOwner} = require("../../groups/groupRepository");
 
 module.exports = async (groupId, activityId, updateData, userId) => {
     const activity = await activityRepository.findById(groupId, activityId);
@@ -10,9 +11,9 @@ module.exports = async (groupId, activityId, updateData, userId) => {
     }
 
     const isCreator = activity.createdBy === userId;
-    const isGroupOwner = await activityRepository.isGroupOwner(groupId, userId);
+    const isAdmin = await isGroupOwner(groupId, userId);
 
-    if (!isCreator && !isGroupOwner) {
+    if (!isCreator && !isAdmin) {
         const error = new Error('You do not have permission to modify this activity');
         error.status = 403;
         throw error;
@@ -38,6 +39,5 @@ module.exports = async (groupId, activityId, updateData, userId) => {
         throw error;
     }
 
-    const updated = await activityRepository.update(activityId, updateData);
-    return updated;
+    return await activityRepository.update(activityId, updateData);
 };

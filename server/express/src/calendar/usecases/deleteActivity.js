@@ -1,4 +1,5 @@
 const activityRepository = require('../activityRepository');
+const {isGroupOwner} = require("../../groups/groupRepository");
 
 module.exports = async (groupId, activityId, userId) => {
     const activity = await activityRepository.findById(groupId, activityId);
@@ -9,9 +10,9 @@ module.exports = async (groupId, activityId, userId) => {
     }
 
     const isCreator = activity.createdBy === userId;
-    const isGroupOwner = await activityRepository.isGroupOwner(groupId, userId);
+    const isAdmin = await isGroupOwner(groupId, userId);
 
-    if (!isCreator && !isGroupOwner) {
+    if (!isCreator && !isAdmin) {
         const error = new Error('You do not have permission to modify this activity');
         error.status = 403;
         throw error;

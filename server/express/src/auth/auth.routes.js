@@ -22,11 +22,11 @@ const { register, login, resetPassword, getMyInformation  } = require('./authCon
  *               identifier:
  *                 type: string
  *                 description: Nombre de usuario o email
- *                 example: prueba@mail.com
+ *                 example: bob@example.com
  *               password:
  *                 type: string
  *                 description: Contraseña del usuario
- *                 example: Secreta123
+ *                 example: 12345678
  *     responses:
  *       200:
  *         description: Login exitoso. Devuelve el token.

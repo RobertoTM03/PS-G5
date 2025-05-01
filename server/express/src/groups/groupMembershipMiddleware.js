@@ -1,4 +1,4 @@
-const groupService = require('../services/groupService');
+const groupService = require('./groupService');
 
 module.exports = async (req, res, next) => {
     const groupId = parseInt(req.params.groupId, 10);
