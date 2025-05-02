@@ -1,5 +1,4 @@
 const pgPromise = require("pg-promise")({
-  // Context
 });
 
 const dbConnection = {
@@ -8,9 +7,7 @@ const dbConnection = {
     database: 'ps_g5',
     user: 'postgres',
     password: '1234',
-    max: 30 // use up to 30 connections
-
-    // "types" - in case you want to set custom type parsers on the pool level
+    max: 30
 };
 
 const db = pgPromise(dbConnection);

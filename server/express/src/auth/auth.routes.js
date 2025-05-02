@@ -147,7 +147,7 @@ router.post('/password-reset', resetPassword);
 /**
  * @openapi
  * /auth/my-information:
- *   post:
+ *   get:
  *     summary: Obtener la información del usuario a travez del token.
  *     security:
  *       - bearerAuth: []
@@ -176,7 +176,7 @@ router.post('/password-reset', resetPassword);
  *       500:
  *         description: Error no definido
  */
-router.post('/my-information', getMyInformation);
+router.get('/my-information', getMyInformation);
 
 
 module.exports = router;
