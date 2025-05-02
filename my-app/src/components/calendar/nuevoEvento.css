@@ -1,91 +1,98 @@
-.ne-modal {
-  color: #000;
-}
-
-.ne-modal input,
-.ne-modal label,
-.ne-modal h3,
-.ne-modal .ne-save,
-.ne-modal .ne-close {
-  color: #000;
-}
-
-.ne-modal input::placeholder,
-.ne-modal textarea::placeholder {
-  color: #666;
-}
-
-.ne-modal textarea {
-  width: 100%;
-  padding: 6px 8px;
-  margin-top: 4px;
-  margin-bottom: 0.75rem; 
-  box-sizing: border-box;
-  font-family: inherit;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  resize: vertical;
-}
-
 .ne-backdrop {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
 }
+
 .ne-modal {
   background: #fff;
-  padding: 1.5rem;
-  border-radius: 6px;
-  width: 320px;
+  width: 380px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c2c2c;
   position: relative;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
 }
+
 .ne-close {
   position: absolute;
-  top: 8px; right: 8px;
+  top: 12px;
+  right: 12px;
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 18px;
+  color: #6b6b6b;
   cursor: pointer;
 }
-.ne-modal h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  text-align: center;
-}
+
 .ne-modal label {
-  display: block;
-  margin-bottom: 0.75rem;
-  font-size: 0.9rem;
-}
-.ne-modal input[type="text"],
-.ne-modal input[type="datetime-local"] {
-  width: 100%;
-  padding: 6px 8px;
-  margin-top: 4px;
-  box-sizing: border-box;
-}
-.ne-checkbox {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 12px;
+  font-size: 14px;
 }
+
+
+.ne-modal label:nth-of-type(1)::before { content: "📝"; }
+.ne-modal label:nth-of-type(2)::before { content: "📍"; }
+.ne-modal label:nth-of-type(3)::before { content: "📝"; }
+.ne-modal label:nth-of-type(4)::before { content: "🕒"; }
+.ne-modal label:nth-of-type(5)::before { content: "🕒"; }
+
+.ne-modal label::before {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.ne-modal label:nth-of-type(2)::before {
+  margin-right: 18px;  
+}
+
+.ne-modal input[type="text"],
+.ne-modal input[type="datetime-local"],
+.ne-modal textarea {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f7f7f7;
+  transition: border-color 0.2s;
+  margin-left: 8px;
+  font-family: inherit;
+  color: #2c2c2c;
+}
+
+.ne-modal textarea {
+  height: 50px;
+  resize: none;
+}
+
+.ne-modal input:focus,
+.ne-modal textarea:focus {
+  outline: none;
+  border-color: #1c4a91;
+}
+
 .ne-save {
-  display: block;
-  width: 100%;
-  padding: 8px;
-  background: #047bfe;
+  margin-top: 16px;
+  padding: 10px 0;
+  background: #1c4a91;
   color: #fff;
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 15px;
   cursor: pointer;
+  transition: background 0.2s;
 }
+
 .ne-save:hover {
-  background: #0366c5;
+  background: #163d78;
 }

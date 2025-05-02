@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import './nuevoEvento.css';
 
 export default function EditEvent({ event, onClose }) {
-  const { id } = useParams(); // groupId
+  const { id } = useParams(); 
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
@@ -84,10 +84,8 @@ export default function EditEvent({ event, onClose }) {
     <div className="ne-backdrop" onClick={onClose}>
       <div className="ne-modal" onClick={e => e.stopPropagation()}>
         <button className="ne-close" onClick={onClose}>×</button>
-        <h3>Editar Evento</h3>
 
         <label>
-          Título*
           <input
             type="text"
             value={title}
@@ -96,7 +94,6 @@ export default function EditEvent({ event, onClose }) {
         </label>
 
         <label>
-          Ubicación (Opcional)
           <input
             type="text"
             value={location}
@@ -105,7 +102,6 @@ export default function EditEvent({ event, onClose }) {
         </label>
 
         <label>
-          Descripción (Opcional)
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
@@ -114,7 +110,6 @@ export default function EditEvent({ event, onClose }) {
         </label>
 
         <label>
-          Fecha inicio*
           <input
             type="datetime-local"
             value={fechaInicio}
@@ -123,21 +118,11 @@ export default function EditEvent({ event, onClose }) {
         </label>
 
         <label>
-          Fecha fin*
           <input
             type="datetime-local"
             value={fechaFin}
             onChange={e => setFechaFin(e.target.value)}
           />
-        </label>
-
-        <label className="ne-checkbox">
-          <input
-            type="checkbox"
-            checked={isAllDay}
-            onChange={e => setIsAllDay(e.target.checked)}
-          />
-          Día completo
         </label>
 
         <button className="ne-save" onClick={handleSubmit}>Guardar cambios</button>

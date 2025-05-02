@@ -1,155 +1,99 @@
-/* Fondo del popup */
 .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
- 
-  
-  /* Encabezado del popup */
-  .popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .popup-header h2 {
-    margin: 0;
-  }
-  
-  .close-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: #888;
-  }
-  
-  .popup-content {
-    flex: 1;
-    overflow-y: auto;
-  }
-  
-  .participants-list {
-    max-height: 250px;
-    overflow-y: auto;
-  }
-  
-  .participant-item {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .participant-item p {
-    margin: 5px 0;
-  }
-  
-  .participant-item strong {
-    font-weight: bold;
-  }
-  
-  .popup-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-top: 1px solid #ddd;
-  }
-  
-  .footer-buttons {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-  
-  button {
-    padding: 8px 16px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-right: 10px; 
-  }
-  
-  button:disabled {
-    background-color: #ccc; 
-    cursor: not-allowed;    
-  }
-  
-  .join-btn {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .join-btn:hover:not(:disabled) {
-    background-color: #0056b3;
-  }
-  
-  .leave-btn {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .leave-btn:hover:not(:disabled) {
-    background-color: #c82333;
-  }
-  
-  .close-btn {
-    background-color: #f8f9fa;
-    border: 1px solid #ddd;
-    padding: 6px 12px;
-    color: #333;
-  }
-  
-  .close-btn:hover {
-    background-color: #e2e6ea;
-  }
-  .participant-item {
-    display: flex;
-    justify-content: space-between;  /* Alinea los elementos de izquierda a derecha */
-    align-items: center;
-    padding: 10px;
-    background-color: #f4f4f4;  /* Fondo gris claro */
-    margin: 5px 0;
-    border-radius: 8px;
-  }
-  
-  .remove-participant-btn {
-    background-color: transparent;
-    border: none;
-    color: red;
-    font-size: 20px;
-    cursor: pointer;
-    margin-left: 10px;
-    transition: color 0.3s ease; /* Agregar transición suave */
-  }
-  
-  .remove-participant-btn:hover {
-    color: darkred;  /* Cambio de color al pasar el cursor */
-  }
-  
-  .participant-item p {
-    margin: 0;
-    font-size: 16px;
-  }
-  
-  .participant-item p strong {
-    font-weight: bold;
-  }
-  
-  .popup-content {
-    padding: 20px;
-  }
-  
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: right;
+  color: #1c4a91;
+  padding: 10px;
+}
+
+.popup-content {
+  padding: 5px;
+  max-height: 250px;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.participants-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.participant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f4f4f4;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.participant-item p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.remove-participant-btn {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.remove-participant-btn:hover {
+  color: darkred;
+}
+
+.popup-footer {
+  padding: 8px;
+  text-align: center;
+}
+
+.popup-footer button {
+  padding: 8px 16px;
+  margin-left: 8px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  align-items: center;
+}
+
+.popup-footer .join-btn {
+  background: #1c4a91;
+}
+
+.popup-footer .join-btn:hover {
+  background: #163d78;
+}
+
+.popup-footer .leave-btn {
+  background: red;
+}
+
+.popup-footer .leave-btn:hover {
+  background: darkred;
+}
+
+.popup-footer .close-btn {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.popup-footer .close-btn:hover {
+  background: #f0f0f0;
+}

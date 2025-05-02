@@ -8,7 +8,6 @@ const ParticipantsPopup = ({ event, onClose, isAdmin }) => {
   const [loading, setLoading] = useState(true);
   const [isParticipating, setIsParticipating] = useState(false);
 
-  // Función para obtener los participantes de la API
   const fetchParticipants = async () => {
     const groupId = id;
     const activityId = event.id;
@@ -47,7 +46,6 @@ const ParticipantsPopup = ({ event, onClose, isAdmin }) => {
     fetchParticipants();
   }, [event]);
 
-  // Función para unirse a la actividad
   const handleJoin = async () => {
     const groupId = id;
     const activityId = event.id;
@@ -73,7 +71,6 @@ const ParticipantsPopup = ({ event, onClose, isAdmin }) => {
     }
   };
 
-  // Función para salir de la actividad
   const handleLeave = async () => {
     const groupId = id;
     const activityId = event.id;
@@ -117,7 +114,7 @@ const ParticipantsPopup = ({ event, onClose, isAdmin }) => {
       });
 
       if (response.ok) {
-        fetchParticipants();  // Recargar los participantes después de eliminar
+        fetchParticipants();  
       } else {
         alert('Error al eliminar el participante');
       }
@@ -135,7 +132,7 @@ const ParticipantsPopup = ({ event, onClose, isAdmin }) => {
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-container" onClick={(e) => e.stopPropagation()}>
         <div className="popup-header">
-          <h2>Participantes del Evento</h2>
+          <h2>Participantes</h2>
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
 
@@ -176,8 +173,6 @@ const ParticipantsPopup = ({ event, onClose, isAdmin }) => {
             >
               Salir de la actividad
             </button>
-
-            <button className="close-btn" onClick={onClose}>Cerrar</button>
           </div>
         </div>
       </div>

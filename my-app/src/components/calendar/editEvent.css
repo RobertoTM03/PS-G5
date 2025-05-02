@@ -1,93 +1,84 @@
 .ne-backdrop {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-  }
-  
-  .ne-modal {
-    background: #fff;
-    padding: 1.5rem;
-    border-radius: 6px;
-    width: 320px;
-    position: relative;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    color: #000;
-  }
-  
-  .ne-close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: #000;
-  }
-  
-  .ne-modal h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  
-  .ne-modal label {
-    display: block;
-    margin-bottom: 0.75rem;
-    font-size: 0.9rem;
-    color: #000;
-  }
-  
-  .ne-modal input[type="text"],
-  .ne-modal input[type="datetime-local"] {
-    width: 100%;
-    padding: 6px 8px;
-    margin-top: 4px;
-    box-sizing: border-box;
-    font-size: 0.9rem;
-  }
-  
-  .ne-modal textarea {
-    width: 100%;
-    padding: 6px 8px;
-    margin-top: 4px;
-    margin-bottom: 0.75rem;
-    box-sizing: border-box;
-    font-family: inherit;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    resize: vertical;
-  }
-  
-s  .ne-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .ne-save {
-    display: block;
-    width: 100%;
-    padding: 8px;
-    background: #047bfe;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  .ne-save:hover {
-    background: #0366c5;
-  }
-  
-  .ne-modal input::placeholder,
-  .ne-modal textarea::placeholder {
-    color: #666;
-  }
-  
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.ne-modal {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 6px;
+  width: 320px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.ne-close {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.ne-modal h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #1c4a91;
+}
+
+.ne-modal label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.ne-modal input[type="text"],
+.ne-modal input[type="datetime-local"],
+.ne-modal textarea {
+  width: 100%;
+  padding: 6px 8px;
+  margin-top: 4px;
+  margin-bottom: 0.75rem;
+  box-sizing: border-box;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+}
+
+.ne-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ne-save {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background: #1c4a91;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.ne-save:hover {
+  background: #163d78;
+}
+
+.ne-modal input::placeholder,
+.ne-modal textarea::placeholder {
+  color: #666;
+}
