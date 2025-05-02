@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './ParticipantsPopup.css';
 
-const ParticipantsPopup = ({ event, onClose }) => {
-  const { id } = useParams();  
+const ParticipantsPopup = ({ event, onClose, isAdmin }) => {
+  const { id } = useParams();
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isParticipating, setIsParticipating] = useState(false); 
+  const [isParticipating, setIsParticipating] = useState(false);
+
+  // Función para obtener los participantes de la API
   const fetchParticipants = async () => {
-    const groupId = id; 
-    const activityId = event.id; 
+    const groupId = id;
+    const activityId = event.id;
 
     if (!groupId || !activityId) {
       console.error('Error: Faltan datos necesarios para obtener los participantes');
@@ -27,7 +29,7 @@ const ParticipantsPopup = ({ event, onClose }) => {
 
       if (response.ok) {
         const data = await response.json();
-        setParticipants(data.participants || []);  
+        setParticipants(data.participants || []);
         setLoading(false);
 
         const userId = localStorage.getItem('userId');
@@ -43,8 +45,9 @@ const ParticipantsPopup = ({ event, onClose }) => {
 
   useEffect(() => {
     fetchParticipants();
-  }, [event]);  
+  }, [event]);
 
+  // Función para unirse a la actividad
   const handleJoin = async () => {
     const groupId = id;
     const activityId = event.id;
@@ -59,8 +62,8 @@ const ParticipantsPopup = ({ event, onClose }) => {
       });
 
       if (response.ok) {
-        setIsParticipating(true); 
-        fetchParticipants(); 
+        setIsParticipating(true);
+        fetchParticipants();
       } else {
         alert('Error al unirse a la actividad');
       }
@@ -70,6 +73,7 @@ const ParticipantsPopup = ({ event, onClose }) => {
     }
   };
 
+  // Función para salir de la actividad
   const handleLeave = async () => {
     const groupId = id;
     const activityId = event.id;
@@ -84,13 +88,41 @@ const ParticipantsPopup = ({ event, onClose }) => {
       });
 
       if (response.ok) {
-        setIsParticipating(false);  
-        fetchParticipants(); 
+        setIsParticipating(false);
+        fetchParticipants();
       } else {
         alert('Error al salir de la actividad');
       }
     } catch (error) {
       console.error('Error al salir:', error);
+      alert('Error en la conexión a la API');
+    }
+  };
+
+  const handleRemoveParticipant = async (participantId) => {
+    const groupId = id;
+    const activityId = event.id;
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/groups/${groupId}/activities/${activityId}/participants`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          participantId: participantId,
+        }),
+      });
+
+      if (response.ok) {
+        fetchParticipants();  // Recargar los participantes después de eliminar
+      } else {
+        alert('Error al eliminar el participante');
+      }
+    } catch (error) {
+      console.error('Error al eliminar el participante:', error);
       alert('Error en la conexión a la API');
     }
   };
@@ -114,6 +146,13 @@ const ParticipantsPopup = ({ event, onClose }) => {
                 <div key={participant.id} className="participant-item">
                   <p><strong>{participant.name}</strong></p>
                   <p>{participant.email}</p>
+                    <button
+                      className="remove-participant-btn"
+                      onClick={() => handleRemoveParticipant(participant.id)}
+                    >
+                      ✖
+                    </button>
+                  
                 </div>
               ))
             ) : (

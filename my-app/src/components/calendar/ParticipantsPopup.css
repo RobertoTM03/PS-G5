@@ -116,4 +116,40 @@
   .close-btn:hover {
     background-color: #e2e6ea;
   }
+  .participant-item {
+    display: flex;
+    justify-content: space-between;  /* Alinea los elementos de izquierda a derecha */
+    align-items: center;
+    padding: 10px;
+    background-color: #f4f4f4;  /* Fondo gris claro */
+    margin: 5px 0;
+    border-radius: 8px;
+  }
+  
+  .remove-participant-btn {
+    background-color: transparent;
+    border: none;
+    color: red;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.3s ease; /* Agregar transición suave */
+  }
+  
+  .remove-participant-btn:hover {
+    color: darkred;  /* Cambio de color al pasar el cursor */
+  }
+  
+  .participant-item p {
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .participant-item p strong {
+    font-weight: bold;
+  }
+  
+  .popup-content {
+    padding: 20px;
+  }
   

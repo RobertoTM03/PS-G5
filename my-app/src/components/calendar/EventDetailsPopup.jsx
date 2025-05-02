@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import './EventDetailsPopup.css';
 import ParticipantsPopup from './ParticipantsPopup';
 
-const EventDetailsPopup = ({ event, onClose, onEdit, onDelete, onViewParticipants }) => {
+const EventDetailsPopup = ({ event, onClose, onEdit, onDelete, isAdmin }) => {
   const { id } = useParams();  // groupId
   const [showMenu, setShowMenu] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
@@ -50,6 +50,8 @@ const EventDetailsPopup = ({ event, onClose, onEdit, onDelete, onViewParticipant
       // Llama al callback onDelete (si está definido) para actualizar el estado en el componente padre
       onDelete(event); // Actualizar la lista de eventos en el componente padre
       onClose(); // Cierra el popup después de eliminar
+      window.location.reload(); // Recargar la página
+
     } catch (error) {
       console.error('Error al eliminar evento:', error.message || error);
       alert('Hubo un error al eliminar el evento.');
@@ -106,6 +108,7 @@ const EventDetailsPopup = ({ event, onClose, onEdit, onDelete, onViewParticipant
         <ParticipantsPopup 
           event={event}
           onClose={() => setShowParticipants(false)} 
+          isAdmin={isAdmin}
         />
       )}
     </div>
