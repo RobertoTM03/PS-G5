@@ -14,18 +14,16 @@ export default function ExpenseView() {
             try {
                 const response = await fetch(`http://localhost:3000/group/${id}/expenses/`);
 
-                // Check for non-JSON or error response
-                const text = await response.text();
-                try {
-                    const data = JSON.parse(text);
-                    setExpenses(data);
-                } catch (parseError) {
-                    console.error("Error parsing JSON:", parseError);
-                    console.error("Server returned:", text);
+                if (!response.ok) {
+                    setExpenses([]); // Si hay error, lista vacía
+                    return;
                 }
 
+                const data = await response.json();
+                setExpenses(Array.isArray(data) ? data : []);
             } catch (error) {
-                console.error("Error fetching expenses:", error);
+                console.error("Error al obtener los gastos:", error);
+                setExpenses([]); // En caso de fallo, también vacía
             }
         }
 
@@ -85,31 +83,35 @@ export default function ExpenseView() {
                 </div>
 
                 <div className="expense-list-display">
-                    {expenses.map(expense => (
-                        <div key={expense.id} className={expense.covered ? "covered-expense" : "pending-expense"}>
-                            <div className="name-expense">
-                                <h5 className="color-expense gap-tag">{expense.name}</h5>
-                            </div>
-                            <div className="amount-expense">
-                                <h5 className="color-expense gap-tag">Amount: {expense.amount.toFixed(2)}€</h5>
-                            </div>
-                            {!expense.covered ? (
-                                <div className="contribute-expense gap-tag">
-                                    <button onClick={() => handleContribute(expense.id)}>Contribute</button>
+                    {expenses.length > 0 ? (
+                        expenses.map(expense => (
+                            <div key={expense.id} className={expense.covered ? "covered-expense" : "pending-expense"}>
+                                <div className="name-expense">
+                                    <h5 className="color-expense gap-tag">{expense.name}</h5>
                                 </div>
-                            ) : (
-                                <div>
-                                    <h5 className="color-expense gap-tag">Cubierto</h5>
+                                <div className="amount-expense">
+                                    <h5 className="color-expense gap-tag">Amount: {expense.amount.toFixed(2)}€</h5>
                                 </div>
-                            )}
-                            <div className="edition-expense gap-tag">
-                                <button onClick={() => handleEdit(expense.id)}>Editar</button>
+                                {!expense.covered ? (
+                                    <div className="contribute-expense gap-tag">
+                                        <button onClick={() => handleContribute(expense.id)}>Contribute</button>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <h5 className="color-expense gap-tag">Cubierto</h5>
+                                    </div>
+                                )}
+                                <div className="edition-expense gap-tag">
+                                    <button onClick={() => handleEdit(expense.id)}>Editar</button>
+                                </div>
+                                <div className="delete-expense gap-tag">
+                                    <button onClick={() => handleDelete(expense.id)}>Eliminar</button>
+                                </div>
                             </div>
-                            <div className="delete-expense gap-tag">
-                                <button onClick={() => handleDelete(expense.id)}>Eliminar</button>
-                            </div>
-                        </div>
-                    ))}
+                        ))
+                    ) : (
+                        <p className="no-expenses">No hay gastos registrados.</p>
+                    )}
                 </div>
 
                 <button className="expense-list-button" onClick={() => navigate(`/AñadirGastos/${id}`)}>
