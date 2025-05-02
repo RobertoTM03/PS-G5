@@ -113,10 +113,11 @@ export default function ExpenseView() {
                         <p className="no-expenses">No hay gastos registrados.</p>
                     )}
                 </div>
-
-                <button className="expense-list-button" onClick={() => navigate(`/AñadirGastos/${id}`)}>
-                    <h2 className="color-expense">Añadir Gasto</h2>
-                </button>
+                <div className="expense-list-bottom">
+                    <button className="expense-list-button" onClick={() => navigate(`/AñadirGastos/${id}`)}>
+                        <h2 className="color-expense">Añadir Gasto</h2>
+                    </button>
+                </div>
             </div>
 
             <Footer/>
