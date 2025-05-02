@@ -170,7 +170,7 @@ export default function GroupAdminView() {
         <div className="right-panel">
           <div className="icon-rows">
             <div className="icon-row">
-              <button className="icon-btn" onClick={() => navigate('/Gastos')}>
+              <button className="icon-btn" onClick={() => navigate(`/Gastos/${groupId}`)}>
                 <img src={money} alt="Finance" />
                 <p className="icon-label">Gastos</p>
               </button>

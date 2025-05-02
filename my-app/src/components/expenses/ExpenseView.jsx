@@ -2,48 +2,60 @@ import React, { useState, useEffect } from "react";
 import Header from "../layout/Header.jsx";
 import Footer from "../layout/Footer.jsx";
 import './ExpenseView.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function ExpenseView() {
     const navigate = useNavigate();
-
+    const { id } = useParams(); // groupId
     const [expenses, setExpenses] = useState([]);
 
-    // Fetch a servidor al montar el componente
     useEffect(() => {
         async function fetchExpenses() {
             try {
-                const response = await fetch(``);
-                const data = await response.json();
-                setExpenses(data); // Aquí ya tienes tu array de gastos
+                const response = await fetch(`http://localhost:3000/group/${id}/expenses/`);
+
+                // Check for non-JSON or error response
+                const text = await response.text();
+                try {
+                    const data = JSON.parse(text);
+                    setExpenses(data);
+                } catch (parseError) {
+                    console.error("Error parsing JSON:", parseError);
+                    console.error("Server returned:", text);
+                }
+
             } catch (error) {
                 console.error("Error fetching expenses:", error);
             }
         }
 
-        fetchExpenses();
-    }, []);
+        if (id) {
+            fetchExpenses();
+        }
+    }, [id]);
 
-    const handleContribute = (id) => {
+    const handleContribute = (expenseId) => {
         setExpenses(prevExpenses =>
             prevExpenses.map(expense =>
-                expense.id === id ? { ...expense, covered: true } : expense
+                expense.id === expenseId ? { ...expense, covered: true } : expense
             )
         );
-        // Aquí también podrías hacer un POST/PATCH al servidor para actualizar estado
+        // TODO: Send update to server
     };
 
-    const handleEdit = (id) => {
-        console.log("Editar gasto:", id);
-        // lógica para editar
+    const handleEdit = (expenseId) => {
+        console.log("Editar gasto:", expenseId);
+        // TODO: Navigate or show modal to edit
     };
 
-    const handleDelete = (id) => {
-        setExpenses(prevExpenses => prevExpenses.filter(expense => expense.id !== id));
-        // También llamarías al servidor para eliminar
+    const handleDelete = (expenseId) => {
+        setExpenses(prevExpenses =>
+            prevExpenses.filter(expense => expense.id !== expenseId)
+        );
+        // TODO: Send delete request to server
     };
 
-    const totalExpense = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const totalExpense = expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0);
 
     return (
         <div className="expense-wrapper">
@@ -100,7 +112,7 @@ export default function ExpenseView() {
                     ))}
                 </div>
 
-                <button className="expense-list-button" onClick={() => navigate('/AñadirGastos')}>
+                <button className="expense-list-button" onClick={() => navigate(`/AñadirGastos/${id}`)}>
                     <h2 className="color-expense">Añadir Gasto</h2>
                 </button>
             </div>

@@ -29,7 +29,7 @@ const Header = () => {
       }
       try {
         const response = await fetch('http://localhost:3000/auth/my-information', {
-          method: 'POST',
+          method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
         });
         if (response.ok) {

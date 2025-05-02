@@ -31,8 +31,8 @@ function App() {
           <Route path="/AddGroupForm" element={<AddGroupForm />} />
           <Route path="/Calendar/:id" element={<Calendar />} />
           <Route path="/displayEvents" element={<DisplayEvents />} />
-          <Route path="/Gastos" element={<ExpenseView />} />
-          <Route path="/AñadirGastos" element={<AddExpense />} />
+          <Route path="/Gastos/:id" element={<ExpenseView />} />
+          <Route path="/AñadirGastos/:id" element={<AddExpense />} />
         </Routes>
       </BrowserRouter>
     </FirebaseProvider>
