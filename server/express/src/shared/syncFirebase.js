@@ -1,4 +1,4 @@
-const admin = require('./auth/firebase');  // Firebase Admin
+const admin = require('./firebase');  // Firebase Admin
 const db = require('./database');
 
 async function syncUsersFromFirebase() {

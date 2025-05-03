@@ -1,6 +1,6 @@
 const Activity = require('../entities/Activity');
 const activityRepository = require('../activityRepository');
-const {isValidISODateTime} = require("../../auxiliary-functions");
+const {isValidISODateTime} = require("../calendarUtils");
 
 module.exports = async (groupId, data, userId) => {
     const { title, description, startDate, endDate, location } = data;

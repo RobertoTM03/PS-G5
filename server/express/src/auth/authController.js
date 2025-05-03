@@ -1,7 +1,7 @@
-const admin = require('./firebase');
+const admin = require('../shared/firebase');
 const axios = require('axios');
-const db = require("../database");
-const { getUserFromToken } = require("../auxiliary-functions")
+const db = require("../shared/database");
+const { getUserFromToken } = require("./authService")
 
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;

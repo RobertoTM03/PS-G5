@@ -1,6 +1,6 @@
-const activityRepository = require('../activityRepository');
-const { isValidISODateTime } = require('../../auxiliary-functions');
 const {isGroupOwner} = require("../../groups/groupRepository");
+const activityRepository = require('../activityRepository');
+const { isValidISODateTime } = require("../calendarUtils");
 
 module.exports = async (groupId, activityId, updateData, userId) => {
     const activity = await activityRepository.findById(groupId, activityId);

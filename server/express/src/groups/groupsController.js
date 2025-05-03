@@ -1,5 +1,5 @@
-const db = require("../database");
-const { getUserFromToken } = require("../auxiliary-functions")
+const db = require("../shared/database");
+const { getUserFromToken } = require("../auth/authService")
 
 exports.createGroup = async (req, res) => {
     const { titulo, descripcion } = req.body;

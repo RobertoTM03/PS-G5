@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+require("../auth/authMiddleware");
+const expenseController = require("./expensesController");
+const { ensureAuthenticatedRequest } = require('../auth/authMiddleware');
 
 /**
  * @openapi
@@ -22,7 +25,7 @@ const router = express.Router();
  *           example: "64ac9b7b5f8e2c001fc45def"
  *     responses:
  *       200:
- *         description: Success, returns a list of expenses. Each expense will have a name, an amount and, optionally, a contributor and a list of tags. If the expense doesn't have a contributor, it means it hasn't been covered yet and it accepts adding a contributor.
+ *         description: Success, returns a list of expenses. Each expense will have a title, an amount and, optionally, a contributor and a list of tags. If the expense doesn't have a contributor, it means it hasn't been covered yet and it accepts adding a contributor.
  *         content:
  *           application/json:
  *             schema:
@@ -30,13 +33,13 @@ const router = express.Router();
  *               items:
  *                 type: object
  *                 required: 
- *                     - name
+ *                     - title
  *                     - amount
  *                 properties:
- *                   expenseId:
+ *                   id:
  *                     type: string
  *                     example: "53asc9b7b5fasduq1fc45abc"
- *                   name:
+ *                   title:
  *                     type: string
  *                     example: "Plane tickets"
  *                   amount:
@@ -47,7 +50,7 @@ const router = express.Router();
  *                   author:
  *                     type: object
  *                     properties:
- *                         userId:
+ *                         id:
  *                             type: string
  *                             description: ID of the User that created the expense
  *                             example: "64ac9b7b5f8e2c001fc45abc"
@@ -58,7 +61,7 @@ const router = express.Router();
  *                   contributor:
  *                     type: object
  *                     properties:
- *                         userId:
+ *                         id:
  *                             type: string
  *                             description: ID of the User that covered the expense
  *                             example: "64ac9b7b5f8e2c001fc45abc"
@@ -78,7 +81,7 @@ const router = express.Router();
  *         description: Group not found
  *       500:
  *         description: Something went wrong on our side
- */
+ */router.get('/:groupId/expenses', ensureAuthenticatedRequest, expenseController.getExpenses);
 
 
 /**
@@ -106,10 +109,10 @@ const router = express.Router();
  *                 schema:
  *                     type: object
  *                     required: 
- *                         - name
+ *                         - title
  *                         - amount
  *                     properties:
- *                       name:
+ *                       title:
  *                         type: string
  *                         example: "Plane tickets"
  *                       amount:
@@ -117,7 +120,7 @@ const router = express.Router();
  *                         format: float
  *                         description: The expense amount that has been covered or is to be covered. By default the currency is Euros.
  *                         example: 270.00
- *                       contributorID:
+ *                       contributor:
  *                         type: string
  *                         description: ID of the User that covered the expense
  *                         example: "64ac9b7b5f8e2c001fc45abc"
@@ -135,13 +138,13 @@ const router = express.Router();
  *             schema:
  *               type: object
  *               required: 
- *                   - name
+ *                   - title
  *                   - amount
  *               properties:
- *                 expenseId:
+ *                 id:
  *                   type: string
  *                   example: "53asc9b7b5fasduq1fc45abc"
- *                 name:
+ *                 title:
  *                   type: string
  *                   example: "Plane tickets"
  *                 amount:
@@ -184,7 +187,7 @@ const router = express.Router();
  *       500:
  *         description: Something went wrong on our side
  */
-
+router.post('/:groupId/expenses', ensureAuthenticatedRequest, expenseController.createExpense);
 
 /**
  * @openapi
@@ -218,7 +221,7 @@ const router = express.Router();
  *                 schema:
  *                     type: object
  *                     properties:
- *                       name:
+ *                       title:
  *                         type: string
  *                         example: "Plane tickets"
  *                       amount:
@@ -226,7 +229,7 @@ const router = express.Router();
  *                         format: float
  *                         description: The expense amount that has been covered or is to be covered. By default the currency is Euros.
  *                         example: 270.00
- *                       contributorID:
+ *                       contributor:
  *                         type: string
  *                         description: ID of the User that covered the expense
  *                         example: "64ac9b7b5f8e2c001fc45abc"
@@ -244,13 +247,13 @@ const router = express.Router();
  *             schema:
  *               type: object
  *               required: 
- *                   - name
+ *                   - title
  *                   - amount
  *               properties:
- *                 expenseId:
+ *                 id:
  *                   type: string
  *                   example: "53asc9b7b5fasduq1fc45abc"
- *                 name:
+ *                 title:
  *                   type: string
  *                   example: "Plane tickets"
  *                 amount:
@@ -261,7 +264,7 @@ const router = express.Router();
  *                 author:
  *                   type: object
  *                   properties:
- *                       userId:
+ *                       id:
  *                           type: string
  *                           description: ID of the User that created the expense
  *                           example: "64ac9b7b5f8e2c001fc45abc"
@@ -272,7 +275,7 @@ const router = express.Router();
  *                 contributor:
  *                   type: object
  *                   properties:
- *                       userId:
+ *                       id:
  *                           type: string
  *                           description: ID of the User that covered the expense
  *                           example: "64ac9b7b5f8e2c001fc45abc"
@@ -293,6 +296,7 @@ const router = express.Router();
  *       500:
  *         description: Something went wrong on our side
  */
+router.post('/:groupId/expenses/:expenseId', ensureAuthenticatedRequest, expenseController.updateExpense);
 
 /**
  * @openapi
@@ -329,7 +333,7 @@ const router = express.Router();
  *       500:
  *         description: Something went wrong on our side
  */
-
+router.delete('/:groupId/expenses/:expenseId', ensureAuthenticatedRequest, expenseController.deleteExpense);
 
 /**
  * @openapi
@@ -368,6 +372,7 @@ const router = express.Router();
  *       500:
  *         description: Something went wrong on our side
  */
+router.post('/:groupId/expenses/:expenseId/contribute', ensureAuthenticatedRequest, expenseController.addContribution);
 
 /**
  * @openapi
@@ -406,6 +411,6 @@ const router = express.Router();
  *       500:
  *         description: Something went wrong on our side
  */
-
+router.post('/:groupId/expenses/:expenseId/remove-contribution', ensureAuthenticatedRequest, expenseController.removeContribution);
 
 module.exports = router;

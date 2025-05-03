@@ -1,5 +1,8 @@
-const db = require("../database")
-const admin = require("./firebase");
+
+const db = require("../shared/database")
+const admin = require("../shared/firebase");
+
+const authErrors = require("./authErrors");
 
 exports.getUserFromToken = async (idToken) => {
     try {
@@ -8,15 +11,15 @@ exports.getUserFromToken = async (idToken) => {
 
         const user = await db.oneOrNone('SELECT * FROM users WHERE firebase_uid = $1', [firebaseUid]);
         if (!user) {
-            throw new UserNotFound();
+            throw new authErrors.UserNotFound;
         }
 
         return user;
     } catch (error) {
         console.error(error);
-        if (error instanceof UserNotFound) {
+        if (error instanceof authErrors.UserNotFound) {
             throw error;
         }
-        throw new InvalidToken();
+        throw new authErrors.InvalidToken;
     }
 };

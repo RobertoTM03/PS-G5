@@ -1,6 +1,6 @@
 const groupService = require('./groupService');
 
-module.exports = async (req, res, next) => {
+exports.ensureGroupMembership = async (req, res, next) => {
     const groupId = parseInt(req.params.groupId, 10);
     const userId = req.user.id;
 

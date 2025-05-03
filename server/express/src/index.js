@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const { swaggerUi, swaggerSpec } = require('./swagger');
-const db = require("./database");
-const syncUsersFromFirebase = require('./syncFirebase');
+const db = require("./shared/database");
+const syncUsersFromFirebase = require('./shared/syncFirebase');
 
 const cors = require('cors');
 
@@ -46,6 +46,10 @@ app.use('/auth', authenticationRoutes);
 // Rutas de grupos
 const groupsRoutes = require('./groups/groups.routes');
 app.use('/groups', groupsRoutes);
+
+//Rutas de gastos
+const expenseRoutes = require('./expenses/expenses.routes');
+app.use('/groups', expenseRoutes);
 
 //rutas de actividades de un grupo
 const calendarRoutes = require('./calendar/calendar.routes');

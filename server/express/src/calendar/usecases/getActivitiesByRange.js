@@ -1,5 +1,5 @@
 const activityRepository = require('../activityRepository');
-const { isValidISODate } = require('../../auxiliary-functions');
+const { isValidISODate } = require("../calendarUtils");
 
 module.exports = async (groupId, startDate, endDate, userId) => {
     if (!isValidISODate(startDate) || !isValidISODate(endDate)) {

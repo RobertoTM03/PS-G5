@@ -21,6 +21,19 @@ CREATE TABLE group_users (
     UNIQUE (group_id, user_id)
 );
 
+CREATE TABLE expenses (
+    id SERIAL PRIMARY KEY,
+    group_id INT NOT NULL,
+    title VARCHAR(32) NOT NULL,
+    amount FLOAT NOT NULL,
+    author_id INT NOT NULL,
+    contributor_id INT,
+    tags TEXT[],
+    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (contributor_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
 CREATE TABLE activities (
     id SERIAL PRIMARY KEY,
     group_id INT NOT NULL,
@@ -71,3 +84,9 @@ INSERT INTO group_users (group_id, user_id) VALUES
     (3, 3),  -- Carlos
     (3, 4),  -- Diana
     (3, 1);  -- Alice
+
+
+INSERT INTO expenses (group_id, title, amount, author_id, contributor_id, tags) VALUES
+    (1, 'Plane tickets', 200.0, 1, NULL, NULL),
+    (1, 'Coffee', 30.0, 1, 2, NULL),
+    (1, 'Chocolate tax', 16.5, 2, NULL, ARRAY['Comida', 'Provisiones', 'Misceláneos']);

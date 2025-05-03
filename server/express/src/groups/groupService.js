@@ -1,4 +1,4 @@
-const db = require('../database');
+const db = require('../shared/database');
 
 exports.userBelongsToGroup = async (groupId, userId) => {
     const result = await db.oneOrNone(
