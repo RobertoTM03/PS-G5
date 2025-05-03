@@ -33,11 +33,20 @@ class ExpenseRepositoryPostgreImpl {
     }
 
     async create(expense) {
+        const values = [
+            expense.groupId, 
+            expense.title, 
+            expense.amount, 
+            expense.author ? expense.author.id: null, 
+            expense.contributor ? expense.contributor.id: null, 
+            pgPromise.as.array(expense.tags),
+            expense.id
+        ]
         const expense_row = await db.one(`
             INSERT INTO expenses (group_id, title, amount, author_id, contributor_id, tags)
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *;
-        `, [expense.groupId, expense.title, expense.amount, expense.author.id, expense.contributor.id, expense.tags]);
+        `, values);
         expense.id = expense_row.id;
         return expense;        
     }
