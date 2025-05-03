@@ -33,6 +33,7 @@ class ExpenseRepositoryPostgreImpl {
     }
 
     async create(expense) {
+        console.log(expense.toJSON());
         const values = [
             expense.groupId, 
             expense.title, 
@@ -44,11 +45,11 @@ class ExpenseRepositoryPostgreImpl {
         ]
         const expense_row = await db.one(`
             INSERT INTO expenses (group_id, title, amount, author_id, contributor_id, tags)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            VALUES ($1, $2, $3, $4, $5, $6^)
             RETURNING *;
         `, values);
-        expense.id = expense_row.id;
-        return expense;        
+        const createdExpense = this.getExpenseFromRow(expense_row);
+        return createdExpense;        
     }
 
     async findById(expenseId) {
