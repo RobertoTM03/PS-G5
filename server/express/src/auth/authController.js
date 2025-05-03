@@ -133,7 +133,7 @@ exports.resetPassword = async (req, res) => {
 exports.getMyInformation = async (req, res) => {
     try {
         // Obtener el usuario autenticado desde el token
-        const user = await getUserFromToken(req.headers.authorization);
+        const user = req.user;
 
         // Responder con los detalles del grupo
         res.status(200).json({

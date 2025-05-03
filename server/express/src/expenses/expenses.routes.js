@@ -1,9 +1,11 @@
 const express = require('express');
-const router = express.Router();
 
 require("../auth/authMiddleware");
 const expenseController = require("./expensesController");
 const { ensureAuthenticatedRequest } = require('../auth/authMiddleware');
+
+const router = express.Router();
+router.use(ensureAuthenticatedRequest);
 
 /**
  * @openapi
@@ -81,7 +83,7 @@ const { ensureAuthenticatedRequest } = require('../auth/authMiddleware');
  *         description: Group not found
  *       500:
  *         description: Something went wrong on our side
- */router.get('/:groupId/expenses', ensureAuthenticatedRequest, expenseController.getExpenses);
+ */router.get('/:groupId/expenses', expenseController.getExpenses);
 
 
 /**
@@ -187,7 +189,7 @@ const { ensureAuthenticatedRequest } = require('../auth/authMiddleware');
  *       500:
  *         description: Something went wrong on our side
  */
-router.post('/:groupId/expenses', ensureAuthenticatedRequest, expenseController.createExpense);
+router.post('/:groupId/expenses', expenseController.createExpense);
 
 /**
  * @openapi
@@ -296,7 +298,7 @@ router.post('/:groupId/expenses', ensureAuthenticatedRequest, expenseController.
  *       500:
  *         description: Something went wrong on our side
  */
-router.post('/:groupId/expenses/:expenseId', ensureAuthenticatedRequest, expenseController.updateExpense);
+router.post('/:groupId/expenses/:expenseId', expenseController.updateExpense);
 
 /**
  * @openapi
@@ -333,7 +335,7 @@ router.post('/:groupId/expenses/:expenseId', ensureAuthenticatedRequest, expense
  *       500:
  *         description: Something went wrong on our side
  */
-router.delete('/:groupId/expenses/:expenseId', ensureAuthenticatedRequest, expenseController.deleteExpense);
+router.delete('/:groupId/expenses/:expenseId', expenseController.deleteExpense);
 
 /**
  * @openapi
@@ -372,7 +374,7 @@ router.delete('/:groupId/expenses/:expenseId', ensureAuthenticatedRequest, expen
  *       500:
  *         description: Something went wrong on our side
  */
-router.post('/:groupId/expenses/:expenseId/contribute', ensureAuthenticatedRequest, expenseController.addContribution);
+router.post('/:groupId/expenses/:expenseId/contribute', expenseController.addContribution);
 
 /**
  * @openapi
@@ -411,6 +413,6 @@ router.post('/:groupId/expenses/:expenseId/contribute', ensureAuthenticatedReque
  *       500:
  *         description: Something went wrong on our side
  */
-router.post('/:groupId/expenses/:expenseId/remove-contribution', ensureAuthenticatedRequest, expenseController.removeContribution);
+router.post('/:groupId/expenses/:expenseId/remove-contribution', expenseController.removeContribution);
 
 module.exports = router;

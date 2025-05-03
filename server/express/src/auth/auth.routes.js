@@ -1,6 +1,9 @@
 const express = require('express');
-const router = express.Router();
+const {ensureAuthenticatedRequest} = require('./authMiddleware')
 const { register, login, resetPassword, getMyInformation  } = require('./authController');
+
+const router = express.Router();
+
 /**
  * @openapi
  * /auth/login:
@@ -176,7 +179,7 @@ router.post('/password-reset', resetPassword);
  *       500:
  *         description: Error no definido
  */
-router.get('/my-information', getMyInformation);
+router.get('/my-information', ensureAuthenticatedRequest, getMyInformation);
 
 
 module.exports = router;

@@ -1,5 +1,4 @@
 const db = require("../shared/database");
-const { getUserFromToken } = require("../auth/authService")
 
 exports.createGroup = async (req, res) => {
     const { titulo, descripcion } = req.body;
@@ -12,8 +11,7 @@ exports.createGroup = async (req, res) => {
     }
 
     try {
-        // Obtener el usuario autenticado desde el token
-        const user = await getUserFromToken(req.headers.authorization);
+        const user = req.user;
 
         // Crear el grupo
         const group = await db.one(
@@ -51,7 +49,7 @@ exports.addGroupMember = async (req, res) => {
 
     try {
         // Obtener usuario autenticado desde el token
-        const requestingUser = await getUserFromToken(req.headers.authorization);
+        const requestingUser = req.user;
 
         // Verificar existencia del grupo
         const group = await db.oneOrNone('SELECT * FROM groups WHERE id = $1', [groupId]);
@@ -107,7 +105,7 @@ exports.removeGroupMember = async (req, res) => {
 
     try {
         // Obtener el usuario autenticado desde el token
-        const requestingUser = await getUserFromToken(req.headers.authorization);
+        const requestingUser = req.user;
 
         // Verificar existencia del grupo
         const group = await db.oneOrNone('SELECT * FROM groups WHERE id = $1', [groupId]);
@@ -161,8 +159,7 @@ exports.removeGroup = async (req, res) => {
     const { groupId } = req.params;
 
     try {
-        // Obtener el usuario autenticado desde el token
-        const requestingUser = await getUserFromToken(req.headers.authorization);
+        const requestingUser = req.user;
 
         // Verificar que el grupo exista
         const group = await db.oneOrNone('SELECT * FROM groups WHERE id = $1', [groupId]);
@@ -196,8 +193,7 @@ exports.getGroupDetails = async (req, res) => {
     const { groupId } = req.params;
 
     try {
-        // Obtener el usuario autenticado desde el token
-        const user = await getUserFromToken(req.headers.authorization);
+        const user = req.user;
 
         // Verificar que el grupo exista
         const group = await db.oneOrNone('SELECT * FROM groups WHERE id = $1', [groupId]);
@@ -244,8 +240,7 @@ exports.leaveGroup = async (req, res) => {
     const { groupId } = req.params;
 
     try {
-        // Obtener usuario autenticado desde el token
-        const user = await getUserFromToken(req.headers.authorization);
+        const user = req.user;
 
         // Verificar que el grupo exista
         const group = await db.oneOrNone('SELECT * FROM groups WHERE id = $1', [groupId]);
@@ -286,8 +281,7 @@ exports.leaveGroup = async (req, res) => {
 
 exports.getMyGroups = async (req, res) => {
     try {
-        // Obtener el usuario autenticado desde el token (la validación se maneja dentro de getUserFromToken)
-        const user = await getUserFromToken(req.headers.authorization);
+        const user = req.user;
 
         // Consultar los grupos donde el usuario es propietario o miembro
         const grupos = await db.any(
