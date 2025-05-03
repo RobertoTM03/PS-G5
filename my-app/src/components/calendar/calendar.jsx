@@ -33,41 +33,105 @@ export default function CalendarPage() {
   const [inst, setInst] = useState(null);
   const [currentDate, setCurrentDate] = useState('');
   const [events, setEvents] = useState([]);
-
   const [showDisplay, setShowDisplay] = useState(false);
   const [displayDate, setDisplayDate] = useState(null);
   const [displayEvents, setDisplayEvents] = useState([]);
-
   const [showNuevo, setShowNuevo] = useState(false);
   const [nuevoData, setNuevoData] = useState({ start: null, end: null });
-
   const [showEventDetails, setShowEventDetails] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-
   const [showEdit, setShowEdit] = useState(false);
   const [editEventData, setEditEventData] = useState(null);
-
   const [userId, setUserId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isCreator, setIsCreator] = useState(false);  // Estado para verificar si el usuario es el creador
 
   const handleDeleteEvent = (deletedEvent) => {
     setEvents((prevEvents) => prevEvents.filter(event => event.id !== deletedEvent.id));
-    
   };
-  
-  // Leer userId y rol del token (JWT asumido)
+
+  // Función para obtener detalles del usuario
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        setUserId(payload.userId || payload.id);
-        setIsAdmin(payload.role === 'admin' || payload.isAdmin);
-      } catch (err) {
-        console.warn('⚠️ Error leyendo token:', err);
+    const fetchUserDetails = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
       }
+
+      try {
+        const response = await fetch('http://localhost:3000/auth/my-information', {  // Aquí usamos la endpoint para obtener los detalles del usuario
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          console.error('Error fetching user details');
+          return;
+        }
+
+        const userDetails = await response.json();
+        console.log('User details:', userDetails);
+        setUserId(userDetails.id);  // Asignamos el id del usuario
+
+        // Aquí se asume que el token ya se usa correctamente
+        const groupDetailsResponse = await fetch(`http://localhost:3000/groups/${id}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (groupDetailsResponse.ok) {
+          const groupDetails = await groupDetailsResponse.json();
+          console.log('Group details:', groupDetails);
+
+          // Establecer si el usuario es administrador basándose en 'isOwner'
+          setIsAdmin(groupDetails.isOwner);  // Establecer isAdmin basado en la propiedad 'isOwner'
+        }
+      } catch (err) {
+        console.error('Error fetching user details:', err);
+      }
+    };
+
+    fetchUserDetails();
+  }, [id]);  // Se ejecuta una sola vez cuando cambia el groupId
+
+  const fetchActivityDetails = async (activityId) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const response = await fetch(`http://localhost:3000/groups/${id}/activities/${activityId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const activityDetails = await response.json();
+        console.log('Activity details:', activityDetails);
+
+        // Verificar si el usuario actual es el creador del evento
+        console.log('Creator User ID:', activityDetails.createdBy);
+        setIsCreator(activityDetails.createdBy === userId);  // Establecer si el usuario es el creador
+      }
+    } catch (err) {
+      console.error('Error fetching activity details:', err);
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    if (selectedEvent && userId) {
+      fetchActivityDetails(selectedEvent.id);  // Obtener los detalles de la actividad seleccionada
+    }
+  }, [selectedEvent, userId]);  // Ejecutamos cuando 'selectedEvent' o 'userId' cambian
 
   const updateTitle = (calendarInst) => {
     const d = calendarInst.getDate();
@@ -266,6 +330,7 @@ export default function CalendarPage() {
 
               currentUserId={userId}
               isAdmin={isAdmin}
+              isCreator={isCreator}
             />
           )}
 

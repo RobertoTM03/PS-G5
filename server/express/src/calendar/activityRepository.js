@@ -11,4 +11,6 @@ module.exports = {
     findByDay: postgresRepo.findByDay,
     findByRange: postgresRepo.findByRange,
     userBelongsToGroup: postgresRepo.userBelongsToGroup,
+    isGroupOwner: postgresRepo.isGroupOwner // Asegúrate de exportarlo
+
 };
