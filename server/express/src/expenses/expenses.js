@@ -65,7 +65,7 @@ class Expense {
     set author(author) {
         if (author instanceof User) {
             this.#author = author;
-        } else if (author instanceof Number) {
+        } else if (Number.isInteger(author)) {
             this.#author = new User(author);
         }
     }
