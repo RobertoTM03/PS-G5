@@ -229,7 +229,7 @@ export default function ExpenseView() {
                             <div key={expense.id} className={`expense-row ${expense.contributor ? "covered-expense" : "pending-expense"}`}>
                                 <div className="name-expense">
                                     <h5 className="color-expense">{expense.title}</h5>
-                                    {expense.contributor && <span className="expense-label">Cubierto</span>}
+                                    {expense.contributor && <span className="expense-label covered-expense-label">Cubierto</span>}
                                     {!expense.contributor && <span className="expense-label">Pendiente</span>}
                                 </div>
 
@@ -238,27 +238,28 @@ export default function ExpenseView() {
                                 </div>
 
                                 <div className="contribute-expense">
-                                    {expense.contributor ? (
-                                        <div className="contribution-info">
-                                            <button className="uncontribute-button-red" onClick={() => handleUncontribute(expense.id)}>
-                                                Descubrir
-                                            </button>
-                                        </div>
+                                { expense.contributor ? 
+                                    (
+                                        expense.contributor.id === userId ? (
+                                            <div className="contribution-info">
+                                                <button className="uncontribute-button-red" onClick={() => handleUncontribute(expense.id)}>
+                                                    Desvincular
+                                                </button>
+                                            </div>
+                                        ) : null
                                     ) : (
-                                        <button
-                                            className="contribute-button-green"
-                                            onClick={() => handleContribute(expense.id)}
-                                        >
-                                            Cubrir
-                                        </button>
-                                    )}
+                                            <button className="contribute-button-green" onClick={() => handleContribute(expense.id)}>
+                                                Cubrir
+                                            </button>
+                                    )
+                                }
                                 </div>
 
 
 
                                 <div className="contributed-by">
                                     {expense.contributor && (
-                                        <span className="contributor-name">Cubierto por {expense.contributorName}</span>
+                                        <span className="contributor-name">{expense.contributor.name}</span>
                                     )}
                                 </div>
 

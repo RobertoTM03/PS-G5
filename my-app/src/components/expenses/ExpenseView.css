@@ -166,6 +166,10 @@
     margin-left: 10px;
 }
 
+.covered-expense-label {
+    background-color: #28a745;
+}
+
 /* Asegura que los elementos internos no rompan la grilla */
 .name-expense,
 .amount-expense,
