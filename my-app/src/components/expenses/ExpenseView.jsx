@@ -114,6 +114,7 @@ export default function ExpenseView() {
                         : expense
                 )
             );
+            window.location.reload();
 
         } catch (error) {
             console.error("Error al contribuir al gasto:", error.message);
@@ -160,10 +161,34 @@ export default function ExpenseView() {
         });
     };
 
-    const handleDeleteClick = (expenseId) => {
-        setExpenseToDelete(expenseId);
-        setShowDeleteModal(true);
+    const handleDeleteClick = async (expenseId) => {
+        const isConfirmed = window.confirm("¿Estás seguro de que deseas eliminar este gasto? Esta acción no se puede deshacer.");
+        
+        if (!isConfirmed) return;
+    
+        try {
+            const response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseId}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    alert("No tienes permisos para eliminar este gasto.");
+                    return;
+                }
+                const errorText = await response.text();
+                throw new Error(`Error al eliminar gasto: ${response.status} - ${errorText}`);
+            }
+    
+            // Recargar la página después de eliminar
+            window.location.reload();
+    
+        } catch (error) {
+            console.error("Error eliminando gasto:", error);
+        }
     };
+    
 
     const handleDelete = async () => {
         try {
@@ -199,7 +224,7 @@ export default function ExpenseView() {
     return (
         <div className="main-container">
             <Header />
-
+            <div className="arrow" onClick={() => navigate(`/GroupAdminView/${id}`)}>←</div>
             <div className="expense-overwiew">
                 <h2 className="color-expense">Resumen de gastos:</h2>
                 <div className="expense-calculation">
@@ -222,7 +247,7 @@ export default function ExpenseView() {
                         <span>Título</span>
                         <span>Cantidad</span>
                         <span>Acción</span>
-                        <span>Contribuido por</span>
+                        <span>Pagado por</span>
                         <span>Editar/Eliminar</span>
                     </div>
 
@@ -251,7 +276,7 @@ export default function ExpenseView() {
                                         ) : null
                                     ) : (
                                             <button className="contribute-button-green" onClick={() => handleContribute(expense.id)}>
-                                                Cubrir
+                                                Pagado
                                             </button>
                                     )
                                 }
@@ -286,19 +311,6 @@ export default function ExpenseView() {
                     </button>
                 </div>
             </div>
-
-            {showDeleteModal && (
-                <div className="delete-modal">
-                    <div className="modal-content">
-                        <h3>¿Estás seguro de que deseas eliminar este gasto? 😟</h3>
-                        <p>Una vez eliminado, no podrás recuperarlo. ¡Piensa bien tu decisión!</p>
-                        <div className="modal-actions">
-                            <button className="cancel-button" onClick={handleCancelDelete}>Cancelar</button>
-                            <button className="confirm-button" onClick={handleDelete}>Eliminar</button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             <Footer />
         </div>
