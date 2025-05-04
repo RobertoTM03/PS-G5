@@ -10,7 +10,6 @@ const removeContribution = require("./use_cases/removeContribution");
 
 
 exports.createExpense = async (req, res) => {
-    console.log("Hellooooo");
     try {
         const result = await createExpense(req.params.groupId, req.body, req.user.id);
         res.status(201).json(result);

@@ -1,12 +1,12 @@
 const express = require('express');
 const calendarController = require('./calendarController');
-const {ensureAuthenticatedRequest} = require('../auth/authMiddleware');
+const {ensureAuthenticated} = require('../auth/authMiddleware');
 const {ensureGroupMembership} = require('../groups/groupMembershipMiddleware');
 
 const router = express.Router();
 
-router.use(ensureAuthenticatedRequest);
-router.use('/:groupId', ensureGroupMembership);
+router.use(ensureAuthenticated);
+router.use('/:groupId/*', ensureGroupMembership);
 
 /**
  * @openapi

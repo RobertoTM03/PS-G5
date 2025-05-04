@@ -1,10 +1,12 @@
 const express = require('express');
 
-const { ensureAuthenticatedRequest } = require('../auth/authMiddleware');
+const { ensureAuthenticated } = require('../auth/authMiddleware');
+const { ensureGroupMembership } = require('../groups/groupMembershipMiddleware');
 const { createGroup, addGroupMember, removeGroupMember, removeGroup, getGroupDetails, leaveGroup, getMyGroups} = require('./groupsController');
 
 const router = express.Router();
-router.use(ensureAuthenticatedRequest);
+router.use(ensureAuthenticated);
+router.use('/:groupId/*', ensureGroupMembership);
 
 /**
  * @openapi

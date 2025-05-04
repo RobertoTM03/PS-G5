@@ -33,7 +33,6 @@ class ExpenseRepositoryPostgreImpl {
     }
 
     async create(expense) {
-        console.log(expense.toJSON());
         const values = [
             expense.groupId, 
             expense.title, 
@@ -69,13 +68,13 @@ class ExpenseRepositoryPostgreImpl {
         );
         const expenses = [];
         for (let i = 0; i < expense_rows.length; i++) {
-            expenses.push(await this.getExpenseFromRow(expense_rows[i]));
+            let expense = await this.getExpenseFromRow(expense_rows[i]);
+            expenses.push(expense);
         }
         return expenses;
     }
 
     async update(expense) {
-        console.log(expense.toJSON());
         const values = [
             expense.groupId, 
             expense.title, 
@@ -96,7 +95,6 @@ class ExpenseRepositoryPostgreImpl {
             WHERE id = $7
             RETURNING *
         `, values);
-        console.log(expense_row);
         return await this.getExpenseFromRow(expense_row);
     }
 

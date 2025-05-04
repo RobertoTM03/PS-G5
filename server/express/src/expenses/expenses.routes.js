@@ -1,11 +1,12 @@
 const express = require('express');
 
-require("../auth/authMiddleware");
+const { ensureAuthenticated} = require('../auth/authMiddleware');
+const {ensureGroupMembership} = require('../groups/groupMembershipMiddleware');
 const expenseController = require("./expensesController");
-const { ensureAuthenticatedRequest } = require('../auth/authMiddleware');
 
 const router = express.Router();
-router.use(ensureAuthenticatedRequest);
+router.use(ensureAuthenticated);
+router.use('/:groupId/*', ensureGroupMembership);
 
 /**
  * @openapi
@@ -83,7 +84,8 @@ router.use(ensureAuthenticatedRequest);
  *         description: Group not found
  *       500:
  *         description: Something went wrong on our side
- */router.get('/:groupId/expenses', expenseController.getExpenses);
+ */
+router.get('/:groupId/expenses', expenseController.getExpenses);
 
 
 /**

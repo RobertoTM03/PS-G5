@@ -1,5 +1,5 @@
 const express = require('express');
-const {ensureAuthenticatedRequest} = require('./authMiddleware')
+const {ensureAuthenticated} = require('./authMiddleware')
 const { register, login, resetPassword, getMyInformation  } = require('./authController');
 
 const router = express.Router();
@@ -179,7 +179,7 @@ router.post('/password-reset', resetPassword);
  *       500:
  *         description: Error no definido
  */
-router.get('/my-information', ensureAuthenticatedRequest, getMyInformation);
+router.get('/my-information', ensureAuthenticated, getMyInformation);
 
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const {AuthenticationRequiredError} = require('./authErrors');
 const { getUserFromToken } = require('./authService');
 
-exports.ensureAuthenticatedRequest = async (req, res, next) => {
+exports.ensureAuthenticated = async (req, res, next) => {
     try {
         if (!req.headers.authorization) {
             throw new AuthenticationRequiredError();
