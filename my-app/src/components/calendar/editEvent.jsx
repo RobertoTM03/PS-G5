@@ -47,6 +47,15 @@ export default function EditEvent({ event, onClose }) {
       return;
     }
 
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+
+    if (fin <= inicio) {
+      alert("La fecha de fin debe ser posterior a la fecha de inicio.");
+      return;
+    }
+
+
     try {
       const token = localStorage.getItem('token');
       const payload = {
