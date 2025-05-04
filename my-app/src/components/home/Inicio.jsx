@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Inicio.css";
 
-import Header from "../layout/HeaderNoSigned.jsx";
+import Header from "../layout/Header.jsx";
 import Footer from "../layout/Footer.jsx";
 
 import mundo from "../../../assets/pictures/mundo.png";
@@ -12,12 +12,24 @@ import documentos from "../../../assets/pictures/docs.png";
 import chat from "../../../assets/pictures/chatea.png";
 
 export default function Inicio() {
+
+    const [authenticated, setAuthenticated] = useState(false);
+
     const handleSignupClick = () => {
         window.location.href = "./Registrarse";
     };
     const handleSignInClick = () => {
         window.location.href = "./IniciarSesion";
     };
+
+    const handleAccessClick = () => {
+        window.location.href = "./vistaGrupos";
+    }
+
+    useEffect(() => {
+        const sessionToken = localStorage.getItem("token");
+        if (sessionToken) setAuthenticated(true);
+    });
 
     return (
         
@@ -35,12 +47,27 @@ export default function Inicio() {
                     <p>  
                         ¡Inicia sesión y empieza a organizar tu viaje en grupo!
                     </p>
-                    <button className="btn login-btn" onClick={handleSignInClick}>
-                       Acceder
-                    </button>
-                    <button className="btn signup-btn" onClick={handleSignupClick}>
-                        Registrarse
-                    </button>
+                    {
+                        authenticated ? 
+                        (
+                            <div id="call-to-action">
+                                <button className="btn home-btn" onClick={handleAccessClick}>
+                                    Acceder
+                                </button>
+                            </div>
+                            
+                        ) : (
+                            <div id="call-to-action">
+                                <button className="btn login-btn" onClick={handleSignInClick}>
+                                    Acceder
+                                </button>
+                                <button className="btn signup-btn" onClick={handleSignupClick}>
+                                    Registrarse
+                                </button>
+                            </div>
+                        )
+                    }
+                    
                 </div>
 
                 <div className="right-section">

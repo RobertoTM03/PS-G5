@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from "react-router"
 import './PasswordReset.css';
 import "../../styles.css";
-import HeaderNoSigned from '../layout/HeaderNoSigned.jsx';
+import Header from '../layout/Header.jsx';
 import Footer from '../layout/Footer.jsx';
 
 export default function PasswordReset() {
@@ -41,7 +41,7 @@ export default function PasswordReset() {
 
     return (
         <div className="recover-page-container">
-            <HeaderNoSigned />
+            <Header />
             <div className="content">
                 <form className="password-form" onSubmit={handleSubmit}>
   <h1 id="title-password">Introduce nueva contraseña</h1>

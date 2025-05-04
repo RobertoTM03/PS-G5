@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "../../styles.css";
 import "./PasswordRecovery.css";
 
-import HeaderNoSigned from "../layout/HeaderNoSigned.jsx";
+import Header from "../layout/Header.jsx";
 import Footer from "../layout/Footer.jsx";
 
 import {useFirebase} from "../../Firebase.jsx";
@@ -27,7 +27,7 @@ export default function PasswordRecovery () {
 
   return (
     <div className="reset-password-container">
-      <HeaderNoSigned />
+      <Header />
       <div className="reset-password-box">
         <h1>Resetear contraseña</h1>
         <p>

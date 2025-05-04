@@ -4,7 +4,7 @@ import "./Registrarse.css";
 import '../../styles.css';
 
 import Footer from "../layout/Footer.jsx";
-import Header from "../layout/HeaderNoSigned.jsx";
+import Header from "../layout/Header.jsx";
 
 export default function Registrarse() {
   const [formData, setFormData] = useState({

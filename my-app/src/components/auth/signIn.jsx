@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './signIn.css';
 import '../../styles.css';
 
-import Header from '../layout/HeaderNoSigned.jsx';
+import Header from '../layout/Header.jsx';
 import Footer from '../layout/Footer.jsx';
 
 export default function IniciarSesion() {

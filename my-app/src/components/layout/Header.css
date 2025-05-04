@@ -6,19 +6,22 @@
     padding: 15px 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     color: black;
-    border-bottom: 1px solid #e0e0e0;
 }
 
 /* Estilos cuando el usuario está autenticado */
 .header.authenticated {
-    background-color: white;
+    background-color: #133379;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 999;
 }
 
 .header.authenticated .logo h1 {
     margin: 0;
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: #fff;
 }
 
 .header.authenticated .header-icons {
@@ -29,7 +32,7 @@
 .header.authenticated .icon {
     margin-left: 20px;
     font-size: 24px;
-    color: #333;
+    color: #fff;
     cursor: pointer;
     transition: color 0.3s ease, transform 0.3s ease;
 }
@@ -43,7 +46,7 @@
     margin-left: 20px;
     font-size: 20px;
     font-weight: bold;
-    color: black;
+    color: #fff;
     cursor: pointer;
     transition: color 0.3s ease;
 }
@@ -54,7 +57,7 @@
 
 .header.authenticated .main-btn-signed {
     background-color: transparent; /* mismo color del header */
-    color: black;
+    color: #fff;
     border: none;
     cursor: pointer;
     font-weight: 600;
@@ -104,18 +107,13 @@
 /* Estilos cuando el usuario no está autenticado */
 .header.not-authenticated {
     background-color: #133379; /* Fondo azul */
-    position: fixed; /* Fijamos el header en la parte superior */
+    position: sticky; /* Fijamos el header en la parte superior */
     top: 0;
     left: 0;
     width: 100%; /* Asegura que el header ocupe todo el ancho */
     z-index: 999;  /* Asegura que el header esté por encima del contenido */
     padding: 10px 40px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Ajustar margen superior del contenedor de contenido */
-.main-content {
-    margin-top: 70px; /* Aseguramos que el contenido no quede bajo el header */
 }
 
 .header.not-authenticated .logo {
