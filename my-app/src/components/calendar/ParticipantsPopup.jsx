@@ -135,7 +135,10 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
     }
   };
 
-  const handleRemoveParticipant = async (participantId) => {
+  const handleRemoveParticipant = async (participantId, participantName) => {
+    const confirmDelete = window.confirm(`¿Desea eliminar a "${participantName}" como participante de este evento?`);
+    if (!confirmDelete) return;
+  
     const groupId = id;
     const activityId = event.id;
   
@@ -155,7 +158,7 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
       if (response.ok) {
         fetchParticipants();
       } else {
-        const errorData = await response.json();  // Obtener datos de error del backend
+        const errorData = await response.json();
         console.error('Error al eliminar participante:', errorData);
         alert(`Error al eliminar participante: ${errorData.message || 'Desconocido'}`);
       }
@@ -164,6 +167,7 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
       alert('Error en la conexión a la API');
     }
   };
+  
 
   if (loading) {
     return <div>Cargando participantes...</div>;
@@ -189,7 +193,7 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
                   {(isAdmin || isCreator) && (
                     <button
                       className="remove-participant-btn"
-                      onClick={() => handleRemoveParticipant(participant.id)}
+                      onClick={() => handleRemoveParticipant(participant.id, participant.name)}
                     >
                       ✖
                     </button>

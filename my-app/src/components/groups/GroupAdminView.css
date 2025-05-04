@@ -3,7 +3,7 @@
 .group-admin-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   background: linear-gradient(to right, #d4d4e2, #85a1e1); 
 }
@@ -242,4 +242,12 @@
 .trash-button:hover {
   transform: scale(1.2);
 }
+
+.back-arrow {
+  font-size: 2rem;
+  color: black;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
 

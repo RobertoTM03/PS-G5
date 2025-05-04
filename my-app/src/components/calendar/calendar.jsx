@@ -18,7 +18,7 @@ function parseToLocalDate(isoString) {
 // 2. VISTA / VIEWMODEL
 // ---------------------------
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../layout/Header.jsx';
 import Footer from '../layout/Footer.jsx';
 import NuevoEvento from './NuevoEvento.jsx';
@@ -26,9 +26,11 @@ import DisplayEvents from './displayEvents.jsx';
 import EventDetailsPopup from './EventDetailsPopup.jsx';
 import EditEvent from './editEvent.jsx';
 import './calendar.css';
+import '../groups/GroupAdminView.jsx';
 
 export default function CalendarPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const calendarRef = useRef(null);
   const [inst, setInst] = useState(null);
   const [currentDate, setCurrentDate] = useState('');
@@ -288,7 +290,14 @@ export default function CalendarPage() {
     <div className="page-container">
       <Header />
       <main className="calendar-page">
+      <div className="calendar-header-bar">
+        <div className="arrow" onClick={() => navigate(`/GroupAdminView/${id}`)}>←</div>
+        <h2 className="calendar-title-text">Calendario</h2>
+      </div>
+
         <div className="calendar-wrapper">
+        
+
           <div className="calendar-nav">
             <button onClick={goToday} className="today-btn">Today</button>
             <button onClick={goPrev} className="nav-btn">❮</button>

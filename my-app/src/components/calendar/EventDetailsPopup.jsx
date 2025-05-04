@@ -25,7 +25,7 @@ export default function EventDetailsPopup({ event, onClose, onEdit, onDelete, is
     date ? new Date(date).toLocaleString() : 'Fecha no válida';
 
   const handleDelete = async () => {
-    if (!window.confirm('¿Eliminar este evento?')) return;
+    if (!window.confirm('¿Desea eliminar este evento?')) return;
     try {
       const token = localStorage.getItem('token');
       const res = await fetch(
