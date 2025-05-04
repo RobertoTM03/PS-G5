@@ -129,6 +129,10 @@ export default function GroupAdminView() {
     <div className="group-admin-wrapper">
       <Header />
       <div className="group-admin-container">
+      <div className="back-button-bar">
+        <div className="back-arrow" onClick={() => navigate('/vistaGrupos')}>←</div>
+      </div>
+
         <div className="left-panel">
           <h2 className="group-title">{groupData.name}</h2>
           <p className="description-title">DESCRIPCIÓN</p>

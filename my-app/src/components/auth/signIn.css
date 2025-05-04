@@ -1,6 +1,5 @@
 
 
-/**Solo dejar lo del margin-top**/
 .sign-page-container {
     display: flex;
     flex-direction: column;
@@ -9,7 +8,6 @@
     width: 100%;
     margin-top: 40px;
 }
-/**Solo dejar lo del paddings **/
 .content-singIn {
     flex: 1;
     display: flex;
@@ -46,7 +44,7 @@
 .title-text h1 {
     color: #333;
     margin-bottom: 20px;
-    font: bold 54px Georgia;
+    font: bold 50px Georgia;
 }
 
 .sign-entry-form {

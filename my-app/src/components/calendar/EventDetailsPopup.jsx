@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import './EventDetailsPopup.css';
 import ParticipantsPopup from './ParticipantsPopup';
 
-export default function EventDetailsPopup({ event, onClose, onEdit, onDelete }) {
+export default function EventDetailsPopup({ event, onClose, onEdit, onDelete, isAdmin, isCreator }) {
   const { id: groupId } = useParams();
   const [showMenu, setShowMenu] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
@@ -25,7 +25,7 @@ export default function EventDetailsPopup({ event, onClose, onEdit, onDelete }) 
     date ? new Date(date).toLocaleString() : 'Fecha no válida';
 
   const handleDelete = async () => {
-    if (!window.confirm('¿Eliminar este evento?')) return;
+    if (!window.confirm('¿Desea eliminar este evento?')) return;
     try {
       const token = localStorage.getItem('token');
       const res = await fetch(
@@ -53,15 +53,14 @@ export default function EventDetailsPopup({ event, onClose, onEdit, onDelete }) 
             >⋮</button>
             {showMenu && (
               <ul className="popup-menu">
-                <li onClick={() => { setShowMenu(false); onEdit?.(event); }}>
-                  Editar
-                </li>
-                <li onClick={() => { setShowMenu(false); handleDelete(); }}>
-                  Eliminar
-                </li>
-                <li onClick={() => { setShowMenu(false); setShowParticipants(true); }}>
-                  Participantes
-                </li>
+                {/* Condicional para mostrar opciones de edición y eliminación */}
+                {(isAdmin || isCreator) && (
+                  <>
+                    <li onClick={() => { setShowMenu(false); onEdit?.(event); }}>Editar</li>
+                    <li onClick={() => { setShowMenu(false); handleDelete(); }}>Eliminar</li>
+                  </>
+                )}
+                <li onClick={() => { setShowMenu(false); setShowParticipants(true); }}>Participantes</li>
               </ul>
             )}
           </div>
@@ -87,7 +86,9 @@ export default function EventDetailsPopup({ event, onClose, onEdit, onDelete }) 
         <ParticipantsPopup
           event={event}
           onClose={() => setShowParticipants(false)}
-          isAdmin={false}
+          isAdmin={isAdmin}
+          isCreator={isCreator}
+
         />
       )}
     </div>
