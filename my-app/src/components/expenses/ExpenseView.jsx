@@ -3,130 +3,200 @@ import Header from "../layout/Header.jsx";
 import Footer from "../layout/Footer.jsx";
 import './ExpenseView.css';
 import { useNavigate, useParams } from 'react-router-dom';
+import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 
 export default function ExpenseView() {
     const navigate = useNavigate();
-    const { id } = useParams(); // groupId
+    const { id } = useParams();
     const [expenses, setExpenses] = useState([]);
+    const [userName, setUserName] = useState("");
+    const [userId, setUserId] = useState("");
+    const token = localStorage.getItem('token');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [expenseToDelete, setExpenseToDelete] = useState(null);
 
     useEffect(() => {
-        async function fetchExpenses() {
-            try {
-                const response = await fetch(`http://localhost:3000/group/${id}/expenses/`);
-
-                if (!response.ok) {
-                    setExpenses([]);
-                    return;
-                }
-
-                const data = await response.json();
-                setExpenses(Array.isArray(data) ? data : []);
-            } catch (error) {
-                console.error("Error al obtener los gastos:", error);
-                setExpenses([]);
-            }
-        }
-
-        if (id) {
+        if (!token) {
+            console.log('No hay token, redirigiendo a la página de inicio de sesión');
+            navigate('/login'); // Redirige al login si no hay token
+        } else {
+            fetchUserName();
             fetchExpenses();
         }
-    }, [id]);
+    }, [token, navigate]);
 
-    const handleContribute = async (expenseId) => {
+    async function fetchExpenses() {
         try {
-            const response = await fetch(`http://localhost:3000/group/${id}/expenses/${expenseId}/contribute`, {
-                method: 'POST'
+            const response = await fetch(`http://localhost:3000/groups/${id}/expenses/`, {
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
             });
 
-            if (!response.ok) throw new Error(`Error al contribuir al gasto: ${response.status}`);
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.log("No autorizado. El token puede estar expirado.");
+                    navigate('/login'); // Redirige al login si el token es inválido
+                    return;
+                }
+                setExpenses([]);
+                return;
+            }
 
-            setExpenses(prev =>
-                prev.map(expense =>
-                    expense.id === expenseId ? { ...expense, covered: true } : expense
+            const data = await response.json();
+            setExpenses(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error("Error al obtener los gastos:", error);
+            setExpenses([]);
+        }
+    }
+
+    async function fetchUserName() {
+        try {
+            const response = await fetch('http://localhost:3000/auth/my-information', {
+                method: 'GET',
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUserName(data.name);
+                setUserId(data._id);
+            } else {
+                console.error('Error al obtener el nombre del usuario');
+                if (response.status === 401) {
+                    navigate('/login'); // Redirige si no está autorizado
+                }
+            }
+        } catch (error) {
+            console.error('Error al obtener el nombre del usuario:', error);
+        }
+    }
+
+    // Función para manejar la contribución
+    const handleContribute = async (expenseId) => {
+        if (!userName) {
+            console.error("El nombre del usuario no está disponible");
+            return;
+        }
+
+        const expense = expenses.find(expense => expense.id === expenseId);
+
+        if (expense && expense.contributor) {
+            console.error("Este gasto ya está cubierto, no puedes contribuir.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseId}/contribute`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.log("No autorizado. El token puede estar expirado.");
+                    navigate('/login');
+                    return;
+                }
+                const errorText = await response.text();
+                throw new Error(`Error al contribuir al gasto: ${response.status} - ${errorText}`);
+            }
+
+            // Actualiza solo el gasto modificado
+            setExpenses(prevExpenses =>
+                prevExpenses.map(expense =>
+                    expense.id === expenseId
+                        ? { ...expense, contributor: true, contributorName: userName }
+                        : expense
                 )
             );
+
         } catch (error) {
-            console.error("Error al contribuir al gasto:", error);
+            console.error("Error al contribuir al gasto:", error.message);
         }
     };
 
+    // Función para manejar la retirada de contribución
     const handleUncontribute = async (expenseId) => {
         try {
-            const response = await fetch(`http://localhost:3000/group/${id}/expenses/${expenseId}/remove-contribution`, {
-                method: 'POST'
+            const response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseId}/remove-contribution`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
             });
 
-            if (!response.ok) throw new Error(`Error al quitar la contribución: ${response.status}`);
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.log("No autorizado. El token puede estar expirado.");
+                    return;
+                }
+                throw new Error(`Error al quitar la contribución: ${response.status}`);
+            }
 
-            setExpenses(prev =>
-                prev.map(expense =>
-                    expense.id === expenseId ? { ...expense, covered: false } : expense
+            // Actualiza solo el gasto modificado
+            setExpenses(prevExpenses =>
+                prevExpenses.map(expense =>
+                    expense.id === expenseId
+                        ? { ...expense, contributor: false, contributorName: null }
+                        : expense
                 )
             );
+
         } catch (error) {
             console.error("Error al quitar la contribución:", error);
         }
     };
 
-    const handleEdit = async (expenseId) => {
-        const expenseToEdit = expenses.find(e => e.id === expenseId);
+    const handleEdit = (expenseId) => {
+        const expenseToEdit = expenses.find(expense => expense.id === expenseId);
         if (!expenseToEdit) return;
 
-        const updatedData = {
-            name: expenseToEdit.name + " (editado)",
-            amount: expenseToEdit.amount + 10,
-            contributorID: expenseToEdit.contributorID || "defaultUser",
-            tags: expenseToEdit.tags || []
-        };
-
-        try {
-            const response = await fetch(`http://localhost:3000/group/${id}/expenses/${expenseId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updatedData)
-            });
-
-            if (!response.ok) throw new Error(`Error al actualizar gasto: ${response.status}`);
-
-            const updatedExpense = await response.json();
-
-            setExpenses(prev =>
-                prev.map(expense =>
-                    expense.id === expenseId ? updatedExpense : expense
-                )
-            );
-        } catch (error) {
-            console.error("Error actualizando gasto:", error);
-        }
+        navigate(`/AñadirGastos/${id}`, {
+            state: { expense: expenseToEdit }
+        });
     };
 
-    const handleDelete = async (expenseId) => {
+    const handleDeleteClick = (expenseId) => {
+        setExpenseToDelete(expenseId);
+        setShowDeleteModal(true);
+    };
+
+    const handleDelete = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/group/${id}/expenses/${expenseId}`, {
-                method: 'DELETE'
+            const response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseToDelete}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
             });
 
-            if (!response.ok) throw new Error(`Error al eliminar gasto: ${response.status}`);
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.log("No autorizado. El token puede estar expirado.");
+                    navigate('/login');
+                    return;
+                }
+                throw new Error(`Error al eliminar gasto: ${response.status}`);
+            }
 
-            setExpenses(prev => prev.filter(expense => expense.id !== expenseId));
+            setExpenses(prev => prev.filter(expense => expense.id !== expenseToDelete));
+            setShowDeleteModal(false);
         } catch (error) {
             console.error("Error eliminando gasto:", error);
         }
     };
 
+    const handleCancelDelete = () => {
+        setShowDeleteModal(false);
+    };
+
+    // Calcular el total de los gastos
     const totalExpense = expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0);
 
     return (
-        <div className="expense-wrapper">
+        <div className="main-container">
             <Header />
-
-            <div className="previous-page-expense">
-                <div className="text-prev-page">
-                    <h1 className="color-expense">Gastos</h1>
-                </div>
-            </div>
 
             <div className="expense-overwiew">
                 <h2 className="color-expense">Resumen de gastos:</h2>
@@ -135,7 +205,7 @@ export default function ExpenseView() {
                         <h3 className="color-expense">Gasto Total:</h3>
                     </div>
                     <div className="expense-calculation-display">
-                        <h2 className="color-expense">{totalExpense.toFixed(2)}€</h2>
+                        <h3 className="color-expense">{totalExpense.toFixed(2)}€</h3>
                     </div>
                 </div>
             </div>
@@ -146,31 +216,59 @@ export default function ExpenseView() {
                 </div>
 
                 <div className="expense-list-display">
+                    <div className="expense-table-header">
+                        <span>Título</span>
+                        <span>Cantidad</span>
+                        <span>Acción</span>
+                        <span>Contribuido por</span>
+                        <span>Editar/Eliminar</span>
+                    </div>
+
                     {expenses.length > 0 ? (
                         expenses.map(expense => (
-                            <div key={expense.id} className={expense.covered ? "covered-expense" : "pending-expense"}>
+                            <div key={expense.id} className={`expense-row ${expense.contributor ? "covered-expense" : "pending-expense"}`}>
                                 <div className="name-expense">
-                                    <h5 className="color-expense gap-tag">{expense.name}</h5>
+                                    <h5 className="color-expense">{expense.title}</h5>
+                                    {expense.contributor && <span className="expense-label">Cubierto</span>}
+                                    {!expense.contributor && <span className="expense-label">Pendiente</span>}
                                 </div>
+
                                 <div className="amount-expense">
-                                    <h5 className="color-expense gap-tag">Amount: {expense.amount.toFixed(2)}€</h5>
+                                    <h5 className="color-expense">{expense.amount.toFixed(2)}€</h5>
                                 </div>
-                                <div className="contribute-expense gap-tag">
-                                    {!expense.covered ? (
-                                        <button className="contribute-button" onClick={() => handleContribute(expense.id)}>
-                                            Contribute
-                                        </button>
+
+                                <div className="contribute-expense">
+                                    {expense.contributor ? (
+                                        <div className="contribution-info">
+                                            <button className="uncontribute-button-red" onClick={() => handleUncontribute(expense.id)}>
+                                                Descubrir
+                                            </button>
+                                        </div>
                                     ) : (
-                                        <button className="uncontribute-button" onClick={() => handleUncontribute(expense.id)}>
-                                            Uncontribute
+                                        <button
+                                            className="contribute-button-green"
+                                            onClick={() => handleContribute(expense.id)}
+                                        >
+                                            Cubrir
                                         </button>
                                     )}
                                 </div>
-                                <div className="edition-expense gap-tag">
-                                    <button onClick={() => handleEdit(expense.id)}>Editar</button>
+
+
+
+                                <div className="contributed-by">
+                                    {expense.contributor && (
+                                        <span className="contributor-name">Cubierto por {expense.contributorName}</span>
+                                    )}
                                 </div>
-                                <div className="delete-expense gap-tag">
-                                    <button onClick={() => handleDelete(expense.id)}>Eliminar</button>
+
+                                <div className="edition-expense">
+                                    <button onClick={() => handleEdit(expense.id)} className="edit-btn">
+                                        <FaEdit />
+                                    </button>
+                                    <button onClick={() => handleDeleteClick(expense.id)} className="delete-btn">
+                                        <FaTrashAlt />
+                                    </button>
                                 </div>
                             </div>
                         ))
@@ -185,6 +283,19 @@ export default function ExpenseView() {
                     </button>
                 </div>
             </div>
+
+            {showDeleteModal && (
+                <div className="delete-modal">
+                    <div className="modal-content">
+                        <h3>¿Estás seguro de que deseas eliminar este gasto? 😟</h3>
+                        <p>Una vez eliminado, no podrás recuperarlo. ¡Piensa bien tu decisión!</p>
+                        <div className="modal-actions">
+                            <button className="cancel-button" onClick={handleCancelDelete}>Cancelar</button>
+                            <button className="confirm-button" onClick={handleDelete}>Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <Footer />
         </div>

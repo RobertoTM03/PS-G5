@@ -1,28 +1,45 @@
-.footer {
+/* Fondo y estilo general del footer */
+.site-footer {
     background-color: #1D4F9A;
     color: white;
     padding: 20px 0;
-    text-align: left; 
     width: 100%;
-  }
-  
-  .footer-container {
+    position: relative; /* Permite el comportamiento adecuado del footer */
+    margin-top: auto; /* Esto asegura que el footer se desplace al final */
+}
+
+/* Contenedor que envuelve las secciones del footer */
+.footer-content {
     max-width: 1200px;
     margin: auto;
     display: flex;
-    justify-content: flex-end; 
-    padding-right: 20px;
-  }
-  
-  .footer-section {
-    margin-left: 100px; 
-  }
-  
-  .footer-section h4 {
+    justify-content: flex-start; /* Alineación de las secciones a la izquierda */
+    flex-wrap: wrap; /* Asegura que los elementos se acomoden en pantallas pequeñas */
+    padding-left: 20px; /* Alineación de los elementos dentro del contenedor */
+}
+
+/* Sección dentro del footer */
+.footer-section {
+    margin-left: 50px; /* Espaciado entre las secciones */
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column; /* Para que los elementos se apilen verticalmente */
+    justify-content: flex-start; /* Alineación vertical en el inicio */
+    align-items: flex-start; /* Alineación horizontal al inicio */
+    height: 100%; /* Asegura que las secciones tengan altura completa */
+}
+
+/* Estilo para los títulos dentro de cada sección */
+.footer-section h4 {
     margin-bottom: 10px;
-  }
-  
-  .footer-section p {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left; /* Asegura que el título esté alineado a la izquierda */
+}
+
+/* Párrafos dentro de cada sección */
+.footer-section p {
     margin: 5px 0;
-  }
-  
+    text-align: left; /* Asegura que el párrafo esté alineado a la izquierda */
+    font-size: 14px;
+}
