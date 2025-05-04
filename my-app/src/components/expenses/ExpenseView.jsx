@@ -60,8 +60,10 @@ export default function ExpenseView() {
 
             if (response.ok) {
                 const data = await response.json();
+                console.log(data);
+                console.log("USER", data.name, data.id);
                 setUserName(data.name);
-                setUserId(data._id);
+                setUserId(data.id);
             } else {
                 console.error('Error al obtener el nombre del usuario');
                 if (response.status === 401) {
@@ -108,7 +110,7 @@ export default function ExpenseView() {
             setExpenses(prevExpenses =>
                 prevExpenses.map(expense =>
                     expense.id === expenseId
-                        ? { ...expense, contributor: true, contributorName: userName }
+                        ? { ...expense, contributor: {id: userId, name: userName} }
                         : expense
                 )
             );

@@ -1,0 +1,167 @@
+/* Estilos generales para el contenedor principal del header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: black;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Estilos cuando el usuario está autenticado */
+.header.authenticated {
+    background-color: white;
+}
+
+.header.authenticated .logo h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.header.authenticated .header-icons {
+    display: flex;
+    align-items: center;
+}
+
+.header.authenticated .icon {
+    margin-left: 20px;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.header.authenticated .icon:hover {
+    color: #61dafb;
+    transform: scale(1.1);
+}
+
+.header.authenticated .username {
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.header.authenticated .username:hover {
+    color: #61dafb;
+}
+
+.header.authenticated .main-btn-signed {
+    background-color: transparent; /* mismo color del header */
+    color: black;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 5px 20px;
+    font-size: 30px;
+    border-radius: 3px;
+    transition: 0.3s ease;
+    width: 150px;
+}
+
+.header.authenticated .user-icon {
+    position: relative;
+}
+
+.header.authenticated .logout-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-width: 150px;
+}
+
+.header.authenticated .logout-button {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    background-color: #1D4F9A;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    border: none;
+    border-radius: 0 0 4px 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.header.authenticated .logout-button:hover {
+    background-color: #0e2b56;
+}
+
+/* Estilos cuando el usuario no está autenticado */
+.header.not-authenticated {
+    background-color: #133379; /* Fondo azul */
+    position: fixed; /* Fijamos el header en la parte superior */
+    top: 0;
+    left: 0;
+    width: 100%; /* Asegura que el header ocupe todo el ancho */
+    z-index: 999;  /* Asegura que el header esté por encima del contenido */
+    padding: 10px 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustar margen superior del contenedor de contenido */
+.main-content {
+    margin-top: 70px; /* Aseguramos que el contenido no quede bajo el header */
+}
+
+.header.not-authenticated .logo {
+    color: white;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.header.not-authenticated .header-right {
+    display: flex;
+    gap: 15px;
+}
+
+.header.not-authenticated .header-left {
+    display: flex;
+}
+
+.header.not-authenticated .main-btn {
+    background-color: transparent; /* mismo color del header */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 5px 20px;
+    font-size: 30px;
+    border-radius: 3px;
+    transition: 0.3s ease;
+    width: 150px;
+}
+
+.header.not-authenticated .header-btn {
+    color: #133379;
+    font-weight: 600;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    transition: 0.3s ease;
+    width: 150px;
+}
+
+.header.not-authenticated .header-btn.signup {
+    background-color: #244a9b;
+    color: white;
+}
+
+.header.not-authenticated .header-btn:hover {
+    transform: scale(1.05);
+}
