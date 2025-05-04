@@ -18,7 +18,7 @@ export default function ExpenseView() {
     useEffect(() => {
         if (!token) {
             console.log('No hay token, redirigiendo a la página de inicio de sesión');
-            navigate('/login'); // Redirige al login si no hay token
+            navigate('/IniciarSesion'); // Redirige al login si no hay token
         } else {
             fetchUserName();
             fetchExpenses();
@@ -35,7 +35,7 @@ export default function ExpenseView() {
             if (!response.ok) {
                 if (response.status === 401) {
                     console.log("No autorizado. El token puede estar expirado.");
-                    navigate('/login'); // Redirige al login si el token es inválido
+                    navigate('/IniciarSesion'); // Redirige al login si el token es inválido
                     return;
                 }
                 setExpenses([]);
@@ -60,14 +60,12 @@ export default function ExpenseView() {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
-                console.log("USER", data.name, data.id);
                 setUserName(data.name);
                 setUserId(data.id);
             } else {
                 console.error('Error al obtener el nombre del usuario');
                 if (response.status === 401) {
-                    navigate('/login'); // Redirige si no está autorizado
+                    navigate('/IniciarSesion'); // Redirige si no está autorizado
                 }
             }
         } catch (error) {
@@ -99,7 +97,7 @@ export default function ExpenseView() {
             if (!response.ok) {
                 if (response.status === 401) {
                     console.log("No autorizado. El token puede estar expirado.");
-                    navigate('/login');
+                    navigate('/IniciarSesion');
                     return;
                 }
                 const errorText = await response.text();
@@ -201,7 +199,7 @@ export default function ExpenseView() {
             if (!response.ok) {
                 if (response.status === 401) {
                     console.log("No autorizado. El token puede estar expirado.");
-                    navigate('/login');
+                    navigate('/IniciarSesion');
                     return;
                 }
                 throw new Error(`Error al eliminar gasto: ${response.status}`);
