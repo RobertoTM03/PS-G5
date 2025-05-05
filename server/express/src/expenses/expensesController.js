@@ -14,16 +14,7 @@ exports.createExpense = async (req, res) => {
         const result = await createExpense(req.params.groupId, req.body, req.user.id);
         res.status(201).json(result);
     } catch (err) {
-        if (err instanceof PermissionDeniedError) {
-            res.status(401);
-        } else if (err instanceof TripCollabError) {
-            res.status(400);
-        } else {
-            console.log(err);
-            err.message = "Something went wrong on our side"
-            res.status(500);
-        }
-        res.json({ message: err.message });
+        next(err);
     }
 };
 
@@ -32,16 +23,7 @@ exports.getExpenses = async (req, res) => {
         const result = await getExpenses(req.params.groupId);
         res.status(201).json(result);
     } catch (err) {
-        if (err instanceof PermissionDeniedError) {
-            res.status(401);
-        } else if (err instanceof TripCollabError) {
-            res.status(400);
-        } else {
-            console.log(err);
-            err.message = "Something went wrong on our side"
-            res.status(500);
-        }
-        res.json({ message: err.message });
+        next(err);
     }
 };
 
@@ -50,34 +32,16 @@ exports.updateExpense = async (req, res) => {
         const result = await updateExpense(req.params.groupId, req.params.expenseId, req.body, req.user.id);
         res.status(201).json(result);
     } catch (err) {
-        if (err instanceof PermissionDeniedError) {
-            res.status(401);
-        } else if (err instanceof TripCollabError) {
-            res.status(400);
-        } else {
-            console.log(err);
-            err.message = "Something went wrong on our side"
-            res.status(500);
-        }
-        res.json({ message: err.message });
+        next(err);
     }
 };
 
-exports.deleteExpense = async (req, res) => {
+exports.deleteExpense = async (req, res, next) => {
     try {
         const result = await deleteExpense(req.params.groupId, req.params.expenseId, req.user.id);
         res.status(201).json(result);
     } catch (err) {
-        if (err instanceof PermissionDeniedError) {
-            res.status(401);
-        } else if (err instanceof TripCollabError) {
-            res.status(400);
-        } else {
-            console.log(err);
-            err.message = "Something went wrong on our side"
-            res.status(500);
-        }
-        res.json({ message: err.message });
+        next(err);
     }
 };
 
@@ -86,16 +50,7 @@ exports.addContribution = async (req, res) => {
         const result = await addContribution(req.params.expenseId, req.user.id);
         res.status(201).json(result);
     } catch (err) {
-        if (err instanceof PermissionDeniedError) {
-            res.status(401);
-        } else if (err instanceof TripCollabError) {
-            res.status(400);
-        } else {
-            console.log(err);
-            err.message = "Something went wrong on our side"
-            res.status(500);
-        }
-        res.json({ message: err.message });
+        next(err);
     }
 };
 
@@ -104,15 +59,6 @@ exports.removeContribution = async (req, res) => {
         const result = await removeContribution(req.params.expenseId, req.user.id);
         res.status(201).json(result);
     } catch (err) {
-        if (err instanceof PermissionDeniedError) {
-            res.status(401);
-        } else if (err instanceof TripCollabError) {
-            res.status(400);
-        } else {
-            console.log(err);
-            err.message = "Something went wrong on our side"
-            res.status(500);
-        }
-        res.json({ message: err.message });
+        next(err);
     }
 };

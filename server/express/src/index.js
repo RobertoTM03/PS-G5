@@ -1,9 +1,11 @@
 const express = require('express');
-const app = express();
 const { swaggerUi, swaggerSpec } = require('./swagger');
-const db = require("./shared/database");
+
+const errors = require('./errors');
 const syncUsersFromFirebase = require('./shared/syncFirebase');
 
+const app = express();
+const db = require("./shared/database");
 const cors = require('cors');
 
 const allowedOrigins = ['http://localhost', 'http://localhost:3000', 'http://localhost:80', 'http://localhost:81'];
@@ -54,6 +56,25 @@ app.use('/groups', expenseRoutes);
 //rutas de actividades de un grupo
 const calendarRoutes = require('./calendar/calendar.routes');
 app.use('/groups', calendarRoutes);
+
+app.use((err, req, res, next) => {
+    console.log("\n************************************** ERROR **************************************");
+    console.log("Error:", err);
+    console.log("Request Params:", req.params);
+    console.log("Request Body:", req.body);
+    console.log("************************************** /ERROR **************************************");
+    if (err instanceof errors.ResourceNotFoundError) {
+        res.status(404)
+    } else if (err instanceof errors.PermissionDeniedError) {
+        res.status(401);
+    } else if (err instanceof errors.TripCollabError) {
+        res.status(400);
+    } else {
+        err.message = "Something went wrong on our side"
+        res.status(500);
+    }
+    res.json({ error: err.message });
+});
 
 // Ruta base de prueba
 app.get('/', (req, res) => {
