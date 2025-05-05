@@ -232,7 +232,7 @@ export default function ExpenseView() {
                         <span>Cantidad</span>
                         <span>Acción</span>
                         <span>Pagado por</span>
-                        <span>Autor</span>
+                        <span>Creado por</span>
                         <span>Editar/Eliminar</span>
                     </div>
 
