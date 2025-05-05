@@ -23,6 +23,12 @@ const AddExpense = () => {
 
     const token = localStorage.getItem('token');
 
+    async function handleError(errorResponse) {
+        const errorBody = await errorResponse.json();
+        const error = errorBody.error;
+        alert(error);
+        if (errorResponse.status === 403) navigate("/InicioSesion");
+    }
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -35,8 +41,7 @@ const AddExpense = () => {
                     const data = await response.json();
                     setContributorID(data.id); // Asegúrate de que el campo sea 'id' en tu backend
                 } else {
-                    console.error('Error al obtener el usuario:', await response.text());
-                    alert("No se pudo obtener la información del usuario.");
+                    await handleError(response);
                 }
             } catch (error) {
                 console.error("Network error al obtener el usuario:", error);
@@ -55,8 +60,11 @@ const AddExpense = () => {
     }, [expenseToEdit, token]);
 
     const handleSubmit = async () => {
-        if (!title || !amount || !selectedType || !contributorID) {
-            alert("Por favor, completa todos los campos.");
+        if (!title || !amount) {
+            const missingFields = [];
+            if (!amount) missingFields.push("amount");
+            if (!title) missingFields.push("title");
+            alert(`Faltan campos requeridos: ${missingFields}`);
             return;
         }
 
@@ -95,9 +103,8 @@ const AddExpense = () => {
                 navigate(`/Gastos/${id}`);
                 console.log("Gasto guardado correctamente.");
             } else {
-                const errorText = await response.text();
-                console.error('Error al guardar el gasto:', errorText);
-                alert('Error al guardar el gasto.');
+                await handleError(response);
+                return;
             }
         } catch (error) {
             console.error("Error de red:", error);

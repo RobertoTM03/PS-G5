@@ -15,6 +15,13 @@ export default function ExpenseView() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [expenseToDelete, setExpenseToDelete] = useState(null);
 
+    async function handleError(errorResponse) {
+        const errorBody = await errorResponse.json();
+        const error = errorBody.error;
+        alert(error);
+        if (errorResponse.status === 403) navigate("/InicioSesion");
+    }
+
     useEffect(() => {
         if (!token) {
             console.log('No hay token, redirigiendo a la página de inicio de sesión');
@@ -33,11 +40,7 @@ export default function ExpenseView() {
             });
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    console.log("No autorizado. El token puede estar expirado.");
-                    navigate('/IniciarSesion'); // Redirige al login si el token es inválido
-                    return;
-                }
+                await handleError(response);
                 setExpenses([]);
                 return;
             }
@@ -45,7 +48,7 @@ export default function ExpenseView() {
             const data = await response.json();
             setExpenses(Array.isArray(data) ? data : []);
         } catch (error) {
-            console.error("Error al obtener los gastos:", error);
+            alert(`Error al obtener los gastos: ${error}`);
             setExpenses([]);
         }
     }
@@ -63,27 +66,26 @@ export default function ExpenseView() {
                 setUserName(data.name);
                 setUserId(data.id);
             } else {
-                console.error('Error al obtener el nombre del usuario');
-                if (response.status === 401) {
-                    navigate('/IniciarSesion'); // Redirige si no está autorizado
-                }
+                await handleError(response);
+                return;
             }
         } catch (error) {
-            console.error('Error al obtener el nombre del usuario:', error);
+            alert(`Error al obtener el nombre del usuario: ${error}`);
+            return;
         }
     }
 
     // Función para manejar la contribución
     const handleContribute = async (expenseId) => {
         if (!userName) {
-            console.error("El nombre del usuario no está disponible");
+            alert("El nombre del usuario no está disponible");
             return;
         }
 
         const expense = expenses.find(expense => expense.id === expenseId);
 
         if (expense && expense.contributor) {
-            console.error("Este gasto ya está cubierto, no puedes contribuir.");
+            alert("Este gasto ya está cubierto, no puedes contribuir.");
             return;
         }
 
@@ -95,13 +97,8 @@ export default function ExpenseView() {
             });
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    console.log("No autorizado. El token puede estar expirado.");
-                    navigate('/IniciarSesion');
-                    return;
-                }
-                const errorText = await response.text();
-                throw new Error(`Error al contribuir al gasto: ${response.status} - ${errorText}`);
+                await handleError(response);
+                return;
             }
 
             // Actualiza solo el gasto modificado
@@ -115,7 +112,7 @@ export default function ExpenseView() {
             window.location.reload();
 
         } catch (error) {
-            console.error("Error al contribuir al gasto:", error.message);
+            alert(`Error al contribuir al gasto: ${error.message}`);
         }
     };
 
@@ -129,11 +126,8 @@ export default function ExpenseView() {
             });
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    console.log("No autorizado. El token puede estar expirado.");
-                    return;
-                }
-                throw new Error(`Error al quitar la contribución: ${response.status}`);
+                await handleError(response);
+                return;
             }
 
             // Actualiza solo el gasto modificado
@@ -146,7 +140,7 @@ export default function ExpenseView() {
             );
 
         } catch (error) {
-            console.error("Error al quitar la contribución:", error);
+            alert(`Error al quitar la contribución: ${error.message}`);
         }
     };
 
@@ -171,19 +165,15 @@ export default function ExpenseView() {
                 credentials: 'include'
             });
             if (!response.ok) {
-                if (response.status === 401 || response.status === 403) {
-                    alert("No tienes permisos para eliminar este gasto.");
-                    return;
-                }
-                const errorText = await response.text();
-                throw new Error(`Error al eliminar gasto: ${response.status} - ${errorText}`);
+                await handleError(response);
+                return;
             }
     
             // Recargar la página después de eliminar
             window.location.reload();
     
         } catch (error) {
-            console.error("Error eliminando gasto:", error);
+            alert(`Error eliminando gasto: ${error.message}`);
         }
     };
     
@@ -197,18 +187,14 @@ export default function ExpenseView() {
             });
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    console.log("No autorizado. El token puede estar expirado.");
-                    navigate('/IniciarSesion');
-                    return;
-                }
-                throw new Error(`Error al eliminar gasto: ${response.status}`);
+                await handleError(response);
+                return;
             }
 
             setExpenses(prev => prev.filter(expense => expense.id !== expenseToDelete));
             setShowDeleteModal(false);
         } catch (error) {
-            console.error("Error eliminando gasto:", error);
+            alert(`Error eliminando gasto: ${error.message}`);
         }
     };
 
@@ -246,6 +232,7 @@ export default function ExpenseView() {
                         <span>Cantidad</span>
                         <span>Acción</span>
                         <span>Pagado por</span>
+                        <span>Autor</span>
                         <span>Editar/Eliminar</span>
                     </div>
 
@@ -285,6 +272,12 @@ export default function ExpenseView() {
                                 <div className="contributed-by">
                                     {expense.contributor && (
                                         <span className="contributor-name">{expense.contributor.name}</span>
+                                    )}
+                                </div>
+
+                                <div className="contributed-by">
+                                    {expense.author && (
+                                        <span className="contributor-name">{expense.author.name}</span>
                                     )}
                                 </div>
 

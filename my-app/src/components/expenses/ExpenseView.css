@@ -42,7 +42,7 @@
     border: 1px solid white;
     background: linear-gradient(to right, #d4d4e2, #85a1e1); /* Gradiente aplicado a cada gasto */
     display: grid;
-    grid-template-columns: 2fr 1fr 2fr 2fr 1fr;
+    grid-template-columns: 2fr 1fr 2fr 2fr 2fr 1fr;
     align-items: center;
     padding: 10px;
     border-radius: 8px;
@@ -58,7 +58,7 @@
 /* Encabezado de tabla */
 .expense-table-header {
     display: grid;
-    grid-template-columns: 2fr 1fr 2fr 2fr 1fr;
+    grid-template-columns: 2fr 1fr 2fr 2fr 2fr 1fr;
     gap: 10px;
     padding: 12px;
     font-weight: bold;
