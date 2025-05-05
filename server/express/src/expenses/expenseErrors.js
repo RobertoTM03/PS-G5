@@ -1,9 +1,9 @@
 
-const {TripCollabError} = require("../errors");
+const {TripCollabError, ResourceNotFoundError} = require("../errors");
 
 class ExpenseHasNoContributorError extends TripCollabError {
     constructor() {
-        const message = 'Could not perform the operation since the expense does not have a contributor yet';
+        const message = 'No se pudo completar la operación. El gasto no tiene contribuciones.';
         super(message);
         this.name = "ExpenseHasNoContributorError";
     }
@@ -11,7 +11,7 @@ class ExpenseHasNoContributorError extends TripCollabError {
 
 class CoveredExpenseContributionError extends TripCollabError {
     constructor() {
-        const message = 'Cannot add a contribution to a covered Expense.';
+        const message = 'No se puede contribuir a un gasto ya cubierto.';
         super(message);
         this.name = "CoveredExpenseContributionError";
     }
@@ -19,7 +19,7 @@ class CoveredExpenseContributionError extends TripCollabError {
 
 class NegativeExpenseAmountError extends TripCollabError {
     constructor() {
-        const message = 'A expense cannot have a negative amount';
+        const message = 'Un gasto no puede tener una cantidad negativa';
         super(message);
         this.name = "NegativeAmountError";
     }
@@ -27,16 +27,15 @@ class NegativeExpenseAmountError extends TripCollabError {
 
 class ExpenseTitleTooLongError extends TripCollabError {
     constructor(max_length) {
-        const message = `The expense title is too long. Title max length is ${max_length} characters`;
+        const message = `El título es demasiado largo. Máximo ${max_length} caracteres`;
         super(message);
         this.name = "ExpenseTitleTooLongError";
     }
 }
 
-class ExpenseNotFoundError extends TripCollabError {
-    constructor(expenseId) {
-        const message = `No expense with ${expenseId} was found`;
-        super(message);
+class ExpenseNotFoundError extends ResourceNotFoundError {
+    constructor() {
+        super("Gasto");
         this.name = "ExpenseNotFoundError";
     }
 }

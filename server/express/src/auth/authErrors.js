@@ -1,5 +1,5 @@
 
-const {TripCollabError} = require("../errors");
+const {TripCollabError, ResourceNotFoundError} = require("../errors");
 
 class AuthError extends TripCollabError {
     constructor(message) {
@@ -9,23 +9,22 @@ class AuthError extends TripCollabError {
 
 class InvalidToken extends AuthError {
     constructor(message) {
-        message ??= 'Invalid Token';
+        message ??= 'Token de sesión no válido.';
         super(message);
         this.name = "InvalidToken";
     }
 }
 
-class UserNotFound extends AuthError {
-    constructor(message) {
-        message ??= "User not found";
-        super(message);
-        this.name = "InvalidToken";
+class UserNotFound extends ResourceNotFoundError {
+    constructor() {
+        super("Usuario");
+        this.name = "UserNotFound";
     }
 }
 
 class AuthenticationRequiredError extends AuthError {
     constructor(message) {
-        message ??= "Must be authenticated to perform this operation";
+        message ??= "Necesita iniciar sesión para realizar esta operación.";
         super(message);
         this.name = "AuthenticationRequiredError";
     }

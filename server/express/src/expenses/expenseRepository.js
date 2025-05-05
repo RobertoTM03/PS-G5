@@ -5,7 +5,7 @@ const pgPromise = require("pg-promise")({
 const db = require('../shared/database');
 
 const {Expense, User} = require('./expenses');
-const {ExpenseNotFoundError} = require('./expenseErrors');
+const { ExpenseNotFoundError } = require("./expenseErrors");
 
 
 class ExpenseRepositoryPostgreImpl {

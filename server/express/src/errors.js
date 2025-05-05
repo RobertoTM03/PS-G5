@@ -7,7 +7,7 @@ class TripCollabError extends Error {
 
 class PermissionDeniedError extends TripCollabError {
     constructor() {
-        const message = "Current user is not allowed to perform this operation";
+        const message = "No tienes permisos para realizar esta operación";
         super(message);
         this.name = "PermissionDeniedError";
     }
@@ -16,7 +16,7 @@ class PermissionDeniedError extends TripCollabError {
 
 class ResourceNotFoundError extends TripCollabError {
     constructor(resourceType) {
-        const message = `${resourceType} not found`;
+        const message = `${resourceType} no encontrado`;
         super(message);
         this.name = "ResourceNotFoundError";
     }
@@ -25,7 +25,7 @@ class ResourceNotFoundError extends TripCollabError {
 
 class MissingRequiredFieldsError extends TripCollabError {
     constructor(field_list) {
-        const message = `Missing required fields: ${field_list}`;
+        const message = `Faltan campos requeridos: ${field_list}`;
         super(message);
         this.name = "MissingRequiredFieldsError";
     }
@@ -47,6 +47,7 @@ module.exports = {
     TripCollabError,
     PermissionDeniedError,
     ResourceNotFoundError,
+    Resource,
     MissingRequiredFieldsError,
     throwIfMissingRequiredFields,
 };
