@@ -17,9 +17,11 @@ export default function ExpenseView() {
 
     async function handleError(errorResponse) {
         const errorBody = await errorResponse.json();
-        const error = errorBody.error;
-        alert(error);
-        if (errorResponse.status === 403) navigate("/InicioSesion");
+        alert(errorBody.error);
+        if (errorResponse.status === 403) {
+            localStorage.removeItem('token');
+            navigate("/IniciarSesion");
+        }
     }
 
     useEffect(() => {
