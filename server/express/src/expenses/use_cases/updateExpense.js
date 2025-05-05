@@ -14,7 +14,7 @@ module.exports = async (groupId, expenseId, data, userId) => {
     const expense = await expenseRepository.findById(expenseId);
     const isAdmin = await isGroupOwner(groupId, userId);
 
-    if (expense.author.id != userId || !isAdmin) throw new PermissionDeniedError;
+    if (expense.author.id != userId && !isAdmin) throw new PermissionDeniedError;
 
     if (title) expense.title = title;
     if (amount) expense.amount = amount;

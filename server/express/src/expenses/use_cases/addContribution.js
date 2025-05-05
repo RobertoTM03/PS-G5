@@ -1,5 +1,4 @@
 
-const {Expense} = require('../expenses');
 const {ExpenseRepository} = require('../expenseRepository');
 
 module.exports = async (expenseId, userId) => {

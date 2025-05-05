@@ -1,5 +1,6 @@
 
 const {throwIfMissingRequiredFields} = require('../../errors');
+
 const {Expense} = require('../expenses');
 const {ExpenseRepository} = require('../expenseRepository');
 
