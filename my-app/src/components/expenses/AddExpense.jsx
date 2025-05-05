@@ -65,8 +65,8 @@ const AddExpense = () => {
     const handleSubmit = async () => {
         if (!title || !amount) {
             const missingFields = [];
-            if (!amount) missingFields.push("amount");
-            if (!title) missingFields.push("title");
+            if (!title) missingFields.push("Título");
+            if (!amount) missingFields.push("Importe");
             alert(`Faltan campos requeridos: ${missingFields}`);
             return;
         }
