@@ -59,7 +59,7 @@ class Expense {
 
     set amount(newAmount) {
         // TODO: Controlar tipos no soportados y lanzar Error.
-        if (amount === 0) throw new MissingRequiredFieldsError(["amount"]);
+        if (newAmount === 0) throw new MissingRequiredFieldsError(["amount"]);
         if (newAmount < 0) throw new expenseErrors.NegativeExpenseAmountError;
         this.#amount = newAmount;
     }
