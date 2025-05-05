@@ -93,7 +93,7 @@ export default function NuevoEvento({ start, end, onClose }) {
             type="text"
             value={title}
             onChange={e => setTitle(e.target.value)}
-            placeholder="Escribe el asunto"
+            placeholder="Escribe el asunto*"
           />
         </label>
 
@@ -103,7 +103,7 @@ export default function NuevoEvento({ start, end, onClose }) {
             type="text"
             value={location}
             onChange={e => setLocation(e.target.value)}
-            placeholder="Escribe la ubicación"
+            placeholder="Escribe la ubicación (opcional)"
           />
         </label>
 
@@ -112,7 +112,7 @@ export default function NuevoEvento({ start, end, onClose }) {
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
-            placeholder="Describe el evento"
+            placeholder="Describe el evento (opcional)"
             rows={4}
           />
         </label>
