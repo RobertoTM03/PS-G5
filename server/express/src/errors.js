@@ -47,7 +47,6 @@ module.exports = {
     TripCollabError,
     PermissionDeniedError,
     ResourceNotFoundError,
-    Resource,
     MissingRequiredFieldsError,
     throwIfMissingRequiredFields,
 };
