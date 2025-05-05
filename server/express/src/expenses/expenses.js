@@ -47,6 +47,7 @@ class Expense {
     }
 
     set title(title) {
+        // TODO: Controlar tipos no soportados y lanzar Error.
         if (title === "") throw new MissingRequiredFieldsError(["title"]);
         if (title.length > Expense.MAX_TITLE_LENGTH) throw new expenseErrors.ExpenseTitleTooLongError(Expense.MAX_TITLE_LENGTH);
         this.#title = title;
@@ -57,6 +58,7 @@ class Expense {
     }
 
     set amount(newAmount) {
+        // TODO: Controlar tipos no soportados y lanzar Error.
         if (amount === 0) throw new MissingRequiredFieldsError(["amount"]);
         if (newAmount < 0) throw new expenseErrors.NegativeExpenseAmountError;
         this.#amount = newAmount;
@@ -67,6 +69,8 @@ class Expense {
     }
 
     set author(author) {
+        // TODO: Controlar tipos no soportados y lanzar Error. 
+        // WARNING: Actualmente puede quedar sin author de manera silenciosa
         if (author instanceof User) {
             this.#author = author;
         } else if (Number.isInteger(author)) {
@@ -79,6 +83,8 @@ class Expense {
     }
 
     set contributor(contributor) {
+        // TODO: Controlar tipos no soportados y lanzar Error. 
+        // WARNING: Actualmente puede quedar sin contributor de manera silenciosa
         if (contributor instanceof User) {
             this.#contributor = contributor;
         } else if (Number.isInteger(contributor)) {
@@ -87,6 +93,7 @@ class Expense {
     }
 
     addContributor(userId) {
+        // TODO: Cambiar a User como parametro en lugar de ID
         if (this.contributor) throw new expenseErrors.CoveredExpenseContributionError;
         this.contributor = new User(userId);
     }
@@ -101,6 +108,7 @@ class Expense {
     }
 
     set tags(tags) {
+        // TODO: Controlar tipos no soportados y lanzar Error.
         this.#tags = new Set(tags);
     }
 
