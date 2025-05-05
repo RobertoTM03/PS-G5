@@ -16,7 +16,7 @@ exports.createExpense = async (req, res) => {
     }
 };
 
-exports.getExpenses = async (req, res) => {
+exports.getExpenses = async (req, res, next) => {
     try {
         const result = await getExpenses(req.params.groupId);
         res.status(200).json(result);
@@ -25,7 +25,7 @@ exports.getExpenses = async (req, res) => {
     }
 };
 
-exports.updateExpense = async (req, res) => {
+exports.updateExpense = async (req, res, next) => {
     try {
         const result = await updateExpense(req.params.groupId, req.params.expenseId, req.body, req.user.id);
         res.status(200).json(result);
@@ -43,7 +43,7 @@ exports.deleteExpense = async (req, res, next) => {
     }
 };
 
-exports.addContribution = async (req, res) => {
+exports.addContribution = async (req, res, next) => {
     try {
         const result = await addContribution(req.params.expenseId, req.user.id);
         res.status(200).json(result);
@@ -52,7 +52,7 @@ exports.addContribution = async (req, res) => {
     }
 };
 
-exports.removeContribution = async (req, res) => {
+exports.removeContribution = async (req, res, next) => {
     try {
         const result = await removeContribution(req.params.expenseId, req.user.id);
         res.status(200).json(result);
