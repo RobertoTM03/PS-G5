@@ -1,3 +1,5 @@
+
+const { MissingRequiredFieldsError } = require('../errors');
 const expenseErrors = require("./expenseErrors");
 
 class User {
@@ -45,6 +47,7 @@ class Expense {
     }
 
     set title(title) {
+        if (title === "") throw new MissingRequiredFieldsError(["title"]);
         if (title.length > Expense.MAX_TITLE_LENGTH) throw new expenseErrors.ExpenseTitleTooLongError(Expense.MAX_TITLE_LENGTH);
         this.#title = title;
     }
@@ -54,6 +57,7 @@ class Expense {
     }
 
     set amount(newAmount) {
+        if (amount === 0) throw new MissingRequiredFieldsError(["amount"]);
         if (newAmount < 0) throw new expenseErrors.NegativeExpenseAmountError;
         this.#amount = newAmount;
     }

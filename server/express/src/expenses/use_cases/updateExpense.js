@@ -16,15 +16,8 @@ module.exports = async (groupId, expenseId, data, userId) => {
 
     if (expense.author.id != userId && !isAdmin) throw new PermissionDeniedError;
 
-    if (title) {
-        if (title === "") throw new MissingRequiredFieldsError(["title"]);
-        expense.title = title;
-    }
-    if (amount) {
-        if (amount === 0) throw new MissingRequiredFieldsError(["amount"]);
-        if (amount < 0) throw new NegativeExpenseAmountError;
-        expense.amount = amount;
-    }
+    if (title)  expense.title = title;
+    if (amount) expense.amount = amount;
     if (contributor) expense.contributor = contributor;
     if (tags) expense.tags = tags;
 
