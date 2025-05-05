@@ -79,7 +79,7 @@ router.use('/:groupId/*', ensureGroupMembership);
  *                         description: Tags associated to the expense
  *                         example: "Trip to Mallorca"
  *       403:
- *         description: Forbidden
+ *         description: Unauthenticated
  *       404:
  *         description: Group not found
  *       500:
@@ -184,8 +184,12 @@ router.get('/:groupId/expenses', expenseController.getExpenses);
  *                       type: string
  *                       description: Tags associated to the expense
  *                       example: "Trip to Mallorca"
+ *       400:
+ *         description: Bad request. Could be caused by missing or wrongly formatted fields
+ *       401:
+ *         description: User does not have permission to create the expense
  *       403:
- *         description: Forbidden
+ *         description: Unauthenticated
  *       404:
  *         description: Group not found
  *       500:
@@ -293,8 +297,12 @@ router.post('/:groupId/expenses', expenseController.createExpense);
  *                       type: string
  *                       description: Tags associated to the expense
  *                       example: "Trip to Mallorca"
+ *       400:
+ *         description: Bad request. Could be caused by missing or wrongly formatted fields
+ *       401:
+ *         description: User does not have permission to edit the expense
  *       403:
- *         description: Forbidden
+ *         description: Unauthenticated
  *       404:
  *         description: Group or Expense not found
  *       500:
@@ -330,8 +338,10 @@ router.post('/:groupId/expenses/:expenseId', expenseController.updateExpense);
  *     responses:
  *       200:
  *         description: The expense was deleted successfully.
+ *       401:
+ *         description: User does not have permission to delete the expense
  *       403:
- *         description: Forbidden
+ *         description: Unauthenticated
  *       404:
  *         description: Group or Expense not found
  *       500:
@@ -367,10 +377,12 @@ router.delete('/:groupId/expenses/:expenseId', expenseController.deleteExpense);
  *     responses:
  *       200:
  *         description: Contribution success.
- *       401:
+ *       400:
  *         description: Expense already has a contributor
+ *       401:
+ *         description: User does not have permission to edit the expense
  *       403:
- *         description: Forbidden
+ *         description: Unauthenticated
  *       404:
  *         description: Group or Expense not found
  *       500:
@@ -406,10 +418,12 @@ router.post('/:groupId/expenses/:expenseId/contribute', expenseController.addCon
  *     responses:
  *       200:
  *         description: Contribution removed successfully
- *       401:
+ *       400:
  *         description: Expense doesn't have a contributor yet
+ *       401:
+ *         description: User does not have permission to edit the expense
  *       403:
- *         description: Forbidden
+ *         description: Unauthenticated
  *       404:
  *         description: Group or Expense not found
  *       500:
