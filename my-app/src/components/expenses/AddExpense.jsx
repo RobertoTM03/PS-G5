@@ -14,22 +14,33 @@ const ExpenseType = {
 const AddExpense = () => {
     const [title, setTitle] = useState('');
     const [amount, setAmount] = useState('');
-    const [selectedType, setSelectedType] = useState('');
+    const [selectedTypes, setSelectedTypes] = useState([]);
     const [contributorID, setContributorID] = useState(null);
+    const [dropdownOpen, setDropdownOpen] = useState(false); // Controla si el dropdown está abierto
     const navigate = useNavigate();
     const { id } = useParams();
-    const location = useLocation();  // Para obtener el estado pasado desde la página de edición
-    const expenseToEdit = location.state?.expense;  // Obtenemos el gasto que estamos editando, si existe
+    const location = useLocation();
+    const expenseToEdit = location.state?.expense;
 
     const token = localStorage.getItem('token');
 
+    // Toggle entre seleccionar y deseleccionar un tipo
+    const toggleType = (type) => {
+        setSelectedTypes((prevTypes) =>
+            prevTypes.includes(type)
+                ? prevTypes.filter((t) => t !== type)
+                : [...prevTypes, type]
+        );
+    };
+
+    // Función para abrir/cerrar el dropdown
+    const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
     async function handleError(errorResponse) {
         const errorBody = await errorResponse.json();
-        alert(errorBody.error);
-        if (errorResponse.status === 403) {
-            localStorage.removeItem('token');
-            navigate("/IniciarSesion");
-        }
+        const error = errorBody.error;
+        alert(error);
+        if (errorResponse.status === 403) navigate("/InicioSesion");
     }
 
     useEffect(() => {
@@ -42,7 +53,7 @@ const AddExpense = () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setContributorID(data.id); // Asegúrate de que el campo sea 'id' en tu backend
+                    setContributorID(data.id);
                 } else {
                     await handleError(response);
                 }
@@ -54,19 +65,18 @@ const AddExpense = () => {
 
         fetchUser();
 
-        // Si estamos editando un gasto, cargamos sus datos en los campos del formulario
         if (expenseToEdit) {
             setTitle(expenseToEdit.title);
             setAmount(expenseToEdit.amount);
-            setSelectedType(expenseToEdit.tags[0] || '');  // Asumimos que el tipo está en las etiquetas (tags)
+            setSelectedTypes(expenseToEdit.tags || []);
         }
     }, [expenseToEdit, token]);
 
     const handleSubmit = async () => {
         if (!title || !amount) {
             const missingFields = [];
-            if (!title) missingFields.push("Título");
-            if (!amount) missingFields.push("Importe");
+            if (!amount) missingFields.push("amount");
+            if (!title) missingFields.push("title");
             alert(`Faltan campos requeridos: ${missingFields}`);
             return;
         }
@@ -74,13 +84,11 @@ const AddExpense = () => {
         const newExpense = {
             title: title,
             amount: parseFloat(amount),
-            tags: [selectedType],
+            tags: selectedTypes,
         };
 
         try {
             let response;
-
-            // Si estamos editando un gasto, actualizamos
             if (expenseToEdit) {
                 response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseToEdit.id}`, {
                     method: 'POST',
@@ -91,7 +99,6 @@ const AddExpense = () => {
                     body: JSON.stringify(newExpense),
                 });
             } else {
-                // Si estamos añadiendo un nuevo gasto
                 response = await fetch(`http://localhost:3000/groups/${id}/expenses`, {
                     method: 'POST',
                     headers: {
@@ -107,7 +114,6 @@ const AddExpense = () => {
                 console.log("Gasto guardado correctamente.");
             } else {
                 await handleError(response);
-                return;
             }
         } catch (error) {
             console.error("Error de red:", error);
@@ -144,12 +150,29 @@ const AddExpense = () => {
                 </div>
                 <div className="form-label">
                     <label>Tipo de gasto</label>
-                    <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
-                        <option value="" disabled>Selecciona un tipo</option>
-                        {Object.entries(ExpenseType).map(([key, value]) => (
-                            <option key={key} value={value}>{value}</option>
-                        ))}
-                    </select>
+                    <div className="dropdown-container">
+                        <button
+                            className="dropdown-button"
+                            onClick={toggleDropdown}
+                        >
+                            Seleccionar tipos
+                        </button>
+                        {dropdownOpen && (
+                            <div className="dropdown-menu">
+                                {Object.entries(ExpenseType).map(([key, value]) => (
+                                    <button
+                                        key={key}
+                                        type="button"
+                                        className={`dropdown-item ${selectedTypes.includes(value) ? 'selected' : ''}`}
+                                        onClick={() => toggleType(value)}
+                                    >
+                                        {value}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                 </div>
             </div>
             <div className="group-footer">
