@@ -49,11 +49,11 @@ app.use('/auth', authenticationRoutes);
 const groupsRoutes = require('./groups/groups.routes');
 app.use('/groups', groupsRoutes);
 
-//Rutas de gastos
+// Rutas de gastos
 const expenseRoutes = require('./expenses/expenses.routes');
 app.use('/groups', expenseRoutes);
 
-//rutas de actividades de un grupo
+// rutas de actividades de un grupo
 const calendarRoutes = require('./calendar/calendar.routes');
 app.use('/groups', calendarRoutes);
 
@@ -75,6 +75,10 @@ app.use((err, req, res, next) => {
     }
     res.json({ error: err.message });
 });
+
+// rutas de actividades de un grupo
+const mapRoutes = require('./map/map.routes');
+app.use('/groups', mapRoutes);
 
 // Ruta base de prueba
 app.get('/', (req, res) => {

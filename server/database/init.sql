@@ -90,3 +90,14 @@ INSERT INTO expenses (group_id, title, amount, author_id, contributor_id, tags) 
     (1, 'Plane tickets', 200.0, 1, NULL, NULL),
     (1, 'Coffee', 30.0, 1, 2, NULL),
     (1, 'Chocolate tax', 16.5, 2, NULL, ARRAY['Comida', 'Provisiones', 'Misceláneos']);
+
+CREATE TABLE map_locations (
+                               id SERIAL PRIMARY KEY,
+                               group_id INT NOT NULL,
+                               title VARCHAR(255) NOT NULL,
+                               location POINT NOT NULL,
+                               created_by INT NOT NULL,
+                               created_at TIMESTAMP DEFAULT NOW(),
+                               FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+                               FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+);
