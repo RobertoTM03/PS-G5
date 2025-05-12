@@ -36,6 +36,15 @@ exports.findById = async (groupId, locationId) => {
     return await db.oneOrNone(query, [groupId, locationId]);
 };
 
+exports.deleteMapLocation = async (groupId, locationId, userId) => {
+    const query = `
+        DELETE FROM map_locations
+        WHERE group_id = $1 AND id = $2 AND created_by = $3;
+    `;
+
+    return await db.result(query, [groupId, locationId, userId]);
+};
+
 exports.getMapLocations = async (groupId) => {
     const query = `
         SELECT id, group_id AS "groupId", title, location[0] AS "latitude", location[1] AS "longitude", created_by AS "createdBy"
