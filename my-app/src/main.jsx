@@ -16,6 +16,7 @@ import DisplayEvents from "./components/calendar/displayEvents.jsx";
 import ExpenseView from "./components/expenses/ExpenseView.jsx";
 import AddExpense from "./components/expenses/AddExpense.jsx";
 import Balance from "./components/expenses/Balance.jsx";
+import DividedExpense from "./components/expenses/DividedExpense.jsx";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/displayEvents" element={<DisplayEvents />} />
           <Route path="/Gastos/:id" element={<ExpenseView />} />
           <Route path="/AñadirGastos/:id" element={<AddExpense />} />
+          <Route path="/GastosDividos/:id" element={<DividedExpense />} />
           <Route path="/Balance/:id" element={<Balance />} />
         </Routes>
       </BrowserRouter>
