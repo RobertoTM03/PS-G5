@@ -8,7 +8,7 @@ const ExpenseType = {
     FESTIVAL: 'Festival',
     PROVISIONES: 'Provisiones',
     ROPA: 'Ropa',
-    MISCELÁNEOS: 'Misceláneos',
+    MISCELANEOS: 'Misceláneos', // Clave sin tilde, valor con tilde
 };
 
 const AddExpense = () => {
@@ -16,7 +16,7 @@ const AddExpense = () => {
     const [amount, setAmount] = useState('');
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [contributorID, setContributorID] = useState(null);
-    const [dropdownOpen, setDropdownOpen] = useState(false); // Controla si el dropdown está abierto
+    const [dropdownOpen, setDropdownOpen] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
     const location = useLocation();
@@ -24,7 +24,6 @@ const AddExpense = () => {
 
     const token = localStorage.getItem('token');
 
-    // Toggle entre seleccionar y deseleccionar un tipo
     const toggleType = (type) => {
         setSelectedTypes((prevTypes) =>
             prevTypes.includes(type)
@@ -33,7 +32,6 @@ const AddExpense = () => {
         );
     };
 
-    // Función para abrir/cerrar el dropdown
     const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
     async function handleError(errorResponse) {
@@ -70,7 +68,7 @@ const AddExpense = () => {
             setAmount(expenseToEdit.amount);
             setSelectedTypes(expenseToEdit.tags || []);
         }
-    }, [expenseToEdit, token]);
+    }, [expenseToEdit, token, navigate]);
 
     const handleSubmit = async () => {
         if (!title || !amount) {

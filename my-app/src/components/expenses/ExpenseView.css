@@ -580,6 +580,19 @@
     background-color: #eee;
     color: #333;
 }
-
+.expense-title-text{
+    font-size: 2rem;
+    font-weight: bold;
+    color: black;
+}
+.expense-header-bar{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
+    padding: 16px;
+    border-bottom: 1px solid #d3d3d3;
+    margin-bottom: 10px;
+}
 
 

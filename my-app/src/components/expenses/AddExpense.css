@@ -67,11 +67,12 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 800px;
-    height: 450px;
+    max-height: 90vh; /* o usa auto en lugar de fijo */
+    height: auto;
+    overflow: visible; /* permite que el dropdown sobresalga */
     background-color: white;
     border: 2px solid black;
     border-radius: 5px;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;

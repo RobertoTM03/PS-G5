@@ -27,7 +27,7 @@
     display: flex;
     gap: 10px;
     margin: 20px 15px;
-    border-bottom: 1px solid #ccc;
+    /* border-bottom: 1px solid #ccc;  Remove this line */
     align-self: center;
 }
 
@@ -35,8 +35,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 95%; /* Aumentamos el ancho del contenedor balance-details */
-    max-width: none; /* Removemos el ancho máximo para que pueda ser más ancho */
+    width: 95%;
+    max-width: none;
     margin-top: 20px;
 }
 
@@ -53,8 +53,8 @@
 
 .balance-table {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Dos columnas */
-    width: 100%; /* Aseguramos que la tabla ocupe el ancho del contenedor balance-details */
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
     margin-top: 10px;
     max-height: 400px;
     overflow-y: auto;
@@ -81,7 +81,7 @@
 }
 
 .balance-row {
-    display: contents; /* Los hijos de balance-row se comportan como hijos directos de balance-table */
+    display: contents;
 }
 
 .balance-item {
@@ -94,7 +94,8 @@
     border-bottom: none;
 }
 
-.name-item h5, .amount-item h5 {
+.name-item h5,
+.amount-item h5 {
     margin: 5px 0;
 }
 
@@ -105,6 +106,7 @@
 .positive-amount h5 {
     color: green;
 }
+
 .balance-nav-button {
     background: none;
     border: none;
@@ -122,4 +124,19 @@
 .balance-nav-button.active {
     color: #007bff;
     border-bottom: 2px solid #007bff;
+}
+
+.balance-title-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: black;
+}
+
+.balance-header-bar {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
+    padding: 16px;
+    border-bottom: 1px solid #d3d3d3;
 }

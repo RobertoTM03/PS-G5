@@ -2,34 +2,40 @@ import React from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from "../layout/Header.jsx";
 import Footer from "../layout/Footer.jsx";
-import './Balance.css'; // Reutilizamos estilos
+import './Balance.css';
 
 export default function Balance() {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    // Datos de ejemplo estáticos
     const toCover = [
         { name: "Ana", amount: 15.50 },
-        { name: "Carlos", amount: -22.00 }, // Ejemplo negativo
+        { name: "Carlos", amount: -22.00 },
         { name: "Elena", amount: 8.75 },
-        { name: "David", amount: -10.20 }, // Ejemplo negativo
+        { name: "David", amount: -10.20 },
         { name: "Sofía", amount: 5.80 },
-        { name: "Javier", amount: -18.90 }, // Ejemplo negativo
+        { name: "Javier", amount: -18.90 },
+        { name: "Lucía", amount: 12.35 },
+        { name: "Sofía", amount: 5.80 },
+        { name: "Javier", amount: -18.90 },
+        { name: "Lucía", amount: 12.35 },
+        { name: "Sofía", amount: 5.80 },
+        { name: "Javier", amount: -18.90 },
         { name: "Lucía", amount: 12.35 },
     ];
 
     return (
         <div>
             <Header />
-            <div className="main-container-balance">
-
+            <div className="balance-header-bar">
                 <div className="arrow-balance" onClick={() => navigate(`/GroupAdminView/${id}`)}>←</div>
+                <h3 className="balance-title-text">Gastos</h3>
+            </div>
+            <div className="main-container-balance">
                 <div className="balance-navigation">
                     <button className="balance-nav-button" onClick={() => navigate(`/Gastos/${id}`)}>Gastos</button>
                     <button className="balance-nav-button active">Balance</button>
                 </div>
-
                 <div className="balance-details">
                     <h2>Mi Balance</h2>
                     <h3>Por Cubrir:</h3>
@@ -52,10 +58,8 @@ export default function Balance() {
                         )}
                     </div>
                 </div>
-
             </div>
             <Footer />
         </div>
-
     );
 }

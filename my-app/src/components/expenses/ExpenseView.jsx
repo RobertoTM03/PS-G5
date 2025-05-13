@@ -283,7 +283,11 @@ export default function ExpenseView() {
     return (
         <div className="main-container">
             <Header />
-            <div className="arrow" onClick={() => navigate(`/GroupAdminView/${id}`)}>←</div>
+            <div className="expense-header-bar">
+                <div className="arrow" onClick={() => navigate(`/GroupAdminView/${id}`)}>← </div>
+                <h2 className="expense-tile-text">Gastos</h2>
+            </div>
+
             <div className="expense-navigation">
                 <div className="nav-centered">
                     <button className="balance-nav-button active">Lista de Gastos</button>
