@@ -1,9 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "../layout/Header.jsx";
 import Footer from "../layout/Footer.jsx";
 import './ExpenseView.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaTimes } from 'react-icons/fa'; // Importa FaTimes
+
+const ExpenseType = { // Mover ExpenseType aquí para que esté disponible en este archivo
+    RESTAURANT: 'Comida',
+    TRANSPORT: 'Transporte',
+    FESTIVAL: 'Festival',
+    PROVISIONES: 'Provisiones',
+    ROPA: 'Ropa',
+    MISCELÁNEOS: 'Misceláneos',
+};
+
+function FilterDropdown({ categories, onCategoryChange, onClose, selected }) {
+    return (
+        <div className="filter-dropdown">
+            <h3>Filtrar por tipo</h3>
+            {categories.map((category, index) => (
+                <div key={index}>
+                    <label>
+                        <input
+                            type="checkbox"
+                            value={category}
+                            checked={selected.includes(category)}
+                            onChange={(e) => onCategoryChange(category, e.target.checked)}
+                        />
+                        {category}
+                    </label>
+                </div>
+            ))}
+            <button onClick={onClose} className="close-dropdown-button-bottom">
+                <FaTimes /> Cerrar
+            </button>
+        </div>
+    );
+}
 
 export default function ExpenseView() {
     const navigate = useNavigate();
@@ -12,8 +45,12 @@ export default function ExpenseView() {
     const [userName, setUserName] = useState("");
     const [userId, setUserId] = useState("");
     const token = localStorage.getItem('token');
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [expenseToDelete, setExpenseToDelete] = useState(null);
+    const [openDropdownId, setOpenDropdownId] = useState(null);
+    const dropdownRef = useRef(null);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [allCategories, setAllCategories] = useState(Object.values(ExpenseType)); // Usar ExpenseType aquí
+    const filterDropdownRef = useRef(null); // Ref para el dropdown de filtro
 
     async function handleError(errorResponse) {
         const errorBody = await errorResponse.json();
@@ -32,7 +69,8 @@ export default function ExpenseView() {
             fetchUserName();
             fetchExpenses();
         }
-    }, [token, navigate]);
+    }, [token, navigate, id]);
+
 
     async function fetchExpenses() {
         try {
@@ -48,7 +86,16 @@ export default function ExpenseView() {
             }
 
             const data = await response.json();
-            setExpenses(Array.isArray(data) ? data : []);
+            // Verificar si data es un array y no es null
+            const validExpenses = Array.isArray(data) ? data : [];
+
+            // Mapear las etiquetas de strings a un array de strings
+            const processedExpenses = validExpenses.map(expense => ({
+                ...expense,
+                tags: typeof expense.tags === 'string' ? [expense.tags] : expense.tags || [],
+            }));
+            setExpenses(processedExpenses);
+
         } catch (error) {
             alert(`Error al obtener los gastos: ${error}`);
             setExpenses([]);
@@ -77,7 +124,6 @@ export default function ExpenseView() {
         }
     }
 
-    // Función para manejar la contribución
     const handleContribute = async (expenseId) => {
         if (!userName) {
             alert("El nombre del usuario no está disponible");
@@ -103,14 +149,14 @@ export default function ExpenseView() {
                 return;
             }
 
-            // Actualiza solo el gasto modificado
             setExpenses(prevExpenses =>
                 prevExpenses.map(expense =>
                     expense.id === expenseId
-                        ? { ...expense, contributor: {id: userId, name: userName} }
+                        ? { ...expense, contributor: { id: userId, name: userName } }
                         : expense
                 )
             );
+
             window.location.reload();
 
         } catch (error) {
@@ -118,7 +164,6 @@ export default function ExpenseView() {
         }
     };
 
-    // Función para manejar la retirada de contribución
     const handleUncontribute = async (expenseId) => {
         try {
             const response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseId}/remove-contribution`, {
@@ -132,7 +177,6 @@ export default function ExpenseView() {
                 return;
             }
 
-            // Actualiza solo el gasto modificado
             setExpenses(prevExpenses =>
                 prevExpenses.map(expense =>
                     expense.id === expenseId
@@ -140,6 +184,8 @@ export default function ExpenseView() {
                         : expense
                 )
             );
+
+            window.location.reload();
 
         } catch (error) {
             alert(`Error al quitar la contribución: ${error.message}`);
@@ -157,9 +203,9 @@ export default function ExpenseView() {
 
     const handleDeleteClick = async (expenseId) => {
         const isConfirmed = window.confirm("¿Estás seguro de que deseas eliminar este gasto? Esta acción no se puede deshacer.");
-        
+
         if (!isConfirmed) return;
-    
+
         try {
             const response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseId}`, {
                 method: 'DELETE',
@@ -170,64 +216,97 @@ export default function ExpenseView() {
                 await handleError(response);
                 return;
             }
-    
-            // Recargar la página después de eliminar
+
             window.location.reload();
-    
         } catch (error) {
             alert(`Error eliminando gasto: ${error.message}`);
         }
     };
-    
 
-    const handleDelete = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseToDelete}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
-                credentials: 'include'
-            });
+    const toggleDropdown = (expenseId) => {
+        console.log('toggleDropdown called for expenseId:', expenseId);
+        setOpenDropdownId(prevId => {
+            const newId = prevId === expenseId ? null : expenseId;
+            console.log('openDropdownId is now:', newId);
+            return newId;
+        });
+    };
 
-            if (!response.ok) {
-                await handleError(response);
-                return;
+    const closeDropdownManually = () => {
+        setOpenDropdownId(null);
+    };
+
+    useEffect(() => {
+        const handleClickOutsideTags = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setOpenDropdownId(null);
             }
+        };
+        document.addEventListener("mousedown", handleClickOutsideTags);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsideTags);
+        };
+    }, [dropdownRef]);
 
-            setExpenses(prev => prev.filter(expense => expense.id !== expenseToDelete));
-            setShowDeleteModal(false);
-        } catch (error) {
-            alert(`Error eliminando gasto: ${error.message}`);
+    const toggleFilter = () => {
+        setIsFilterOpen(!isFilterOpen);
+    };
+
+    const handleCategoryChange = (category, isChecked) => {
+        if (isChecked) {
+            setSelectedCategories([...selectedCategories, category]);
+        } else {
+            setSelectedCategories(selectedCategories.filter(c => c !== category));
         }
     };
 
-    const handleCancelDelete = () => {
-        setShowDeleteModal(false);
+    const closeFilterDropdown = () => {
+        setIsFilterOpen(false);
     };
 
-    // Calcular el total de los gastos
-    const totalExpense = expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0);
+    useEffect(() => {
+        const handleClickOutsideFilter = (event) => {
+            if (isFilterOpen && filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
+                setIsFilterOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutsideFilter);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsideFilter);
+        };
+    }, [isFilterOpen, filterDropdownRef]);
+
+    const filteredExpenses = selectedCategories.length > 0
+        ? expenses.filter(expense => expense.tags && expense.tags.some(tag => selectedCategories.includes(tag)))
+        : expenses;
 
     return (
         <div className="main-container">
             <Header />
             <div className="arrow" onClick={() => navigate(`/GroupAdminView/${id}`)}>←</div>
-            <div className="expense-overwiew">
-                <h2 className="color-expense">Resumen de gastos:</h2>
-                <div className="expense-calculation">
-                    <div className="expense-calculation-text">
-                        <h3 className="color-expense">Gasto Total:</h3>
-                    </div>
-                    <div className="expense-calculation-display">
-                        <h3 className="color-expense">{totalExpense.toFixed(2)}€</h3>
-                    </div>
+            <div className="expense-navigation">
+                <div className="nav-centered">
+                    <button className="balance-nav-button active">Lista de Gastos</button>
+                    <button className="balance-nav-button" onClick={() => navigate(`/Balance/${id}`)}>Balance</button>
+                </div>
+                <div className="filter-button-container" ref={filterDropdownRef}>
+                    <button className="filtrado-tipos-button styled-dropdown-header" onClick={toggleFilter}>
+                        Filtrado por tipos
+                    </button>
+                    {isFilterOpen && (
+                        <div className="filter-dropdown-container">
+                            <FilterDropdown
+                                categories={allCategories}
+                                onCategoryChange={handleCategoryChange}
+                                onClose={closeFilterDropdown}
+                                selected={selectedCategories}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
 
             <div className="expense-list">
-                <div className="expense-list-text">
-                    <h2 className="color-expense">Lista de gastos:</h2>
-                </div>
-
                 <div className="expense-list-display">
                     <div className="expense-table-header">
                         <span>Título</span>
@@ -235,11 +314,14 @@ export default function ExpenseView() {
                         <span>Acción</span>
                         <span>Pagado por</span>
                         <span>Creado por</span>
-                        <span>Editar/Eliminar</span>
+                        <span>Etiquetas</span>
+                        <span>Actividad/común</span> {/* Nueva columna */}
+                        <span>Ficheros asociados</span> {/* Nueva columna */}
+                        <span className="edit-delete-header">Editar/Eliminar</span>
                     </div>
 
-                    {expenses.length > 0 ? (
-                        expenses.map(expense => (
+                    {filteredExpenses.length > 0 ? (
+                        filteredExpenses.map(expense => (
                             <div key={expense.id} className={`expense-row ${expense.contributor ? "covered-expense" : "pending-expense"}`}>
                                 <div className="name-expense">
                                     <h5 className="color-expense">{expense.title}</h5>
@@ -252,24 +334,21 @@ export default function ExpenseView() {
                                 </div>
 
                                 <div className="contribute-expense">
-                                { expense.contributor ? 
-                                    (
-                                        expense.contributor.id === userId ? (
-                                            <div className="contribution-info">
-                                                <button className="uncontribute-button-red" onClick={() => handleUncontribute(expense.id)}>
-                                                    Desvincular
-                                                </button>
-                                            </div>
-                                        ) : null
-                                    ) : (
+                                    {expense.contributor ?
+                                        (
+                                            expense.contributor.id === userId ? (
+                                                <div className="contribution-info">
+                                                    <button className="uncontribute-button-red" onClick={() => handleUncontribute(expense.id)}>
+                                                        Desvincular
+                                                    </button>
+                                                </div>
+                                            ) : null
+                                        ) : (
                                             <button className="contribute-button-green" onClick={() => handleContribute(expense.id)}>
                                                 Pagado
                                             </button>
-                                    )
-                                }
+                                        )}
                                 </div>
-
-
 
                                 <div className="contributed-by">
                                     {expense.contributor && (
@@ -283,6 +362,46 @@ export default function ExpenseView() {
                                     )}
                                 </div>
 
+                                <div className="expense-tags-container" ref={dropdownRef}>
+                                    {expense.tags && expense.tags.length > 0 ? (
+                                        expense.tags.length > 1 ? (
+                                            <div className="dropdown-container">
+                                                <div className="custom-dropdown styled-dropdown-header" onClick={() => toggleDropdown(expense.id)}>
+                                                    Etiquetas ({expense.tags.length})
+                                                </div>
+                                                {openDropdownId === expense.id && (
+                                                    <div className="dropdown-content">
+                                                        {expense.tags.map((tag, index) => (
+                                                            <div key={index} className="dropdown-item">
+                                                                {tag}
+                                                            </div>
+                                                        ))}
+                                                        <button onClick={closeDropdownManually} className="close-dropdown-button-bottom">
+                                                            <FaTimes /> Cerrar
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            expense.tags.map((tag, index) => (
+                                                <span key={index} className="expense-tag">
+                                                    {tag}
+                                                </span>
+                                            ))
+                                        )
+                                    ) : (
+                                        <span className="no-tags">—</span>
+                                    )}
+                                </div>
+
+                                {/* Nuevas columnas de Actividad y Almacenaje */}
+                                <div className="activity-expense">
+                                    <span></span> {/* Campo para Actividad */}
+                                </div>
+                                <div className="storage-expense">
+                                    <span></span> {/* Campo para Almacenaje */}
+                                </div>
+
                                 <div className="edition-expense">
                                     <button onClick={() => handleEdit(expense.id)} className="edit-btn">
                                         <FaEdit />
@@ -294,10 +413,9 @@ export default function ExpenseView() {
                             </div>
                         ))
                     ) : (
-                        <p className="no-expenses">No hay gastos registrados.</p>
+                        <p className="no-expenses">{selectedCategories.length > 0 ? 'No hay gastos con estas categorías.' : 'No hay gastos registrados.'}</p>
                     )}
                 </div>
-
                 <div className="expense-list-bottom">
                     <button className="expense-list-button" onClick={() => navigate(`/AñadirGastos/${id}`)}>
                         <h2 className="color-expense">Añadir Gasto</h2>
