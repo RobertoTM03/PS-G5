@@ -37,6 +37,7 @@ function App() {
           <Route path="/AñadirGastos/:id" element={<AddExpense />} />
           <Route path="/GastosDividos/:id" element={<DividedExpense />} />
           <Route path="/Balance/:id" element={<Balance />} />
+
         </Routes>
       </BrowserRouter>
     </FirebaseProvider>

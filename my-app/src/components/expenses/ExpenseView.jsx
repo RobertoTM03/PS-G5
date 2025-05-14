@@ -49,7 +49,7 @@ export default function ExpenseView() {
     const dropdownRef = useRef(null);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [allCategories, setAllCategories] = useState(Object.values(ExpenseType)); // Usar ExpenseType aquí
+    const [allCategories, ] = useState(Object.values(ExpenseType)); // Usar ExpenseType aquí
     const filterDropdownRef = useRef(null); // Ref para el dropdown de filtro
 
     async function handleError(errorResponse) {
@@ -348,7 +348,7 @@ export default function ExpenseView() {
                                                 </div>
                                             ) : null
                                         ) : (
-                                            <button className="contribute-button-green" onClick={() => handleContribute(expense.id)}>
+                                            <button className="contribute-button-green" onClick={() => navigate(`/GastosDividos/${id}`)}>
                                                 Pagado
                                             </button>
                                         )}
