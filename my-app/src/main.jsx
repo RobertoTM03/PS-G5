@@ -17,6 +17,7 @@ import ExpenseView from "./components/expenses/ExpenseView.jsx";
 import AddExpense from "./components/expenses/AddExpense.jsx";
 import Balance from "./components/expenses/Balance.jsx";
 import DividedExpense from "./components/expenses/DividedExpense.jsx";
+import Map from "./components/map/map.jsx";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/AñadirGastos/:id" element={<AddExpense />} />
           <Route path="/GastosDividos/:id" element={<DividedExpense />} />
           <Route path="/Balance/:id" element={<Balance />} />
+          <Route path="/Map/:id" element={<Map />} />
 
         </Routes>
       </BrowserRouter>

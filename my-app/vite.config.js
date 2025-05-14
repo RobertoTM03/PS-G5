@@ -7,17 +7,20 @@ export default defineConfig({
   resolve: {
     alias: {
       '@calendar-css': path.resolve(__dirname, 'node_modules/@toast-ui/calendar/dist/toastui-calendar.min.css'),
+      // Add aliases for leaflet and react-leaflet
+      'react-leaflet': 'react-leaflet/dist/leaflet',
+      leaflet: 'leaflet/dist/leaflet.js',
     },
   },
   optimizeDeps: {
-    include: ['@toast-ui/calendar'],
+    include: ['@toast-ui/calendar', 'react-leaflet', 'leaflet'],
   },
   server: {
     host: '0.0.0.0',
-    port: 80,
+    port: 3001,
     strictPort: true,
     hmr: {
-      clientPort: 80,
+      clientPort: 3001,
     },
     watch: {
       usePolling: true,

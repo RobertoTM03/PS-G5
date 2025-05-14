@@ -182,7 +182,7 @@ export default function GroupAdminView() {
                 <img src={calendar} alt="Calendar" />
                 <p className="icon-label">Calendario</p>
               </button>
-              <button className="icon-btn">
+              <button className="icon-btn" onClick={() => navigate(`/map/${groupId}`)}>
                 <img src={location} alt="Location" />
                 <p className="icon-label">Mapa</p>
               </button>

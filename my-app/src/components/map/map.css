@@ -1,0 +1,85 @@
+/* Estilo general de la página */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;  /* Se cambia la fuente por una más moderna */
+  background-color: #f4f4f9;  /* Fondo más claro */
+}
+
+.main-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  flex: 1;
+}
+
+.map-container {
+  width: 60%;  /* El mapa ocupará el 60% del ancho */
+  height: 400px;
+  margin-right: 20px;
+  border-radius: 12px;  /* Bordes redondeados */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  /* Sombra más suave */
+  background-color: white;
+  overflow: hidden;
+}
+
+.activity-table {
+  width: 35%;  /* La tabla ocupará el 35% del ancho */
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;  /* Bordes redondeados */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.activity-table h3 {
+  margin-bottom: 20px;
+  font-size: 22px;  /* Tamaño de fuente más grande para el título */
+  font-weight: bold;
+  color: #333;  /* Color de texto más oscuro */
+}
+
+.activity-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.activity-table th,
+.activity-table td {
+  padding: 15px;
+  text-align: left;
+  font-size: 16px;  /* Fuente de tamaño moderado */
+  color: #333;  /* Color de texto negro */
+}
+
+.activity-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.activity-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.activity-table tr:hover {
+  background-color: #e0e0e0;  /* Color al pasar el ratón */
+}
+
+footer {
+  background-color: #007bff;
+  padding: 15px;
+  color: white;
+  text-align: center;
+}
+
+footer a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
