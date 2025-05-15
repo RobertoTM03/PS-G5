@@ -4,7 +4,7 @@
   flex-direction: column;
   min-height: 100vh;
   font-family: 'Arial', sans-serif;  /* Se cambia la fuente por una más moderna */
-  background-color: #f4f4f9;  /* Fondo más claro */
+  background:  linear-gradient(to right, #d4d4e2, #85a1e1);
 }
 
 .main-content {
