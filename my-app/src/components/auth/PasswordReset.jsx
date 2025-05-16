@@ -32,12 +32,27 @@ export default function PasswordReset() {
     async function handleSubmit(e) {
         e.preventDefault();
         setIsFormSubmitted(true);
-        console.log(password);
-        console.log(confirmedPassword);
-        console.log(passwordsMatch);
+        if (!passwordsMatch) return;
 
-        
-    };
+        const response = await fetch("http://localhost:3000/auth/password-reset", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify({
+                resetToken: searchParams.get("oobCode"),
+                newPassword: password,
+            }),
+        });
+        if (response.ok) {
+            setPasswordChanged(true);
+        } else if (response.status === 400) {
+            setOobCodeEpired(true);
+        } else {
+            setPasswordChangeFailed(true);
+        }
+    }
 
     return (
         <div className="recover-page-container">

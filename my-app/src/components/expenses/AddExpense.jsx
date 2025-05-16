@@ -17,10 +17,15 @@ const AddExpense = () => {
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [contributorID, setContributorID] = useState(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
     const location = useLocation();
     const expenseToEdit = location.state?.expense;
+
+    const [groupData, setGroupData] = useState({ members: [], isOwner: false });
+    const [selectedUserIds, setSelectedUserIds] = useState('');
+
 
     const token = localStorage.getItem('token');
 
@@ -32,7 +37,17 @@ const AddExpense = () => {
         );
     };
 
+    const toggleUser = (userId) => {
+        setSelectedUserIds((prevSelected) =>
+            prevSelected.includes(userId)
+                ? prevSelected.filter((id) => id !== userId) // lo quita si ya está
+                : [...prevSelected, userId] // lo agrega si no está
+        );
+    };
+
     const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+    const toggleUserDropdown = () => setUserDropdownOpen(!userDropdownOpen);
+
 
     async function handleError(errorResponse) {
         const errorBody = await errorResponse.json();
@@ -40,6 +55,26 @@ const AddExpense = () => {
         alert(error);
         if (errorResponse.status === 403) navigate("/InicioSesion");
     }
+
+    const fetchGroupData = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/groups/${id}`, {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+
+            const data = await response.json();
+
+            setGroupData({
+                members: (data.integrantes || []).map(user => ({
+                    id: user.userId,
+                    name: user.nombre,
+                })),
+                isOwner: data.isOwner || false,
+            });
+        } catch (error) {
+            console.error('Error fetching group data:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -62,6 +97,7 @@ const AddExpense = () => {
         };
 
         fetchUser();
+        fetchGroupData();
 
         if (expenseToEdit) {
             setTitle(expenseToEdit.title);
@@ -146,6 +182,33 @@ const AddExpense = () => {
                         onChange={(e) => setAmount(e.target.value)}
                     />
                 </div>
+                <div className="form-label">
+                    <label>Contribuidores</label>
+                    <div className="dropdown-container">
+                        <button
+                            className="dropdown-button"
+                            onClick={toggleUserDropdown}
+                        >
+                            Seleccionar contribuyentes
+                        </button>
+
+                        {userDropdownOpen && (
+                            <div className="dropdown-menu">
+                                {groupData.members.map((member) => (
+                                    <button
+                                        key={member.id}
+                                        type="button"
+                                        className={`dropdown-item ${selectedUserIds.includes(member.id) ? 'selected' : ''}`}
+                                        onClick={() => toggleUser(member.id)}
+                                    >
+                                        {member.name}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
                 <div className="form-label">
                     <label>Tipo de gasto</label>
                     <div className="dropdown-container">

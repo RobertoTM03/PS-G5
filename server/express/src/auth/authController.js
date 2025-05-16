@@ -1,7 +1,61 @@
+const registerUser = require('./usecases/RegisterUser');
+const loginUser = require('./usecases/LoginUser');
+const resetUserPassword = require('./usecases/ResetPassword');
+const getUserInfo = require('./usecases/GetUserInformation');
+
+exports.register = async (req, res) => {
+    try {
+        const token = await registerUser(req.body);
+        res.status(201).json({ token });
+    } catch (err) {
+        console.error('Error in register:', err);
+        res.status(err.status || 500).json({ message: err.message });
+    }
+};
+
+exports.login = async (req, res) => {
+    try {
+        const token = await loginUser(req.body);
+        res.status(200).json({ token });
+    } catch (err) {
+        console.error('Error in login:', err);
+        res.status(err.status || 401).json({ message: err.message });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        await resetUserPassword(req.body);
+        res.status(200).json({ message: 'Password reset successful' });
+    } catch (err) {
+        console.error('Error resetting password:', err);
+        res.status(err.status || 500).json({ message: err.message });
+    }
+};
+
+exports.getMyInformation = async (req, res) => {
+    try {
+        const userInfo = await getUserInfo(req.user);
+        res.status(200).json(userInfo);
+    } catch (err) {
+        console.error('Error obtaining user information:', err);
+        res.status(err.status || 500).json({ message: err.message });
+    }
+};
+
+
+
+
+
+
+// TODO Borrar antes de subir:
+/*
+
 const admin = require('../shared/firebase');
 const axios = require('axios');
 const db = require("../shared/database");
 const { getUserFromToken } = require("./authService")
+
 
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -150,3 +204,4 @@ exports.getMyInformation = async (req, res) => {
         res.status(500).json({ msg: 'Error no definido' });
     }
 };
+*/

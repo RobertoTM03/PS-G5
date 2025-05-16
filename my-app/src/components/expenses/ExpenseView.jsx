@@ -295,7 +295,7 @@ export default function ExpenseView() {
                 </div>
                 <div className="filter-button-container" ref={filterDropdownRef}>
                     <button className="filtrado-tipos-button styled-dropdown-header" onClick={toggleFilter}>
-                        Filtrado por tipos
+                        Filtrado por tipos de gastos
                     </button>
                     {isFilterOpen && (
                         <div className="filter-dropdown-container">

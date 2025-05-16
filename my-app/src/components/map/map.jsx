@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Header from '../layout/Header.jsx';
 import Footer from '../layout/Footer.jsx';
 import './map.css';
+import {useNavigate, useParams} from "react-router-dom";
 
 export default function MapPage() {
   const [leafletLoaded, setLeafletLoaded] = useState(false);
-
+  const navigate = useNavigate();
+  const { id } = useParams();
   useEffect(() => {
     if (window.L) {
       setLeafletLoaded(true);
@@ -44,6 +46,10 @@ export default function MapPage() {
   return (
     <div className="page-container">
       <Header />
+      <div className="calendar-header-bar">
+        <div className="arrow" onClick={() => navigate(`/GroupAdminView/${id}`)}>←</div>
+        <h2 className="calendar-title-text">Mapa</h2>
+      </div>
       <div className="main-content" style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
         <div className="map-container" style={{ width: '70%', height: '700px', marginRight: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
           <div id="map" style={{ height: '100%', width: '100%' }}></div>
