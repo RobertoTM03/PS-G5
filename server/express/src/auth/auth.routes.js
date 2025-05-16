@@ -4,6 +4,8 @@ const { register, login, resetPassword, getMyInformation  } = require('./authCon
 
 const router = express.Router();
 
+//TODO change doc language
+
 /**
  * @openapi
  * /auth/login:
