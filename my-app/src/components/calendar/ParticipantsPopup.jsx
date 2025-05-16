@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './ParticipantsPopup.css';
 
-const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
+const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator, createdBy }) => {  // <-- Recibimos createdBy
   const { id } = useParams();
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isParticipating, setIsParticipating] = useState(false);
-  const [userId, setUserId] = useState(null);  // Guardar el ID del usuario
+  const [userId, setUserId] = useState(null);
 
   // Fetch user details to get the userId
   const fetchUserDetails = async () => {
@@ -18,7 +18,7 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/auth/my-information', {  // Endpoint para obtener la información del usuario
+      const response = await fetch('http://localhost:3000/auth/my-information', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -28,8 +28,7 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
 
       if (response.ok) {
         const userDetails = await response.json();
-        console.log('User details:', userDetails);
-        setUserId(userDetails.id);  // Asignamos el id del usuario
+        setUserId(userDetails.id);
       } else {
         console.error('Error fetching user details');
       }
@@ -62,7 +61,6 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
         setParticipants(data.participants || []);
         setLoading(false);
 
-        // Verificamos si el usuario está participando
         if (userId) {
           setIsParticipating(data.participants.some(participant => participant.id === userId));
         }
@@ -76,14 +74,14 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
   };
 
   useEffect(() => {
-    fetchUserDetails();  // Obtener detalles del usuario
+    fetchUserDetails();
   }, []);
 
   useEffect(() => {
     if (userId) {
-      fetchParticipants();  // Solo obtener los participantes después de obtener el userId
+      fetchParticipants();
     }
-  }, [userId, event]);  // Ejecutamos cuando 'userId' o 'event' cambian
+  }, [userId, event]);
 
   const handleJoin = async () => {
     const groupId = id;
@@ -138,10 +136,10 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
   const handleRemoveParticipant = async (participantId, participantName) => {
     const confirmDelete = window.confirm(`¿Desea eliminar a "${participantName}" como participante de este evento?`);
     if (!confirmDelete) return;
-  
+
     const groupId = id;
     const activityId = event.id;
-  
+
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:3000/groups/${groupId}/activities/${activityId}/participants`, {
@@ -154,7 +152,7 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
           participantId: participantId,
         }),
       });
-  
+
       if (response.ok) {
         fetchParticipants();
       } else {
@@ -167,7 +165,6 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
       alert('Error en la conexión a la API');
     }
   };
-  
 
   if (loading) {
     return <div>Cargando participantes...</div>;
@@ -189,8 +186,8 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
                   <p><strong>{participant.name}</strong></p>
                   <p>{participant.email}</p>
 
-                  {/* Mostrar la X para eliminar participante solo si el usuario es admin o creador */}
-                  {(isAdmin || isCreator) && (
+                  {/* Mostrar la X para eliminar participante solo si el usuario es admin o creador y no es el creador del evento */}
+                  {(isAdmin || isCreator) && participant.id !== userId  && (
                     <button
                       className="remove-participant-btn"
                       onClick={() => handleRemoveParticipant(participant.id, participant.name)}
@@ -208,7 +205,6 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
 
         <div className="popup-footer">
           <div className="footer-buttons">
-            {/* Mostrar los botones de "Unirse" solo si el usuario no está participando */}
             {!isParticipating && !isCreator && (
               <button
                 onClick={handleJoin}
@@ -218,7 +214,6 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator }) => {
               </button>
             )}
 
-            {/* Mostrar el botón "Salir" solo si el usuario está participando */}
             {isParticipating && !isCreator && (
               <button
                 onClick={handleLeave}

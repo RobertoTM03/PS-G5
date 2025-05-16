@@ -88,7 +88,6 @@ export default function EventDetailsPopup({ event, onClose, onEdit, onDelete, is
           onClose={() => setShowParticipants(false)}
           isAdmin={isAdmin}
           isCreator={isCreator}
-
         />
       )}
     </div>

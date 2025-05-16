@@ -62,7 +62,7 @@ export default function CalendarPage() {
       }
 
       try {
-        const response = await fetch('http://localhost:3000/auth/my-information', {  // Aquí usamos la endpoint para obtener los detalles del usuario
+        const response = await fetch('http://localhost:3000/auth/my-information', { 
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -120,9 +120,8 @@ export default function CalendarPage() {
         const activityDetails = await response.json();
         console.log('Activity details:', activityDetails);
 
-        // Verificar si el usuario actual es el creador del evento
         console.log('Creator User ID:', activityDetails.createdBy);
-        setIsCreator(activityDetails.createdBy === userId);  // Establecer si el usuario es el creador
+        setIsCreator(activityDetails.createdBy === userId); 
       }
     } catch (err) {
       console.error('Error fetching activity details:', err);
@@ -131,15 +130,15 @@ export default function CalendarPage() {
 
   useEffect(() => {
     if (selectedEvent && userId) {
-      fetchActivityDetails(selectedEvent.id);  // Obtener los detalles de la actividad seleccionada
+      fetchActivityDetails(selectedEvent.id);
     }
-  }, [selectedEvent, userId]);  // Ejecutamos cuando 'selectedEvent' o 'userId' cambian
+  }, [selectedEvent, userId]); 
 
   const updateTitle = (calendarInst) => {
     const d = calendarInst.getDate();
     const yy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
-    setCurrentDate(`${yy}.${mm}`);
+    setCurrentDate(`${mm}.${yy}`);
   };
 
   const fetchMonthlyEvents = async () => {
@@ -200,6 +199,11 @@ export default function CalendarPage() {
     const Calendar = window.tui.Calendar;
     const c = new Calendar(calendarRef.current, {
       defaultView: 'month',
+      language: 'es',
+      month: {
+        dayNames: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+        startDayOfWeek: 1,
+      },
       useCreationPopup: false,
       useDetailPopup: false,
       popupContainer: document.body,
@@ -261,19 +265,48 @@ export default function CalendarPage() {
     });
 
     c.render();
+    
     setInst(c);
     fetchMonthlyEvents();
     updateTitle(c);
     return () => c.destroy();
   }, []);
+  
+
+  
 
   useEffect(() => {
     fetchMonthlyEvents();
   }, [inst]);
+  
 
-  const goPrev = () => inst && (inst.prev(), inst.render(), updateTitle(inst), fetchMonthlyEvents());
-  const goNext = () => inst && (inst.next(), inst.render(), updateTitle(inst), fetchMonthlyEvents());
-  const goToday = () => inst && (inst.today(), inst.render(), updateTitle(inst), fetchMonthlyEvents());
+  const goPrev = () => {
+    if (inst) {
+      inst.prev();
+      inst.render();
+      updateTitle(inst);
+      fetchMonthlyEvents();
+    }
+  };
+  
+  const goNext = () => {
+    if (inst) {
+      inst.next();
+      inst.render();
+      updateTitle(inst);
+      fetchMonthlyEvents();
+    }
+  };
+  
+  const goToday = () => {
+    if (inst) {
+      inst.today();
+      inst.render();
+      updateTitle(inst);
+      fetchMonthlyEvents();
+    }
+  };
+  
 
   const handleCloseDisplay = () => setShowDisplay(false);
   const handleCreateFromDisplay = date => {
@@ -285,6 +318,16 @@ export default function CalendarPage() {
     setShowDisplay(false);
     setShowNuevo(true);
   };
+
+  function forzarDiasEnEspanol() {
+    const diasES = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    const spans = document.querySelectorAll('.toastui-calendar-day-name span');
+  
+    spans.forEach((span, index) => {
+      span.textContent = diasES[index % 7];
+    });
+  }
+  
 
   return (
     <div className="page-container">
@@ -299,7 +342,7 @@ export default function CalendarPage() {
         
 
           <div className="calendar-nav">
-            <button onClick={goToday} className="today-btn">Today</button>
+            <button onClick={goToday} className="today-btn">Hoy</button>
             <button onClick={goPrev} className="nav-btn">❮</button>
             <button onClick={goNext} className="nav-btn">❯</button>
             <span className="calendar-title">{currentDate}</span>
