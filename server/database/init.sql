@@ -27,11 +27,18 @@ CREATE TABLE expenses (
     title VARCHAR(32) NOT NULL,
     amount FLOAT NOT NULL,
     author_id INT NOT NULL,
-    contributor_id INT,
     tags TEXT[],
     FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL,
-    FOREIGN KEY (contributor_id) REFERENCES users(id) ON DELETE SET NULL
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE expense_contributions (
+    expense_id INT NOT NULL,
+    contributor_id INT NOT NULL,
+    amount FLOAT NOT NULL,
+    FOREIGN KEY (expense_id) REFERENCES expenses(id) ON DELETE CASCADE,
+    FOREIGN KEY (contributor_id) REFERENCES users(id),
+    PRIMARY KEY (expense_id, contributor_id)
 );
 
 CREATE TABLE activities (
@@ -54,6 +61,17 @@ CREATE TABLE activity_participants (
     FOREIGN KEY (activity_id) REFERENCES activities(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE (activity_id, user_id)
+);
+
+CREATE TABLE map_locations (
+                               id SERIAL PRIMARY KEY,
+                               group_id INT NOT NULL,
+                               title VARCHAR(255) NOT NULL,
+                               location POINT NOT NULL,
+                               created_by INT NOT NULL,
+                               created_at TIMESTAMP DEFAULT NOW(),
+                               FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+                               FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
 );
 
 INSERT INTO users (name, email, firebase_uid) VALUES
@@ -86,18 +104,15 @@ INSERT INTO group_users (group_id, user_id) VALUES
     (3, 1);  -- Alice
 
 
-INSERT INTO expenses (group_id, title, amount, author_id, contributor_id, tags) VALUES
-    (1, 'Plane tickets', 200.0, 1, NULL, NULL),
-    (1, 'Coffee', 30.0, 1, 2, NULL),
-    (1, 'Chocolate tax', 16.5, 2, NULL, ARRAY['Comida', 'Provisiones', 'Misceláneos']);
+INSERT INTO expenses (group_id, title, amount, author_id, tags) VALUES
+    (1, 'Billetes de avión', 200.0, 1, NULL),
+    (1, 'Café', 30.0, 1, NULL),
+    (1, 'Impuesto de chocolate', 16.5, 2, ARRAY['Comida', 'Provisiones', 'Misceláneos']),
+    (1, 'Cenita', 120, 2, ARRAY['Comida']),
+    (1, 'Próximo asadero', 120, 2, ARRAY['Provisiones']);
 
-CREATE TABLE map_locations (
-                               id SERIAL PRIMARY KEY,
-                               group_id INT NOT NULL,
-                               title VARCHAR(255) NOT NULL,
-                               location POINT NOT NULL,
-                               created_by INT NOT NULL,
-                               created_at TIMESTAMP DEFAULT NOW(),
-                               FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
-                               FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
-);
+INSERT INTO expense_contributions (expense_id, contributor_id, amount) VALUES
+    (2, 2, 30.0),
+    (4, 1, 100.0),
+    (4, 2, 20.0),
+    (5, 4, 50.0);

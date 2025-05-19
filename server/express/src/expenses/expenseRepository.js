@@ -3,8 +3,9 @@ const pgPromise = require("pg-promise")({
     // Context
 });  
 const db = require('../shared/database');
+const {insert} = pgPromise.helpers;
 
-const {Expense, User} = require('./expenses');
+const {Expense, User, Contribution} = require('./expenses');
 const { ExpenseNotFoundError } = require("./expenseErrors");
 
 
@@ -18,18 +19,46 @@ class ExpenseRepositoryPostgreImpl {
         return new User(userId, name);
     }
 
-    async getExpenseFromRow(row) {
-        const author = await this.getUser(row.author_id);
-        let contributor = undefined;
-        if (row.contributor_id) {
-            contributor = await this.getUser(row.contributor_id);
+    async getExpenseContributions(expenseId) {
+        const contributions = [];
+        const contribution_rows = await db.any(`
+            SELECT *
+            FROM expense_contributions
+            WHERE expense_id = $1
+        `, [expenseId]);
+        for (let i = 0; i < contribution_rows.length; i++) {
+            let contributor = await this.getUser(contribution_rows[i].contributor_id);
+            contributions.push(new Contribution(contributor, contribution_rows[i].amount));
         }
+        return contributions;
+    }
+
+    async buildExpense(expenseData) {
+        const author = await this.getUser(expenseData.author_id);
+        const contributors = await this.getExpenseContributions(expenseData.id);
         return Expense.withId(
-            row.id, row.group_id, 
-            row.title, row.amount, 
-            author, contributor,
-            row.tags
+            expenseData.id, expenseData.group_id, 
+            expenseData.title, expenseData.amount, 
+            author, contributors,
+            expenseData.tags
         );
+    }
+
+    async storeContributions(expense) {
+        if (expense.contributions.length == 0) return;
+        const insertColumns = ["expense_id", "contributor_id", "amount"];
+        const values = [];
+        for (let index = 0; index < expense.contributions.length; index++) {
+            values.push(
+                {
+                    expense_id: expense.id, 
+                    contributor_id: expense.contributions[index].contributor.id, 
+                    amount: expense.contributions[index].amount
+                }
+            );
+        }
+
+        await db.none(insert(values, insertColumns, "expense_contributions"));
     }
 
     async create(expense) {
@@ -38,16 +67,17 @@ class ExpenseRepositoryPostgreImpl {
             expense.title, 
             expense.amount, 
             expense.author ? expense.author.id: null, 
-            expense.contributor ? expense.contributor.id: null, 
             pgPromise.as.array(expense.tags),
             expense.id
         ]
         const expense_row = await db.one(`
-            INSERT INTO expenses (group_id, title, amount, author_id, contributor_id, tags)
-            VALUES ($1, $2, $3, $4, $5, $6^)
+            INSERT INTO expenses (group_id, title, amount, author_id, tags)
+            VALUES ($1, $2, $3, $4, $5^)
             RETURNING *;
         `, values);
-        const createdExpense = this.getExpenseFromRow(expense_row);
+        expense.id = expense_row.id;
+        await this.storeContributions(expense);
+        const createdExpense = await this.buildExpense(expense_row);
         return createdExpense;        
     }
 
@@ -58,7 +88,7 @@ class ExpenseRepositoryPostgreImpl {
             WHERE id = $1
         `, [expenseId]);
         if (!expense_row) throw new ExpenseNotFoundError;
-        return await this.getExpenseFromRow(expense_row);
+        return await this.buildExpense(expense_row);
     }
     
     async getGroupExpenses(groupId) {
@@ -68,7 +98,7 @@ class ExpenseRepositoryPostgreImpl {
         );
         const expenses = [];
         for (let i = 0; i < expense_rows.length; i++) {
-            let expense = await this.getExpenseFromRow(expense_rows[i]);
+            let expense = await this.buildExpense(expense_rows[i]);
             expenses.push(expense);
         }
         return expenses;
@@ -80,7 +110,6 @@ class ExpenseRepositoryPostgreImpl {
             expense.title, 
             expense.amount, 
             expense.author ? expense.author.id: null, 
-            expense.contributor ? expense.contributor.id: null, 
             pgPromise.as.array(expense.tags),
             expense.id
         ]
@@ -90,12 +119,12 @@ class ExpenseRepositoryPostgreImpl {
                 title = $2,
                 amount = $3,
                 author_id = $4,
-                contributor_id = $5,
-                tags = $6^
-            WHERE id = $7
+                tags = $5^
+            WHERE id = $6
             RETURNING *
         `, values);
-        return await this.getExpenseFromRow(expense_row);
+        await this.storeContributions(expense);
+        return await this.buildExpense(expense_row);
     }
 
     async delete(expense) {

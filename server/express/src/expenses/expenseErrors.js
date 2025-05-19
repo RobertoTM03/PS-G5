@@ -1,11 +1,20 @@
 
 const {TripCollabError, ResourceNotFoundError} = require("../errors");
 
-class ExpenseHasNoContributorError extends TripCollabError {
+
+class ExpenseHasNoContributionsError extends TripCollabError {
     constructor() {
-        const message = 'No se pudo completar la operación. El gasto no tiene contribuciones.';
+        const message = 'El gasto no tiene contribuciones.';
         super(message);
-        this.name = "ExpenseHasNoContributorError";
+        this.name = "ExpenseHasNoContributionsError";
+    }
+}
+
+class UserIsNotContributorError extends TripCollabError {
+    constructor(user) {
+        const message = `No se pudo completar la operación. El usuario ${user.name} no ha contribuido al gasto.`;
+        super(message);
+        this.name = "UserIsNotContributorError";
     }
 }
 
@@ -14,6 +23,14 @@ class CoveredExpenseContributionError extends TripCollabError {
         const message = 'No se puede contribuir a un gasto ya cubierto.';
         super(message);
         this.name = "CoveredExpenseContributionError";
+    }
+}
+
+class ExcessiveContributionError extends TripCollabError {
+    constructor() {
+        const message = 'La contribución excede la cantidad del gasto.';
+        super(message);
+        this.name = "ExcessiveContributionError";
     }
 }
 
@@ -41,8 +58,10 @@ class ExpenseNotFoundError extends ResourceNotFoundError {
 }
 
 module.exports = {
-    ExpenseHasNoContributorError,
+    ExpenseHasNoContributionsError,
+    UserIsNotContributorError,
     CoveredExpenseContributionError,
+    ExcessiveContributionError,
     NegativeExpenseAmountError,
     ExpenseTitleTooLongError,
     ExpenseNotFoundError,

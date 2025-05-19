@@ -1,24 +1,24 @@
 
 const {isGroupOwner} = require('../../groups/groupRepository');
-const { PermissionDeniedError, MissingRequiredFieldsError } = require('../../errors');
+const { PermissionDeniedError } = require('../../errors');
 
+const {Contribution} = require('../expenses');
 const {ExpenseRepository} = require('../expenseRepository');
-const {NegativeExpenseAmountError} = require('../expenseErrors');
 
 module.exports = async (groupId, expenseId, data, userId) => {
-    const { title, amount, contributor, tags } = data;
+    const { title, amount, contributors, tags } = data;
 
-    console.log("title", title, "am", amount, "con", contributor, "tg", tags);
+    console.log("title", title, "am", amount, "con", contributors, "tg", tags);
 
     const expenseRepository = new ExpenseRepository();
     const expense = await expenseRepository.findById(expenseId);
     const isAdmin = await isGroupOwner(groupId, userId);
 
-    if (expense.author.id != userId && !isAdmin) throw new PermissionDeniedError;
+    if (!isAdmin) throw new PermissionDeniedError;
 
     if (title)  expense.title = title;
     if (amount) expense.amount = amount;
-    if (contributor) expense.contributor = contributor;
+    if (contributors) expense.contributions = Contribution.fromJSONArray(contributors);
     if (tags) expense.tags = tags;
 
     const updatedExpense = await expenseRepository.update(expense);

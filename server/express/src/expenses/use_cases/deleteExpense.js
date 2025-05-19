@@ -9,7 +9,7 @@ module.exports = async (groupId, expenseId, userId) => {
 
     const expense = await expenseRepository.findById(expenseId);
     const isAdmin = await isGroupOwner(groupId, userId);
-    if (expense.author.id != userId && !isAdmin) throw new PermissionDeniedError;
+    if (!isAdmin) throw new PermissionDeniedError;
 
     const expenses = await expenseRepository.delete(expense);
     return expenses;

@@ -1,5 +1,5 @@
 
-const { MissingRequiredFieldsError } = require('../errors');
+const { MissingRequiredFieldsError, throwIfMissingRequiredFields } = require('../errors');
 const expenseErrors = require("./expenseErrors");
 
 class User {
@@ -16,6 +16,36 @@ class User {
     }
 }
 
+class Contribution {
+
+    constructor(user, amount) {
+        this.contributor = user;
+        this.amount = amount;
+    }
+
+    static fromJSONArray(jsonArray) {
+        const parsedArray = [];
+        for (let i = 0; i < jsonArray.length; i++) {
+            parsedArray.push(Contribution.fromJSON(jsonArray[i]));    
+        }
+        return parsedArray;
+    }
+
+    static fromJSON(jsonData) {
+        throwIfMissingRequiredFields(jsonData, ["id", "amount"]);
+        const user = jsonData.hasOwnProperty("name") ? new User(jsonData.id, jsonData.name) : new User(jsonData.id);
+        return new Contribution(user, jsonData.amount);
+    }
+
+    toJSON() {
+        return {
+            id: this.contributor.id,
+            name: this.contributor.name,
+            amount: this.amount
+        }
+    }
+}
+
 class Expense {
 
     static MAX_TITLE_LENGTH = 32;
@@ -23,21 +53,22 @@ class Expense {
     #title;
     #amount;
     #author;
-    #contributor;
+    #contribution = 0;
+    #contributions;
     #tags;
 
-    constructor(groupId, title, amount, author, contributor, tags = []) {
+    constructor(groupId, title, amount, author, contributions = [], tags = []) {
         this.id = undefined;
         this.groupId = groupId;
         this.title = title;
         this.amount = amount;
         this.author = author;
-        this.contributor = contributor;
+        this.contributions = contributions;
         this.tags = tags;
     }
 
-    static withId(expenseId, groupId, title, amount, author, contributor, tags = []) {
-        const instace = new Expense(groupId, title, amount, author, contributor, tags);
+    static withId(expenseId, groupId, title, amount, author, contributions = [], tags = []) {
+        const instace = new Expense(groupId, title, amount, author, contributions, tags);
         instace.id = expenseId;
         return instace;
     }
@@ -78,29 +109,48 @@ class Expense {
         }
     }
 
-    get contributor() {
-        return this.#contributor
+    get contributions() {
+        return this.#contributions
     }
 
-    set contributor(contributor) {
-        // TODO: Controlar tipos no soportados y lanzar Error. 
-        // WARNING: Actualmente puede quedar sin contributor de manera silenciosa
-        if (contributor instanceof User) {
-            this.#contributor = contributor;
-        } else if (Number.isInteger(contributor)) {
-            this.#contributor = new User(contributor);
+    set contributions(contributions) {
+        this.#contributions = [];
+        for (let i = 0; i < contributions.length; i++) {
+            this.addContribution(contributions[i])
         }
     }
-
-    addContributor(userId) {
-        // TODO: Cambiar a User como parametro en lugar de ID
-        if (this.contributor) throw new expenseErrors.CoveredExpenseContributionError;
-        this.contributor = new User(userId);
+    
+    get contribution() {
+        return this.#contribution;
+    }
+    
+    set contribution(amount) {
+        if (amount < 0) throw new expenseErrors.NegativeExpenseAmountError;
+        if (amount > this.amount) throw new expenseErrors.ExcessiveContributionError;
+        this.#contribution = amount;
+    }
+    
+    addContribution(contribution) {
+        // TODO: Controlar tipos no soportados y lanzar Error.
+        if (this.isCovered()) throw new expenseErrors.CoveredExpenseContributionError;
+        if (contribution.amount === 0) throw new MissingRequiredFieldsError(["amount"]);
+        this.contribution += contribution.amount;
+        this.#contributions.push(contribution);
     }
 
-    removeContributor() {
-        if (!this.contributor) throw new expenseErrors.ExpenseHasNoContributorError;
-        this.#contributor = null;
+    removeContribution(user) {
+        for (let i = 0; i < this.contributions; i++) {
+            if (this.contributions[i].contributor.id === user.id) {
+                this.contribution -= this.contributions[i].amount;
+                delete this.#contributions[i];
+                return;
+            }
+        }
+        throw new expenseErrors.UserIsNotContributorError(user)
+    }
+
+    isCovered() {
+        return this.contribution === this.amount;
     }
 
     get tags() {
@@ -113,12 +163,13 @@ class Expense {
     }
 
     toJSON() {
+        console.log(this.contributions);
         return {
             id: this.id,
             title: this.title,
             amount: this.amount,
             author: this.author,
-            contributor: this.contributor,
+            contributors: this.contributions.map(contribution => contribution.toJSON()),
             tags: this.tags
         }
     }
@@ -127,5 +178,6 @@ class Expense {
 
 module.exports = {
     User,
+    Contribution,
     Expense,
 };

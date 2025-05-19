@@ -7,7 +7,7 @@ const addContribution = require("./use_cases/addContribution");
 const removeContribution = require("./use_cases/removeContribution");
 
 
-exports.createExpense = async (req, res) => {
+exports.createExpense = async (req, res, next) => {
     try {
         const result = await createExpense(req.params.groupId, req.body, req.user.id);
         res.status(200).json(result);
@@ -19,6 +19,7 @@ exports.createExpense = async (req, res) => {
 exports.getExpenses = async (req, res, next) => {
     try {
         const result = await getExpenses(req.params.groupId);
+        console.log(result);
         res.status(200).json(result);
     } catch (err) {
         next(err);
@@ -45,7 +46,7 @@ exports.deleteExpense = async (req, res, next) => {
 
 exports.addContribution = async (req, res, next) => {
     try {
-        const result = await addContribution(req.params.expenseId, req.user.id);
+        const result = await addContribution(req.params.expenseId, req.body, req.user.id);
         res.status(200).json(result);
     } catch (err) {
         next(err);
