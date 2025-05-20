@@ -44,7 +44,7 @@ export default function Registrarse() {
       const data = await response.json();
   
       if (!response.ok) {
-        throw new Error(data.msg || "Error desconocido al registrarse");
+        throw new Error(data.error);
       }
   
       // Guardar token en localStorage
@@ -54,7 +54,7 @@ export default function Registrarse() {
       navigate("/vistaGrupos");
   
     } catch (error) {
-      alert(`Error al registrarse: ${error.message}`);
+      alert(`Error al registrarse: ${error.error}`);
       console.error("Registro fallido:", error);
     }
   };

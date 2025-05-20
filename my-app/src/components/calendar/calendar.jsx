@@ -76,10 +76,7 @@ export default function CalendarPage() {
         }
 
         const userDetails = await response.json();
-        console.log('User details:', userDetails);
-        setUserId(userDetails.id);  // Asignamos el id del usuario
-
-        // Aquí se asume que el token ya se usa correctamente
+        setUserId(userDetails.id);
         const groupDetailsResponse = await fetch(`http://localhost:3000/groups/${id}`, {
           method: 'GET',
           headers: {
@@ -90,10 +87,7 @@ export default function CalendarPage() {
 
         if (groupDetailsResponse.ok) {
           const groupDetails = await groupDetailsResponse.json();
-          console.log('Group details:', groupDetails);
-
-          // Establecer si el usuario es administrador basándose en 'isOwner'
-          setIsAdmin(groupDetails.isOwner);  // Establecer isAdmin basado en la propiedad 'isOwner'
+          setIsAdmin(groupDetails.isOwner);
         }
       } catch (err) {
         console.error('Error fetching user details:', err);
@@ -101,7 +95,7 @@ export default function CalendarPage() {
     };
 
     fetchUserDetails();
-  }, [id]);  // Se ejecuta una sola vez cuando cambia el groupId
+  }, [id]);
 
   const fetchActivityDetails = async (activityId) => {
     const token = localStorage.getItem('token');
@@ -118,9 +112,6 @@ export default function CalendarPage() {
 
       if (response.ok) {
         const activityDetails = await response.json();
-        console.log('Activity details:', activityDetails);
-
-        console.log('Creator User ID:', activityDetails.createdBy);
         setIsCreator(activityDetails.createdBy === userId); 
       }
     } catch (err) {

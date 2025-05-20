@@ -8,7 +8,7 @@ const ExpenseType = {
     FESTIVAL: 'Festival',
     PROVISIONES: 'Provisiones',
     ROPA: 'Ropa',
-    MISCELANEOS: 'Misceláneos', // Clave sin tilde, valor con tilde
+    MISCELANEOS: 'Misceláneos',
 };
 
 const AddExpense = () => {
@@ -24,8 +24,10 @@ const AddExpense = () => {
     const expenseToEdit = location.state?.expense;
 
     const [groupData, setGroupData] = useState({ members: [], isOwner: false });
-    const [selectedUserIds, setSelectedUserIds] = useState('');
-
+    const [selectedUserIds, setSelectedUserIds] = useState([]);
+    const [splitType, setSplitType] = useState('equal'); // 'equal' or 'unequal'
+    // Eliminamos individualAmounts si no vamos a usar splitType 'unequal' de momento.
+    // const [individualAmounts, setIndividualAmounts] = useState({}); // Para manejar montos desiguales
 
     const token = localStorage.getItem('token');
 
@@ -66,7 +68,7 @@ const AddExpense = () => {
 
             setGroupData({
                 members: (data.integrantes || []).map(user => ({
-                    id: user.userId,
+                    id: user.userId, // Aseguramos que el id del miembro sea el userId
                     name: user.nombre,
                 })),
                 isOwner: data.isOwner || false,
@@ -103,29 +105,70 @@ const AddExpense = () => {
             setTitle(expenseToEdit.title);
             setAmount(expenseToEdit.amount);
             setSelectedTypes(expenseToEdit.tags || []);
+            setSelectedUserIds(expenseToEdit.contributors?.map(c => c.userId) || []);
+            setSplitType(expenseToEdit.splitType || 'equal');
+            // Si estuviéramos editando y tuviéramos montos desiguales, necesitaríamos inicializar individualAmounts aquí.
+            // Para el propósito de esta corrección, lo dejamos simplificado para "equal".
         }
-    }, [expenseToEdit, token, navigate]);
+    }, [expenseToEdit, token, navigate, id]);
+
+    // Si no vamos a usar splitType 'unequal' de momento, podemos eliminar esta función
+    // const handleAmountChange = (userId, value) => {
+    //     setIndividualAmounts({
+    //         ...individualAmounts,
+    //         [userId]: parseFloat(value),
+    //     });
+    // };
 
     const handleSubmit = async () => {
-        if (!title || !amount) {
-            const missingFields = [];
-            if (!amount) missingFields.push("amount");
-            if (!title) missingFields.push("title");
-            alert(`Faltan campos requeridos: ${missingFields}`);
+        // Validar el título
+        if (!title.trim()) { // .trim() para asegurar que no solo sean espacios en blanco
+            alert(`Faltan campos requeridos: title`);
             return;
+        }
+
+        // Validar el importe y parsearlo
+        const parsedAmount = parseFloat(amount);
+        if (isNaN(parsedAmount) || parsedAmount <= 0) { // El importe debe ser un número positivo
+            alert('Por favor, introduce un importe válido y mayor que cero.');
+            return;
+        }
+
+        // Validar que se haya seleccionado al menos un contribuidor
+        if (selectedUserIds.length === 0) {
+            alert('Debes seleccionar al menos un contribuidor.');
+            return;
+        }
+
+        let contributorsData;
+
+        // Si es división igualitaria
+        if (splitType === 'equal') {
+            const equalAmount = parsedAmount / selectedUserIds.length;
+            contributorsData = selectedUserIds.map(userId => ({ id: userId, amount: equalAmount })); // Corrección: 'id' en lugar de 'userId'
+        } else {
+            // Este bloque solo se ejecutaría si tuvieras la lógica para 'unequal' habilitada
+            // y los inputs para montos individuales.
+            // Por ahora, se asume que si llegamos aquí y no es 'equal', hay un error lógico
+            // o falta la implementación completa de 'unequal'.
+            alert('El tipo de reparto "Desigual" aún no está completamente implementado o configurado para esta funcionalidad.');
+            return; // Detenemos la ejecución si el tipo es 'unequal' y no hay lógica para ello.
         }
 
         const newExpense = {
             title: title,
-            amount: parseFloat(amount),
+            amount: parsedAmount,
             tags: selectedTypes,
+            contributors: contributorsData, // Ya contiene los userId y amounts correctos
+            splitType: splitType,
         };
 
         try {
             let response;
             if (expenseToEdit) {
+                // Asumiendo que la edición usa un método PATCH o PUT, no POST
                 response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseToEdit.id}`, {
-                    method: 'POST',
+                    method: 'PATCH', // O 'PUT' dependiendo de tu API
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
@@ -145,7 +188,6 @@ const AddExpense = () => {
 
             if (response.ok) {
                 navigate(`/Gastos/${id}`);
-                console.log("Gasto guardado correctamente.");
             } else {
                 await handleError(response);
             }
@@ -182,6 +224,18 @@ const AddExpense = () => {
                         onChange={(e) => setAmount(e.target.value)}
                     />
                 </div>
+                {/* Eliminado el select de Tipo de Reparto si no se va a usar la lógica de "unequal" de momento */}
+                {/* <div className="form-label">
+                    <label>Tipo de Reparto</label>
+                    <select
+                        className="form-input"
+                        value={splitType}
+                        onChange={(e) => setSplitType(e.target.value)}
+                    >
+                        <option value="equal">Igual</option>
+                        <option value="unequal">Desigual</option>
+                    </select>
+                </div> */}
                 <div className="form-label">
                     <label>Contribuidores</label>
                     <div className="dropdown-container">
@@ -195,14 +249,26 @@ const AddExpense = () => {
                         {userDropdownOpen && (
                             <div className="dropdown-menu">
                                 {groupData.members.map((member) => (
-                                    <button
-                                        key={member.id}
-                                        type="button"
-                                        className={`dropdown-item ${selectedUserIds.includes(member.id) ? 'selected' : ''}`}
-                                        onClick={() => toggleUser(member.id)}
-                                    >
-                                        {member.name}
-                                    </button>
+                                    <div key={member.id} className="dropdown-item">
+                                        <label>
+                                            {member.name}
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedUserIds.includes(member.id)}
+                                                onChange={() => toggleUser(member.id)}
+                                            />
+                                        </label>
+                                        {/* Este input solo se mostraría si splitType es 'unequal' y tienes la lógica para ello */}
+                                        {/* {splitType === 'unequal' && (
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={individualAmounts[member.id] || 0}
+                                                onChange={(e) => handleAmountChange(member.id, e.target.value)}
+                                                placeholder="Monto"
+                                            />
+                                        )} */}
+                                    </div>
                                 ))}
                             </div>
                         )}
@@ -249,3 +315,4 @@ const AddExpense = () => {
 };
 
 export default AddExpense;
+

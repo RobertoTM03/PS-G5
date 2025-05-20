@@ -37,14 +37,14 @@ export default function IniciarSesion() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.msg || "Error desconocido al iniciar sesión");
+                throw new Error(data.error);
             }
 
             localStorage.setItem("token", data.token);
 
             navigate("/vistaGrupos");
         } catch (error) {
-            alert(`Error al iniciar sesión: ${error.message}`);
+            alert(`Error al iniciar sesión: `);
             console.error("Inicio de sesión fallido:", error);
         }
     };
