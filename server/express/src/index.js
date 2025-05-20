@@ -1,8 +1,9 @@
 const express = require('express');
 const { swaggerUi, swaggerSpec } = require('./swagger');
 
-const errors = require('./errors');
 const syncUsersFromFirebase = require('./shared/syncFirebase');
+const errorHandler = require("./errorHandler");
+
 
 const app = express();
 const db = require("./shared/database");
@@ -21,18 +22,23 @@ app.use(cors({
     credentials: true
 }));
 
-// Sincronizar usuarios desde Firebase.
-(async () => {
-    syncUsersFromFirebase();
-})();
+try {
+    // Sincronizar usuarios desde Firebase.
+    (async () => {
+        syncUsersFromFirebase();
+    })();
 
-db.any('SELECT * FROM users')
-    .then(function(data) {
-        console.log(data)
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
+    db.any('SELECT * FROM users')
+        .then(function(data) {
+            console.log(data)
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+} catch (err) {
+    console.error ("Database connection error");
+}
+
 
 
 // Middleware para parsear JSON
@@ -57,25 +63,6 @@ app.use('/groups', expenseRoutes);
 const calendarRoutes = require('./calendar/calendar.routes');
 app.use('/groups', calendarRoutes);
 
-app.use((err, req, res, next) => {
-    console.log("\n************************************** ERROR **************************************");
-    console.log("Error:", err);
-    console.log("Request Params:", req.params);
-    console.log("Request Body:", req.body);
-    console.log("************************************** /ERROR **************************************");
-    if (err instanceof errors.ResourceNotFoundError) {
-        res.status(404)
-    } else if (err instanceof errors.PermissionDeniedError) {
-        res.status(401);
-    } else if (err instanceof errors.TripCollabError) {
-        res.status(400);
-    } else {
-        err.message = "Something went wrong on our side"
-        res.status(500);
-    }
-    res.json({ error: err.message });
-});
-
 // rutas de actividades de un grupo
 const mapRoutes = require('./map/map.routes');
 app.use('/groups', mapRoutes);
@@ -84,6 +71,9 @@ app.use('/groups', mapRoutes);
 app.get('/', (req, res) => {
     res.send('API funcionando');
 });
+
+
+app.use(errorHandler)
 
 // Levantar el servidor
 app.listen(3000, () => {

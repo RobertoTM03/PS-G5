@@ -1,9 +1,11 @@
-const postgresRepo = require('./PostgresUserRepository');
+const actualRepo = require('./PostgresFirebaseUserRepository');
 
 module.exports = {
-    findByEmail: postgresRepo.findByEmail,
-    findByName: postgresRepo.findByName,
-    findByEmailOrName: postgresRepo.findByEmailOrName,
-    findById: postgresRepo.findById,
-    save: postgresRepo.save
+    findByEmail: actualRepo.findByEmail,
+    findByName: actualRepo.findByName,
+    findByEmailOrName: actualRepo.findByEmailOrName,
+    findById: actualRepo.findById,
+    save: actualRepo.save,
+    getAuthToken: actualRepo.getAuthToken,
+    resetPassword: actualRepo.resetPassword
 };

@@ -1,12 +1,11 @@
 const mapRepository = require('../mapRepository');
+const { ResourceNotFoundError } = require("../../errors");
 
-module.exports = async (groupId, locationId, userId) => {
-    const result = await mapRepository.deleteMapLocation(groupId, locationId, userId);
+module.exports = async (groupId, locationId) => {
+    const result = await mapRepository.deleteMapLocation(groupId, locationId);
 
     if (result.rowCount === 0) {
-        const error = new Error('Location not found.');
-        error.status = 404;
-        throw error;
+        throw new ResourceNotFoundError('Location');
     }
 
     return { message: 'Location successfully deleted' };

@@ -1,19 +1,16 @@
 const MapLocation = require('../entities/MapLocation');
 const mapRepository = require('../mapRepository');
+const { MissingRequiredFieldsError, InvalidFieldFormatError } = require("../../errors");
 
 module.exports = async (groupId, data, userId) => {
     const { title, location } = data;
 
     if (!title || !location) {
-        const error = new Error('Missing required fields: title and location are mandatory.');
-        error.status = 400;
-        throw error;
+        throw new MissingRequiredFieldsError('title and location are mandatory');
     }
 
     if (!Array.isArray(location) || location.length !== 2) {
-        const error = new Error('Location must be an array with exactly 2 numbers (latitude, longitude).');
-        error.status = 400;
-        throw error;
+        throw new InvalidFieldFormatError('Location must be an array with exactly 2 numbers (latitude, longitude).');
     }
 
     const newLocation = new MapLocation({
