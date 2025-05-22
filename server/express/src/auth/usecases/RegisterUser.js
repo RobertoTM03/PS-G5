@@ -32,5 +32,5 @@ module.exports = async (data) => {
     }
 
     const user = await userRepository.save(username, email, password);
-    return userRepository.getAuthToken(user, password);
+    return await userRepository.getAuthToken(user, password);
 };

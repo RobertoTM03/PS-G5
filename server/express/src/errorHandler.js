@@ -1,6 +1,6 @@
 const errors = require('./errors');
 
-function errorHandler(err, req, res) {
+function errorHandler(err, req, res, next) {
     console.log("\n************************************** ERROR **************************************");
     console.log("Error:", err);
     console.log("Request Params:", req.params);

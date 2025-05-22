@@ -18,7 +18,7 @@ module.exports = async (data) => {
     }
 
     try {
-        return userRepository.getAuthToken(user, password);
+        return await userRepository.getAuthToken(user, password);
     } catch (err) {
         throw new PermissionDeniedError('Invalid credentials.');
     }
