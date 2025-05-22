@@ -20,7 +20,6 @@ export default function PasswordRecovery () {
   }
 
   async function handleSubmit() {
-    console.log(`Sending email to ${email}`);
     await sendPasswordResetEmail(auth, email);
     setIsRequestSubmitted(true);
   }

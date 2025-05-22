@@ -1,25 +1,22 @@
-/* Fondo general para toda la página */
 .main-container {
-    background: linear-gradient(to right, #d4d4e2, #85a1e1); /* Gradiente aplicado al contenedor principal */
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
     font-family: Arial, sans-serif;
     color: #333;
     margin: 0;
     padding: 0;
-    min-height: 100vh; /* Asegura que ocupe toda la altura de la página */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
-.expense-list{
-    margin-bottom: 20px;
-}
-/* Contenedor principal (lista de gastos) */
+
+.expense-list {}
+
 .expense-list-style {
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    flex-grow: 1; /* Esto asegura que el contenido ocupe el espacio disponible y empuje el footer hacia abajo */
-
+    flex-grow: 1;
 }
 
 .arrow {
@@ -34,45 +31,42 @@
     background: none;
 }
 
-/* Título de resumen de gastos con separación */
 .expense-overwiew h2 {
-    margin-top: 40px; /* Separación del header */
+    margin-top: 40px;
 }
 
-/* Estilo general de cada gasto como fila de tabla */
 .covered-expense,
 .pending-expense {
     border: 1px solid white;
-    background: linear-gradient(to right, #d4d4e2, #85a1e1); /* Gradiente aplicado a cada gasto */
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
     display: grid;
-    grid-template-columns: 2fr 1fr 2fr 2fr 1.5fr 1.5fr 1fr 1fr 1fr;/* Ajuste de anchos de columna */
     align-items: center;
     padding: 10px;
     border-radius: 8px;
     gap: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-top: 0;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr; /* 7 columnas */
 }
 
-/* Fondo especial para gastos cubiertos */
 .covered-expense {
-    background: linear-gradient(to right, #d4d4e2, #85a1e1); /* Gradiente aplicado */
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
 }
 
-/* Encabezado de tabla */
 .expense-table-header {
     display: grid;
-    grid-template-columns: 2fr 1fr 2fr 2fr 1.5fr 1.5fr 1fr 1fr 1fr; /* 9 columnas */
+    /* Asegúrate de que grid-template-columns tenga 7fr para que coincida con las columnas de datos */
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
     gap: 10px;
     padding: 12px;
     font-weight: bold;
     background-color: #f5f5f5;
     border-radius: 8px;
     color: #333;
-
+    /* Añade esta línea para centrar verticalmente el contenido del encabezado */
+    align-items: center;
 }
 
-/* Nombre del gasto */
 .name-expense h5 {
     font-size: 16px;
     font-weight: bold;
@@ -81,39 +75,38 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
+    margin: 0; /* Elimina márgenes para una mejor alineación */
 }
 
-/* Monto del gasto */
 .amount-expense h5 {
     font-size: 14px;
     color: #444;
+    margin: 0; /* Elimina márgenes para una mejor alineación */
 }
 
-/* Botón Contribute */
 .contribute-button {
     background-color: #ffffff;
     border: 1px solid #28a745;
     color: #28a745;
-    padding: 4px 8px; /* Más pequeño */
+    padding: 4px 8px;
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 80%; /* Hacerlo un poco más pequeño */
+    width: 80%;
     text-align: center;
-    font-size: 12px; /* Más pequeño */
+    font-size: 12px;
 }
 
 .contribute-button:hover {
     background-color: #d4f5d0;
 }
 
-/* Botón Uncontribute */
 .uncontribute-button {
     background-color: #ff5c5c;
     border: 1px solid #ff0000;
     color: white;
-    padding: 6px 10px; /* Más pequeño */
+    padding: 6px 10px;
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
@@ -127,22 +120,19 @@
     background-color: #ff3535;
 }
 
-/* Texto del contribuyente */
 .contributor-name p {
     margin: 0;
     font-size: 14px;
     color: #333;
 }
 
-/* Botones de edición y eliminación centrados */
 .edition-expense {
     display: flex;
-    justify-content: center; /* Centrar horizontalmente */
+    justify-content: center;
     align-items: center;
     gap: 10px;
 }
 
-/* Botones de edición */
 .edit-btn {
     color: #007bff;
     background: transparent;
@@ -150,13 +140,14 @@
     font-size: 18px;
     cursor: pointer;
     transition: color 0.3s ease;
+    /* Reduce padding para mejor alineación */
+    padding: 0;
 }
 
 .edit-btn:hover {
     color: #0056b3;
 }
 
-/* Botones de eliminación */
 .delete-btn {
     color: #ff0000;
     background: transparent;
@@ -164,13 +155,14 @@
     font-size: 18px;
     cursor: pointer;
     transition: color 0.3s ease;
+    /* Reduce padding para mejor alineación */
+    padding: 0;
 }
 
 .delete-btn:hover {
     color: #cc0000;
 }
 
-/* Etiqueta de "Pendiente" */
 .expense-label {
     background-color: #ff9f00;
     color: white;
@@ -185,25 +177,25 @@
     background-color: #28a745;
 }
 
-/* Asegura que los elementos internos no rompan la grilla */
 .name-expense,
 .amount-expense,
 .contribute-expense,
 .contributor-name,
 .edition-expense,
-.expense-tags-container { /* Incluye el contenedor de etiquetas */
+.expense-tags-container {
     display: flex;
     align-items: center;
     overflow: hidden;
     white-space: nowrap;
-    position: relative; /* Added this line */
+    position: relative;
 }
 
-/* Espaciado entre el botón de añadir gasto y la lista */
 .expense-list-bottom {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    background: linear-gradient(to right, #d4d4e2, #85a1e1);
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 .expense-list-button {
@@ -216,105 +208,50 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-.contribute-button-white {
-    background-color: white;
-    color: #4CAF50;  /* Color verde o el que prefieras */
-    border: 2px solid #4CAF50;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
 
-.contribute-button-white:hover {
-    background-color: #f1f1f1;
-}
-/* Estilos comunes para ambos botones */
-.contribute-button-white, .uncontribute-button-red {
-    background-color: white;
-    color: #FF5733;  /* Rojo para el botón de 'Descubrir' */
-    border: 2px solid #FF5733;  /* Borde rojo para el botón de 'Descubrir' */
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 150px; /* Establece un ancho fijo para que ambos botones sean del mismo tamaño */
-    margin: 5px;
-    text-align: center;
-}
-
-/* Efecto hover para ambos botones */
-.contribute-button-white:hover, .uncontribute-button-red:hover {
-    background-color: #f1f1f1; /* Color al pasar el mouse */
-}
-/* Estilos comunes para ambos botones */
-.contribute-button-green, .uncontribute-button-red {
-    background-color: white;
-    color: #4CAF50;  /* Verde para el botón de 'Cubrir' */
-    border: 2px solid #4CAF50;  /* Borde verde para el botón de 'Cubrir' */
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 150px; /* Establece un ancho fijo para que ambos botones sean del mismo tamaño */
-    margin: 5px;
-    text-align: center;
-}
-
-/* Efecto hover para ambos botones */
-.contribute-button-green:hover {
-    background-color: #4CAF50; /* Fondo verde cuando pasa el mouse en 'Cubrir' */
-    color: white; /* Cambiar el texto a blanco */
-}
-
-.uncontribute-button-red:hover {
-    background-color: #f1f1f1; /* Fondo gris claro cuando pasa el mouse en 'Descubrir' */
-}
-/* Estilo para el botón de "Cubrir" (verde) */
-.contribute-button-green {
-    background-color: white;
-    color: #4CAF50;  /* Verde */
-    border: 2px solid #4CAF50;  /* Borde verde */
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 150px; /* Ancho fijo */
-    margin: 5px;
-    text-align: center;
-}
-
-/* Efecto hover para el botón de "Cubrir" */
-.contribute-button-green:hover {
-    background-color: #4CAF50; /* Fondo verde */
-    color: white; /* Texto blanco */
-}
-
-/* Estilo para el botón de "Descubrir" (rojo) */
+.contribute-button-white,
 .uncontribute-button-red {
     background-color: white;
-    color: #FF5733;  /* Rojo */
-    border: 2px solid #FF5733;  /* Borde rojo */
+    color: #FF5733;
+    border: 2px solid #FF5733;
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 150px; /* Ancho fijo */
+    width: 150px;
     margin: 5px;
     text-align: center;
 }
 
-/* Efecto hover para el botón de "Descubrir" */
+.contribute-button-white:hover,
 .uncontribute-button-red:hover {
-    background-color: #FF5733; /* Fondo rojo */
-    color: white; /* Texto blanco */
+    background-color: #f1f1f1;
 }
-/* ... tus estilos existentes ... */
+
+.contribute-button-green {
+    background-color: white;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 150px;
+    margin: 5px;
+    text-align: center;
+}
+
+.contribute-button-green:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.uncontribute-button-red:hover {
+    background-color: #FF5733;
+    color: white;
+}
 
 .tag-dropdown-container {
     position: relative;
@@ -327,7 +264,7 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 0.9em;
-    width: 100%; /* O el ancho que desees */
+    width: 100%;
     text-align: left;
 }
 
@@ -340,10 +277,10 @@
     border-top: none;
     border-radius: 0 0 5px 5px;
     z-index: 10;
-    width: 100%; /* Asegura que la lista tenga el mismo ancho que el botón */
+    width: 100%;
     padding: 5px;
     display: flex;
-    flex-direction: column; /* Para que las etiquetas estén una debajo de otra */
+    flex-direction: column;
 }
 
 .tag-dropdown-item {
@@ -357,41 +294,20 @@
 .tag-dropdown-item:last-child {
     margin-bottom: 0;
 }
+
 .styled-dropdown-header {
     background-color: white;
-    color: black; /* Optional: set text color to black for better visibility */
-    border: 1px solid #ccc; /* Optional: add a light border */
-    border-radius: 20px; /* Adjust for more or less rounded corners */
-    padding: 5px 15px; /* Add some padding inside the button */
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 5px 15px;
     cursor: pointer;
-    display: inline-block; /* To contain the padding and border nicely */
+    display: inline-block;
 }
 
 .dropdown-container {
-    display: inline-block; /* Or block, depending on your layout needs */
+    display: inline-block;
 }
-
-.dropdown-content {
-    position: relative;
-    background-color: #f9f9f9;
-    min-width: 120px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    border-radius: 5px; /* Optional: round the dropdown content as well */
-    padding: 8px;
-}
-
-.dropdown-content div {
-    padding: 6px 8px;
-    cursor: pointer;
-}
-
-.dropdown-content div:hover {
-    background-color: #ddd;
-}
-/* ... tus otros estilos CSS ... */
-
-./* ... tus otros estilos CSS ... */
 
 .dropdown-content {
     position: relative;
@@ -415,17 +331,17 @@
 }
 
 .close-dropdown-button-bottom {
-    background-color: #f9f9f9; /* Mismo color de fondo */
+    background-color: #f9f9f9;
     color: #555;
     border: none;
     padding: 8px;
     cursor: pointer;
     display: flex;
-    align-items: center; /* Alineación vertical al centro */
-    justify-content: flex-end; /* Alinear el texto e icono a la derecha */
+    align-items: center;
+    justify-content: flex-end;
     gap: 5px;
-    border-top: 1px solid #eee; /* Añade una línea sutil en la parte superior */
-    border-radius: 0 0 5px 5px; /* Bordes redondeados inferiores */
+    border-top: 1px solid #eee;
+    border-radius: 0 0 5px 5px;
     font-size: 0.9em;
 }
 
@@ -433,57 +349,31 @@
     background-color: #eee;
     color: #333;
 }
+
 .expense-tags-container {
-    display: flex; /* Usamos flexbox para alinear los elementos en línea */
-    flex-wrap: wrap; /* Permitimos que las etiquetas pasen a la siguiente línea si no hay suficiente espacio */
-    gap: 5px; /* Espacio entre las etiquetas */
-    align-items: center; /* Alineación vertical al centro */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
 }
 
-.Cubridor{
+.Cubridor {
     display: flex;
     gap: 5px;
 }
+
 .space-between-zone {
     margin-bottom: 25px;
-    margin-top:25px;
+    margin-top: 25px;
 }
+
 .expense-navigation {
     display: flex;
-    justify-content: center; /* Centra los elementos horizontalmente */
+    justify-content: center;
     gap: 10px;
     margin: 20px 15px;
     border-bottom: 1px solid #ccc;
-}
-
-.balance-nav-button {
-    background: none;
-    border: none;
-    padding: 10px 15px;
-    font-size: 1em;
-    cursor: pointer;
-    color: #555;
-    transition: color 0.3s ease;
-}
-
-.balance-nav-button:hover {
-    color: #007bff;
-}
-
-.balance-nav-button.active {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
-}
-/* ExpenseView.css */
-
-/* ... otros estilos ... */
-
-.expense-navigation {
-    display: flex;
     align-items: center;
-    margin: 20px 15px;
-    border-bottom: 1px solid #ccc;
-    justify-content: center; /* Centra los elementos horizontalmente */
 }
 
 .nav-centered {
@@ -510,10 +400,9 @@
     color: #007bff;
 }
 
-
 .filter-button-container {
     position: absolute;
-    right: 15px; /* Ajusta este valor según necesites */
+    right: 15px;
 }
 
 .filtrado-tipos-button {
@@ -536,7 +425,7 @@
 .filter-dropdown-container {
     position: absolute;
     top: 40px;
-    right: 15px; /* Alinea el desplegable con el botón */
+    right: 15px;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -580,12 +469,14 @@
     background-color: #eee;
     color: #333;
 }
-.expense-title-text{
+
+.expense-title-text {
     font-size: 2rem;
     font-weight: bold;
     color: black;
 }
-.expense-header-bar{
+
+.expense-header-bar {
     display: flex;
     align-items: center;
     flex-direction: row;
@@ -594,5 +485,3 @@
     border-bottom: 1px solid #d3d3d3;
     margin-bottom: 10px;
 }
-
-

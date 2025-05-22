@@ -4,16 +4,14 @@ const { register, login, resetPassword, getMyInformation  } = require('./authCon
 
 const router = express.Router();
 
-//TODO change doc language
-
 /**
  * @openapi
  * /auth/login:
  *   post:
- *     summary: Iniciar sesión
- *     description: Permite al usuario iniciar sesión con sus credenciales y recibir un token
+ *     summary: Login
+ *     description: Allows the user to log in with their credentials and receive a token
  *     tags:
- *       - Autenticación
+ *       - Authentication
  *     requestBody:
  *       required: true
  *       content:
@@ -26,15 +24,15 @@ const router = express.Router();
  *             properties:
  *               identifier:
  *                 type: string
- *                 description: Nombre de usuario o email
+ *                 description: Username or email
  *                 example: bob@example.com
  *               password:
  *                 type: string
- *                 description: Contraseña del usuario
+ *                 description: User password
  *                 example: 12345678
  *     responses:
  *       200:
- *         description: Login exitoso. Devuelve el token.
+ *         description: Successful login. Returns the token.
  *         content:
  *           application/json:
  *             schema:
@@ -42,14 +40,14 @@ const router = express.Router();
  *               properties:
  *                 token:
  *                   type: string
- *                   description: Token JWT para autenticación
+ *                   description: JWT token for authentication
  *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       400:
- *         description: Faltan campos obligatorios o formato inválido
+ *         description: Missing required fields or invalid format
  *       401:
- *         description: Credenciales incorrectas
+ *         description: Incorrect credentials
  *       500:
- *         description: Error no definido
+ *         description: Undefined error
  */
 router.post('/login', login);
 
@@ -58,10 +56,10 @@ router.post('/login', login);
  * @openapi
  * /auth/register:
  *   post:
- *     summary: Crear una nueva cuenta de usuario
- *     description: Permite a un usuario registrarse en la aplicación creando una nueva cuenta.
+ *     summary: Create a new user account
+ *     description: Allows a user to register in the application by creating a new account.
  *     tags:
- *       - Autenticación
+ *       - Authentication
  *     requestBody:
  *       required: true
  *       content:
@@ -75,19 +73,19 @@ router.post('/login', login);
  *             properties:
  *               username:
  *                 type: string
- *                 description: Nombre de usuario
- *                 example: NombrePrueba
+ *                 description: Username
+ *                 example: TestUser
  *               email:
  *                 type: string
- *                 description: Correo electrónico único
- *                 example: prueba@mail.com
+ *                 description: Unique email address
+ *                 example: test@mail.com
  *               password:
  *                 type: string
- *                 description: Contraseña segura (8 a 32 caracteres)
- *                 example: Secreta123
+ *                 description: Secure password (8 to 32 characters)
+ *                 example: Secret123
  *     responses:
  *       201:
- *         description: Registro exitoso. Devuelve los datos del usuario y el token.
+ *         description: Successful registration. Returns user data and token.
  *         content:
  *           application/json:
  *             schema:
@@ -97,13 +95,11 @@ router.post('/login', login);
  *                   type: string
  *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       400:
- *         description: Faltan campos obligatorios o no cumplen validaciones
+ *         description: Missing required fields or validation errors
  *       409:
- *         description: Email ya registrado
- *       422:
- *         description: La contraseña no cumple los requisitos de seguridad
+ *         description: Email or Username already registered
  *       500:
- *         description: Error no definido
+ *         description: Undefined error
  */
 router.post('/register', register);
 
@@ -112,10 +108,10 @@ router.post('/register', register);
  * @openapi
  * /auth/password-reset:
  *   post:
- *     summary: Cambiar la contraseña después de la solicitud de restablecimiento
- *     description: Permite al usuario cambiar su contraseña usando el token de restablecimiento
+ *     summary: Change password after reset request
+ *     description: Allows the user to change their password using the reset token
  *     tags:
- *       - Autenticación
+ *       - Authentication
  *     requestBody:
  *       required: true
  *       content:
@@ -128,24 +124,25 @@ router.post('/register', register);
  *             properties:
  *               resetToken:
  *                 type: string
- *                 description: Token recibido por email para validar el cambio
+ *                 description: Token received via email to validate the password change
  *                 example: "abc123-reset-token"
  *               newPassword:
  *                 type: string
- *                 description: Nueva contraseña (8 a 32 caracteres)
- *                 example: NuevaPassword123
+ *                 description: New password (8 to 32 characters)
+ *                 example: NewPassword123
  *     responses:
  *       200:
- *         description: Contraseña actualizada exitosamente
+ *         description: Password updated successfully
  *       401:
- *         description: Token inválido o expirado
+ *         description: Invalid or expired token
  *       400:
- *         description: Faltan campos o la contraseña no cumple los requisitos
+ *         description: Missing fields or password does not meet requirements
  *       409:
- *         description: La nueva contraseña no puede ser igual a la anterior
+ *         description: New password cannot be the same as the previous one
  *       500:
- *         description: Error no definido
+ *         description: Undefined error
  */
+
 router.post('/password-reset', resetPassword);
 
 
@@ -153,15 +150,15 @@ router.post('/password-reset', resetPassword);
  * @openapi
  * /auth/my-information:
  *   get:
- *     summary: Obtener la información del usuario a travez del token.
+ *     summary: Get user information via token
  *     security:
  *       - bearerAuth: []
- *     description: Permite a un usuario logueado obtener su información.
+ *     description: Allows a logged-in user to retrieve their information.
  *     tags:
- *       - Autenticación
+ *       - Authentication
  *     responses:
  *       200:
- *         description: Detalles del usuario cargados exitosamente
+ *         description: User details loaded successfully
  *         content:
  *           application/json:
  *             schema:
@@ -169,19 +166,18 @@ router.post('/password-reset', resetPassword);
  *               properties:
  *                 name:
  *                   type: string
- *                   example: "NombrePrueba"
+ *                   example: "TestName"
  *                 email:
  *                   type: string
- *                   example: "prueba@mail.com"
+ *                   example: "test@mail.com"
  *                 id:
  *                   type: string
  *                   example: "64ac9b7b5f8e2c001fc45abc"
  *       401:
- *         description: Fallo de autenticación con el token del usuario
+ *         description: Authentication failed with the user's token
  *       500:
- *         description: Error no definido
+ *         description: Undefined error
  */
 router.get('/my-information', ensureAuthenticated, getMyInformation);
-
 
 module.exports = router;

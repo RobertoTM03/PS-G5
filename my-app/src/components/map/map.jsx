@@ -130,7 +130,6 @@ export default function MapPage() {
         defaultMarkGeocode: false,
       }).addTo(mapRef.current);
 
-      // Mover lupa a la esquina superior derecha dentro del mapa
       setTimeout(() => {
         const mapContainer = document.querySelector('.map-container');
         const geocoderEl = document.querySelector('.leaflet-control-geocoder');

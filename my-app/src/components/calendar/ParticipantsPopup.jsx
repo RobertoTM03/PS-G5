@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './ParticipantsPopup.css';
 
-const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator, createdBy }) => {  // <-- Recibimos createdBy
+const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator, createdBy }) => {
   const { id } = useParams();
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isParticipating, setIsParticipating] = useState(false);
   const [userId, setUserId] = useState(null);
-
-  // Fetch user details to get the userId
   const fetchUserDetails = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -36,8 +34,6 @@ const ParticipantsPopup = ({ event, onClose, isAdmin, isCreator, createdBy }) =>
       console.error('Error fetching user details:', err);
     }
   };
-
-  // Fetch participants and check if the user is participating
   const fetchParticipants = async () => {
     const groupId = id;
     const activityId = event.id;

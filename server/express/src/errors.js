@@ -4,15 +4,12 @@ class TripCollabError extends Error {
     }
 }
 
-
 class PermissionDeniedError extends TripCollabError {
-    constructor() {
-        const message = "No tienes permisos para realizar esta operación";
-        super(message);
+    constructor(message) {
+        super(message || "No tienes permisos para realizar esta operación");
         this.name = "PermissionDeniedError";
     }
 }
-
 
 class ResourceNotFoundError extends TripCollabError {
     constructor(resourceType) {
@@ -25,7 +22,7 @@ class ResourceNotFoundError extends TripCollabError {
 
 class MissingRequiredFieldsError extends TripCollabError {
     constructor(field_list) {
-        const message = `Faltan campos requeridos: ${field_list}`;
+        const message = `Missing required fields: ${field_list}`;
         super(message);
         this.name = "MissingRequiredFieldsError";
     }
@@ -41,7 +38,26 @@ function throwIfMissingRequiredFields(request_data, field_list) {
     if (missing_fields.length > 0) throw new MissingRequiredFieldsError(missing_fields);
 }
 
+class InvalidFieldFormatError extends TripCollabError {
+    constructor(message) {
+        super(message || `Invalid field(s) format}`);
+        this.name = "InvalidFieldFormatError";
+    }
+}
 
+class ConflictError extends TripCollabError {
+    constructor(message) {
+        super(message);
+        this.name = "ConflictError";
+    }
+}
+
+class ExpiredTokenError extends TripCollabError {
+    constructor(message) {
+        super(message);
+        this.name = "ExpiredTokenError";
+    }
+}
 
 module.exports = {
     TripCollabError,
@@ -49,4 +65,7 @@ module.exports = {
     ResourceNotFoundError,
     MissingRequiredFieldsError,
     throwIfMissingRequiredFields,
+    InvalidFieldFormatError,
+    ConflictError,
+    ExpiredTokenError
 };

@@ -3,9 +3,9 @@ import Header from "../layout/Header.jsx";
 import Footer from "../layout/Footer.jsx";
 import './ExpenseView.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaEdit, FaTrashAlt, FaTimes } from 'react-icons/fa'; // Importa FaTimes
+import { FaEdit, FaTrashAlt, FaTimes } from 'react-icons/fa';
 
-const ExpenseType = { // Mover ExpenseType aquí para que esté disponible en este archivo
+const ExpenseType = {
     RESTAURANT: 'Comida',
     TRANSPORT: 'Transporte',
     FESTIVAL: 'Festival',
@@ -49,8 +49,8 @@ export default function ExpenseView() {
     const dropdownRef = useRef(null);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [allCategories, ] = useState(Object.values(ExpenseType)); // Usar ExpenseType aquí
-    const filterDropdownRef = useRef(null); // Ref para el dropdown de filtro
+    const [allCategories, ] = useState(Object.values(ExpenseType));
+    const filterDropdownRef = useRef(null);
 
     async function handleError(errorResponse) {
         const errorBody = await errorResponse.json();
@@ -63,8 +63,7 @@ export default function ExpenseView() {
 
     useEffect(() => {
         if (!token) {
-            console.log('No hay token, redirigiendo a la página de inicio de sesión');
-            navigate('/IniciarSesion'); // Redirige al login si no hay token
+            navigate('/IniciarSesion');
         } else {
             fetchUserName();
             fetchExpenses();
@@ -86,10 +85,7 @@ export default function ExpenseView() {
             }
 
             const data = await response.json();
-            // Verificar si data es un array y no es null
             const validExpenses = Array.isArray(data) ? data : [];
-
-            // Mapear las etiquetas de strings a un array de strings
             const processedExpenses = validExpenses.map(expense => ({
                 ...expense,
                 tags: typeof expense.tags === 'string' ? [expense.tags] : expense.tags || [],
@@ -188,7 +184,7 @@ export default function ExpenseView() {
             window.location.reload();
 
         } catch (error) {
-            alert(`Error al quitar la contribución: ${error.message}`);
+            alert(`Error al quitar la contribución: ${error.error}`);
         }
     };
 
@@ -219,7 +215,7 @@ export default function ExpenseView() {
 
             window.location.reload();
         } catch (error) {
-            alert(`Error eliminando gasto: ${error.message}`);
+            alert(`Error eliminando gasto: ${error.error}`);
         }
     };
 
@@ -319,8 +315,6 @@ export default function ExpenseView() {
                         <span>Pagado por</span>
                         <span>Creado por</span>
                         <span>Etiquetas</span>
-                        <span>Actividad/común</span> {/* Nueva columna */}
-                        <span>Ficheros asociados</span> {/* Nueva columna */}
                         <span className="edit-delete-header">Editar/Eliminar</span>
                     </div>
 
@@ -396,14 +390,6 @@ export default function ExpenseView() {
                                     ) : (
                                         <span className="no-tags">—</span>
                                     )}
-                                </div>
-
-                                {/* Nuevas columnas de Actividad y Almacenaje */}
-                                <div className="activity-expense">
-                                    <span></span> {/* Campo para Actividad */}
-                                </div>
-                                <div className="storage-expense">
-                                    <span></span> {/* Campo para Almacenaje */}
                                 </div>
 
                                 <div className="edition-expense">
