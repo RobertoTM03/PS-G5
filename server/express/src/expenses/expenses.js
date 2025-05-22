@@ -139,10 +139,13 @@ class Expense {
     }
 
     removeContribution(user) {
-        for (let i = 0; i < this.contributions; i++) {
+        console.log("Removing contrib of: ",user);
+        for (let i = 0; i < this.contributions.length; i++) {
+            console.log("Found", this.contributions[i]);
             if (this.contributions[i].contributor.id === user.id) {
                 this.contribution -= this.contributions[i].amount;
-                delete this.#contributions[i];
+                this.#contributions.splice(i, 1);
+                console.log("Removed", this.contributions);
                 return;
             }
         }

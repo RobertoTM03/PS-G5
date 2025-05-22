@@ -45,6 +45,10 @@ class ExpenseRepositoryPostgreImpl {
     }
 
     async storeContributions(expense) {
+        await db.none(`
+            DELETE FROM expense_contributions
+            WHERE expense_id = $1
+          `, [expense.id]);
         if (expense.contributions.length == 0) return;
         const insertColumns = ["expense_id", "contributor_id", "amount"];
         const values = [];
