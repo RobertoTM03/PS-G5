@@ -14,6 +14,47 @@ function parseToLocalDate(isoString) {
   return new Date(year, month - 1, day, hour, minute);
 }
 
+function traducirTextoCalendario() {
+  const elementos = document.querySelectorAll('.toastui-calendar-weekday-grid-more-events');
+
+  elementos.forEach(el => {
+    const texto = el.textContent.trim();
+
+    // Solo si sigue el patrón "1 more", "2 more", etc.
+    const match = texto.match(/^(\d+)\s+more$/);
+    if (match) {
+      const cantidad = match[1];
+
+      // Ocultamos el texto real con CSS y mostramos el alternativo con ::after
+      el.setAttribute('data-mas', `${cantidad} más`);
+    }
+  });
+}
+
+function traducirDiaPopup() {
+  const dias = {
+    'Sun': 'Dom',
+    'Mon': 'Lun',
+    'Tue': 'Mar',
+    'Wed': 'Mié',
+    'Thu': 'Jue',
+    'Fri': 'Vie',
+    'Sat': 'Sáb'
+  };
+
+  const diaEl = document.querySelector('.toastui-calendar-more-title-day');
+  if (!diaEl) return;
+
+  const diaIng = diaEl.textContent.trim();
+  const diaEsp = dias[diaIng];
+  if (diaEsp) {
+    diaEl.textContent = diaEsp;
+  }
+}
+
+
+
+
 // ---------------------------
 // 2. VISTA / VIEWMODEL
 // ---------------------------
@@ -185,86 +226,114 @@ export default function CalendarPage() {
   };
 
   useEffect(() => {
-    if (!calendarRef.current || !window.tui?.Calendar) return;
+  if (!calendarRef.current || !window.tui?.Calendar) return;
 
-    const Calendar = window.tui.Calendar;
-    const c = new Calendar(calendarRef.current, {
-      defaultView: 'month',
-      language: 'es',
-      month: {
-        dayNames: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
-        startDayOfWeek: 1,
-      },
-      useCreationPopup: false,
-      useDetailPopup: false,
-      popupContainer: document.body,
-      gridSelection: { enableClick: true },
-      calendars: [{
-        id: '1',
-        name: 'Eventos',
-        color: '#ffffff',
-        bgColor: '#047bfe',
-        dragBgColor: '#047bfe',
-        borderColor: '#047bfe',
-      }],
+  const Calendar = window.tui.Calendar;
+  const c = new Calendar(calendarRef.current, {
+    defaultView: 'month',
+    language: 'es',
+    month: {
+      dayNames: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+      startDayOfWeek: 1,
+    },
+    useCreationPopup: false,
+    useDetailPopup: false,
+    popupContainer: document.body,
+    gridSelection: { enableClick: true },
+    calendars: [{
+      id: '1',
+      name: 'Eventos',
+      color: '#ffffff',
+      bgColor: '#047bfe',
+      dragBgColor: '#047bfe',
+      borderColor: '#047bfe',
+    }],
+  });
+
+  c.on('clickEvent', info => {
+    const e = info.event;
+    const eventObj = new CalendarEvent({
+      id: String(e.id),
+      title: e.title,
+      location: e.location,
+      description: e.raw?.description || '',
+      start: new Date(e.start),
+      end: new Date(e.end),
+      isAllDay: e.isAllDay,
+      createdBy: e.raw?.createdBy || null,
     });
 
-    c.on('clickEvent', info => {
-      const e = info.event;
-      const eventObj = new CalendarEvent({
-        id: String(e.id),
-        title: e.title,
-        location: e.location,
-        description: e.raw?.description || '',
-        start: new Date(e.start),
-        end: new Date(e.end),
-        isAllDay: e.isAllDay,
-        createdBy: e.raw?.createdBy || null,
+    setSelectedEvent(eventObj);
+    setShowEventDetails(true);
+  });
+
+  c.on('selectDateTime', async info => {
+    const clickedDate = info.start.toLocaleDateString('en-CA');
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`http://localhost:3000/groups/${id}/activities/day/${clickedDate}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      setSelectedEvent(eventObj);
-      setShowEventDetails(true);
-    });
-
-    c.on('selectDateTime', async info => {
-      const clickedDate = info.start.toLocaleDateString('en-CA');
-      const token = localStorage.getItem('token');
-      try {
-        const response = await fetch(`http://localhost:3000/groups/${id}/activities/day/${clickedDate}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const daily = await response.json();
-        if (response.ok) {
-          const parsed = daily.map(ev => new CalendarEvent({
-            id: String(ev.id),
-            title: ev.title,
-            location: ev.location,
-            description: ev.description,
-            start: parseToLocalDate(ev.startDate),
-            end: parseToLocalDate(ev.endDate),
-            isAllDay: false,
-            createdBy: ev.createdBy || ev.userId
-          }));
-          setDisplayDate(new Date(clickedDate));
-          setDisplayEvents(parsed);
-          setShowDisplay(true);
-        }
-      } catch (err) {
-        console.error('Error día:', err);
+      const daily = await response.json();
+      if (response.ok) {
+        const parsed = daily.map(ev => new CalendarEvent({
+          id: String(ev.id),
+          title: ev.title,
+          location: ev.location,
+          description: ev.description,
+          start: parseToLocalDate(ev.startDate),
+          end: parseToLocalDate(ev.endDate),
+          isAllDay: false,
+          createdBy: ev.createdBy || ev.userId
+        }));
+        setDisplayDate(new Date(clickedDate));
+        setDisplayEvents(parsed);
+        setShowDisplay(true);
       }
-      c.clearGridSelections();
-    });
+    } catch (err) {
+      console.error('Error día:', err);
+    }
+    c.clearGridSelections();
+  });
 
-    c.render();
-    
-    setInst(c);
-    fetchMonthlyEvents();
-    updateTitle(c);
-    return () => c.destroy();
-  }, []);
+  c.render();
+  setTimeout(() => {
+    traducirTextoCalendario();
+    traducirDiaPopup();
+  }, 500);
+
+  const observer = new MutationObserver(() => {
+    traducirTextoCalendario();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
+  const diaObserver = new MutationObserver(() => {
+  traducirDiaPopup();
+  });
+
+  diaObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
+
+  setInst(c);
+  fetchMonthlyEvents();
+  updateTitle(c);
+
+  return () => {
+    c.destroy();
+    observer.disconnect();
+    diaObserver.disconnect();
+  };
+}, []);
+
   
 
-  
 
   useEffect(() => {
     fetchMonthlyEvents();
@@ -277,6 +346,8 @@ export default function CalendarPage() {
       inst.render();
       updateTitle(inst);
       fetchMonthlyEvents();
+      traducirTextoCalendario();
+      traducirDiaPopup();
     }
   };
   
@@ -286,6 +357,8 @@ export default function CalendarPage() {
       inst.render();
       updateTitle(inst);
       fetchMonthlyEvents();
+      traducirTextoCalendario();
+      traducirDiaPopup();
     }
   };
   
@@ -295,6 +368,8 @@ export default function CalendarPage() {
       inst.render();
       updateTitle(inst);
       fetchMonthlyEvents();
+      traducirTextoCalendario();
+      traducirDiaPopup();
     }
   };
   
