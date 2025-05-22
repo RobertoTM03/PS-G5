@@ -37,14 +37,17 @@ export default function IniciarSesion() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error);
+                // Si la respuesta no es OK, el backend ya envía el mensaje de error en data.error
+                // Lanzamos un error con ese mensaje específico
+                throw new Error(data.error || "Error desconocido al iniciar sesión.");
             }
 
             localStorage.setItem("token", data.token);
 
             navigate("/vistaGrupos");
         } catch (error) {
-            alert(`Error al iniciar sesión: `);
+            // Aquí capturamos el error lanzado y mostramos su mensaje
+            alert(`Error al iniciar sesión: ${error.message}`);
             console.error("Inicio de sesión fallido:", error);
         }
     };
@@ -88,7 +91,7 @@ export default function IniciarSesion() {
 
                     <div className="bottom-text">
                         <p>
-                        ¿No tienes cuenta? <Link to="/Registrarse">Regístrate</Link>
+                            ¿No tienes cuenta? <Link to="/Registrarse">Regístrate</Link>
                         </p>
                         <p>
                             <Link to="/PasswordRecovery">¿Olvidaste tu contraseña?</Link>

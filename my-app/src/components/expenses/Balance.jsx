@@ -12,10 +12,30 @@ export default function Balance() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deudaTotalGrupo, setDeudaTotalGrupo] = useState('0.00€');
-    const [userInfo, setUserInfo] = useState(null); // Nuevo estado para la información del usuario
+    const [userInfo, setUserInfo] = useState(null);
 
     useEffect(() => {
-        const obtenerSaldosConApi = (groupId, token) => {
+        const fetchGroupDetails = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/groups/${groupId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    throw new Error(`Error al obtener los detalles del grupo: ${response.status}`);
+                }
+                const data = await response.json();
+                return (data.integrantes || []).map(member => ({
+                    id: member.userId,
+                    name: member.nombre
+                }));
+            } catch (error) {
+                console.error("Error fetching group details:", error);
+                throw error;
+            }
+        };
+
+        const obtenerSaldosConApi = (groupId, token, allGroupMembers) => {
             return fetch(`http://localhost:3000/groups/${groupId}/expenses/`, {
                 headers: { Authorization: `Bearer ${token}` },
                 credentials: 'include'
@@ -28,39 +48,36 @@ export default function Balance() {
                 })
                 .then(gastosData => {
                     const saldosCalculados = {};
-                    const integrantesEnGastos = new Set();
 
-                    gastosData.forEach(gasto => {
-                        if (gasto.contributors) {
-                            gasto.contributors.forEach(contribucion => {
-                                integrantesEnGastos.add(contribucion.name);
-                            });
-                        }
+                    allGroupMembers.forEach(member => {
+                        saldosCalculados[member.name] = 0;
                     });
 
-                    integrantesEnGastos.forEach(integrante => saldosCalculados[integrante] = 0);
-                    const integrantesNombres = Array.from(integrantesEnGastos);
-                    const numTotalIntegrantes = integrantesNombres.length;
+                    const numTotalIntegrantes = allGroupMembers.length;
+                    if (numTotalIntegrantes === 0) {
+                        return allGroupMembers.map(member => ({ name: member.name, amount: 0 }));
+                    }
 
                     for (const gasto of gastosData) {
-                        const totalPagoGasto = gasto.amount;
-                        const contribucionesPorUsuario = {};
+                        const totalGasto = gasto.amount;
 
+                        const contribucionesActuales = {};
                         if (gasto.contributors && gasto.contributors.length > 0) {
                             gasto.contributors.forEach(contribucion => {
-                                const userName = contribucion.name;
-                                const amount = contribucion.amount;
-                                contribucionesPorUsuario[userName] = (contribucionesPorUsuario[userName] || 0) + amount;
-                            });
+                                const contributorMember = allGroupMembers.find(m => String(m.id) === String(contribucion.id));
+                                const contributorName = contributorMember ? contributorMember.name : contribucion.name;
 
-                            for (const integrante of integrantesNombres) {
-                                const pagoIntegrante = contribucionesPorUsuario[integrante] || 0;
-                                saldosCalculados[integrante] += pagoIntegrante - (totalPagoGasto / numTotalIntegrantes);
-                            }
-                        } else if (totalPagoGasto > 0 && numTotalIntegrantes > 0) {
-                            for (const integrante of integrantesNombres) {
-                                saldosCalculados[integrante] -= (totalPagoGasto / numTotalIntegrantes);
-                            }
+                                if (contributorName) {
+                                    contribucionesActuales[contributorName] = (contribucionesActuales[contributorName] || 0) + contribucion.amount;
+                                }
+                            });
+                        }
+
+                        const sharePerPerson = totalGasto / numTotalIntegrantes;
+
+                        for (const member of allGroupMembers) {
+                            const contributedByMember = contribucionesActuales[member.name] || 0;
+                            saldosCalculados[member.name] += (contributedByMember - sharePerPerson);
                         }
                     }
                     return Object.keys(saldosCalculados).map(name => ({ name: name, amount: saldosCalculados[name] }));
@@ -75,57 +92,79 @@ export default function Balance() {
                 if (response.ok) {
                     const data = await response.json();
                     setUserInfo(data);
+                    return data;
                 } else {
-                    // Manejar el error (por ejemplo, redirigir a la página de inicio de sesión)
-                    console.error("Error al obtener la información del usuario");
                     setError("No se pudo obtener la información del usuario.");
-                    setLoading(false);
+                    return null;
                 }
             } catch (error) {
-                console.error("Error de red al obtener la información del usuario:", error);
+                console.error("DEBUG: Error de red al obtener la información del usuario:", error);
                 setError("Error de red al obtener la información del usuario.");
-                setLoading(false);
+                return null;
             }
         };
 
-
         setLoading(true);
-        Promise.all([obtenerSaldosConApi(groupId, token), fetchUserInfo()])
-            .then(([saldosData]) => {
+        Promise.all([fetchGroupDetails(), fetchUserInfo()])
+            .then(([allGroupMembers, userInfoData]) => {
+                if (userInfoData) {
+                    return obtenerSaldosConApi(groupId, token, allGroupMembers);
+                } else {
+                    throw new Error("No se pudo obtener la información del usuario para calcular saldos.");
+                }
+            })
+            .then(saldosData => {
                 setSaldos(saldosData);
                 setLoading(false);
             })
             .catch(err => {
-                setError(err.message);
+                console.error("DEBUG: Error en Promise.all o en obtenerSaldosConApi:", err);
+                setError(err.message || "Un error desconocido ocurrió.");
                 setLoading(false);
             });
     }, [groupId, token]);
 
     useEffect(() => {
-        const calcularDeudaTotal = () => {
-            if (!userInfo) return;
 
-            const saldoUsuario = saldos.find(saldo => saldo.name === userInfo.name);
+
+        const calcularDeudaTotal = () => {
+            if (!userInfo || saldos.length === 0) {
+                setDeudaTotalGrupo("0.00€");
+                return;
+            }
+
+            const saldoUsuario = saldos.find(saldo => {
+                const saldoNameCleanLower = saldo.name.trim().toLowerCase();
+                const userInfoNameCleanLower = userInfo.name.trim().toLowerCase();
+                const match = saldoNameCleanLower === userInfoNameCleanLower;
+                return match;
+            });
+
+
+
             if (saldoUsuario) {
                 if (saldoUsuario.amount < 0) {
                     setDeudaTotalGrupo(`${Math.abs(saldoUsuario.amount).toFixed(2)}€`);
                 } else {
                     setDeudaTotalGrupo("0.00€");
+
                 }
             } else {
                 setDeudaTotalGrupo("0.00€");
+
             }
+
         };
 
         calcularDeudaTotal();
     }, [saldos, userInfo]);
 
     if (loading) {
-        return <div>Cargando saldos...</div>;
+        return <div className="loading-message">Cargando saldos...</div>;
     }
 
     if (error) {
-        return <div>Error al cargar los saldos: {error}</div>;
+        return <div className="error-message">Error al cargar los saldos: {error}</div>;
     }
 
     return (
@@ -158,7 +197,7 @@ export default function Balance() {
                                 </div>
                             ))
                         ) : (
-                            <p>No hay saldos disponibles.</p>
+                            <p className="no-saldos-message">No hay saldos disponibles. Asegúrate de que el grupo tenga miembros y gastos.</p>
                         )}
                     </div>
                 </div>
@@ -167,4 +206,3 @@ export default function Balance() {
         </div>
     );
 }
-

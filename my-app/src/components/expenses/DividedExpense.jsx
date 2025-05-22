@@ -10,8 +10,7 @@ const DividedExpense = () => {
 
     const [contributorID, setContributorID] = useState(null);
     const [amount, setAmount] = useState(""); // para guardar el importe introducido
-    const expenseToContribute = location.state?.expense;
-    const expenseId = expenseToContribute?.id;
+    const expenseId = location.state?.expenseId;
 
     async function handleError(errorResponse) {
         const errorBody = await errorResponse.json();
@@ -40,7 +39,7 @@ const DividedExpense = () => {
             }
         };
         fetchUser();
-    }, []); // solo una vez al montar
+    }, []);
 
     const handleContribute = async () => {
         if (!amount || !expenseId) {

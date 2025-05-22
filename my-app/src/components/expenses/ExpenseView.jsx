@@ -11,7 +11,7 @@ const ExpenseType = {
     FESTIVAL: 'Festival',
     PROVISIONES: 'Provisiones',
     ROPA: 'Ropa',
-    MISCELÁNEOS: 'Misceláneos',
+    MISCELANEOS: 'Misceláneos',
 };
 
 function FilterDropdown({ categories, onCategoryChange, onClose, selected }) {
@@ -44,13 +44,18 @@ export default function ExpenseView() {
     const [expenses, setExpenses] = useState([]);
     const [userName, setUserName] = useState("");
     const [userId, setUserId] = useState("");
+    // Nuevo estado para indicar si el usuario logueado es el propietario/administrador del grupo
+    const [isCurrentUserTheGroupOwner, setIsCurrentUserTheGroupOwner] = useState(false);
     const token = localStorage.getItem('token');
     const [openDropdownId, setOpenDropdownId] = useState(null);
     const dropdownRef = useRef(null);
+    const [openContributorDropdownId, setOpenContributorDropdownId] = useState(null);
+    const contributorDropdownRef = useRef(null);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [allCategories, ] = useState(Object.values(ExpenseType));
+    const [allCategories,] = useState(Object.values(ExpenseType));
     const filterDropdownRef = useRef(null);
+    const isCurrentUserAdmin = isCurrentUserTheGroupOwner;
 
     async function handleError(errorResponse) {
         const errorBody = await errorResponse.json();
@@ -61,17 +66,35 @@ export default function ExpenseView() {
         }
     }
 
+    const isExpenseCovered = (expense) => {
+        if (!expense.contributors || expense.contributors.length === 0) {
+            return false;
+        }
+        const totalContributions = expense.contributors.reduce((sum, contributor) => {
+            return sum + (contributor.amount || 0);
+        }, 0);
+
+        return Math.abs(totalContributions - expense.amount) < 0.001;
+    };
+
     useEffect(() => {
         if (!token) {
             navigate('/IniciarSesion');
         } else {
             fetchUserName();
+            fetchGroupDetails();
+        }
+    }, [token, navigate]);
+
+    useEffect(() => {
+        if (id && userId) {
             fetchExpenses();
         }
-    }, [token, navigate, id]);
-
+    }, [id, userId]);
 
     async function fetchExpenses() {
+
+
         try {
             const response = await fetch(`http://localhost:3000/groups/${id}/expenses/`, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -85,11 +108,24 @@ export default function ExpenseView() {
             }
 
             const data = await response.json();
+
+
             const validExpenses = Array.isArray(data) ? data : [];
-            const processedExpenses = validExpenses.map(expense => ({
-                ...expense,
-                tags: typeof expense.tags === 'string' ? [expense.tags] : expense.tags || [],
-            }));
+            const processedExpenses = validExpenses.map(expense => {
+                const currentUserHasContributed = expense.contributors && expense.contributors.some(c => {
+                    const contributorIdAsString = String(c.id);
+                    const currentUserIdAsString = String(userId);
+                    const match = contributorIdAsString === currentUserIdAsString;
+                    return match;
+                });
+
+                return {
+                    ...expense,
+                    tags: typeof expense.tags === 'string' ? [expense.tags] : expense.tags || [],
+                    isCovered: isExpenseCovered(expense),
+                    currentUserHasContributed: currentUserHasContributed
+                };
+            });
             setExpenses(processedExpenses);
 
         } catch (error) {
@@ -120,71 +156,57 @@ export default function ExpenseView() {
         }
     }
 
-    const handleContribute = async (expenseId) => {
-        if (!userName) {
-            alert("El nombre del usuario no está disponible");
-            return;
-        }
-
-        const expense = expenses.find(expense => expense.id === expenseId);
-
-        if (expense && expense.contributor) {
-            alert("Este gasto ya está cubierto, no puedes contribuir.");
-            return;
-        }
-
+    // Función para obtener los detalles del grupo y determinar si el usuario actual es el propietario
+    async function fetchGroupDetails() {
         try {
-            const response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseId}/contribute`, {
-                method: 'POST',
+            const response = await fetch(`http://localhost:3000/groups/${id}`, {
+                method: 'GET',
                 headers: { Authorization: `Bearer ${token}` },
                 credentials: 'include'
             });
 
-            if (!response.ok) {
+            if (response.ok) {
+                const data = await response.json();
+                if (data.isOwner) {
+                    setIsCurrentUserTheGroupOwner(true);
+                } else {
+                    setIsCurrentUserTheGroupOwner(false);
+                }
+            } else {
                 await handleError(response);
-                return;
             }
-
-            setExpenses(prevExpenses =>
-                prevExpenses.map(expense =>
-                    expense.id === expenseId
-                        ? { ...expense, contributor: { id: userId, name: userName } }
-                        : expense
-                )
-            );
-
-            window.location.reload();
-
         } catch (error) {
-            alert(`Error al contribuir al gasto: ${error.message}`);
+            alert(`Error al obtener los detalles del grupo: ${error}`);
         }
+    }
+
+    const handleContribute = async (expenseId) => {
+        navigate(`/GastosDividos/${id}`, {
+            state: { expenseId: expenseId }
+        });
     };
 
     const handleUncontribute = async (expenseId) => {
+        const isConfirmed = window.confirm("¿Estás seguro de que quieres eliminar tu contribución a este gasto?");
+        if (!isConfirmed) return;
+
         try {
             const response = await fetch(`http://localhost:3000/groups/${id}/expenses/${expenseId}/remove-contribution`, {
                 method: 'POST',
-                headers: { Authorization: `Bearer ${token}` },
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
             });
 
             if (!response.ok) {
                 await handleError(response);
                 return;
             }
-
-            setExpenses(prevExpenses =>
-                prevExpenses.map(expense =>
-                    expense.id === expenseId
-                        ? { ...expense, contributor: false, contributorName: null }
-                        : expense
-                )
-            );
-
-            window.location.reload();
-
+            fetchExpenses();
         } catch (error) {
-            alert(`Error al quitar la contribución: ${error.error}`);
+            alert(`Error al quitar la contribución: ${error.message || error}`);
         }
     };
 
@@ -213,23 +235,32 @@ export default function ExpenseView() {
                 return;
             }
 
-            window.location.reload();
+            fetchExpenses();
         } catch (error) {
-            alert(`Error eliminando gasto: ${error.error}`);
+            alert(`Error eliminando gasto: ${error.message || error}`);
         }
     };
 
     const toggleDropdown = (expenseId) => {
-        console.log('toggleDropdown called for expenseId:', expenseId);
-        setOpenDropdownId(prevId => {
-            const newId = prevId === expenseId ? null : expenseId;
-            console.log('openDropdownId is now:', newId);
-            return newId;
-        });
+        setOpenDropdownId(prevId => (prevId === expenseId ? null : expenseId));
+        if (openContributorDropdownId !== null) {
+            setOpenContributorDropdownId(null);
+        }
     };
 
     const closeDropdownManually = () => {
         setOpenDropdownId(null);
+    };
+
+    const toggleContributorDropdown = (expenseId) => {
+        setOpenContributorDropdownId(prevId => (prevId === expenseId ? null : expenseId));
+        if (openDropdownId !== null) {
+            setOpenDropdownId(null);
+        }
+    };
+
+    const closeContributorDropdownManually = () => {
+        setOpenContributorDropdownId(null);
     };
 
     useEffect(() => {
@@ -243,6 +274,18 @@ export default function ExpenseView() {
             document.removeEventListener("mousedown", handleClickOutsideTags);
         };
     }, [dropdownRef]);
+
+    useEffect(() => {
+        const handleClickOutsideContributor = (event) => {
+            if (contributorDropdownRef.current && !contributorDropdownRef.current.contains(event.target)) {
+                setOpenContributorDropdownId(null);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutsideContributor);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsideContributor);
+        };
+    }, [contributorDropdownRef]);
 
     const toggleFilter = () => {
         setIsFilterOpen(!isFilterOpen);
@@ -315,42 +358,76 @@ export default function ExpenseView() {
                         <span>Pagado por</span>
                         <span>Creado por</span>
                         <span>Etiquetas</span>
-                        <span className="edit-delete-header">Editar/Eliminar</span>
+                        {isCurrentUserAdmin && (
+                            <span className="edit-delete-header">Editar/Eliminar</span>
+                        )}
                     </div>
 
                     {filteredExpenses.length > 0 ? (
                         filteredExpenses.map(expense => (
-                            <div key={expense.id} className={`expense-row ${expense.contributor ? "covered-expense" : "pending-expense"}`}>
+                            <div key={expense.id} className={`expense-row ${expense.isCovered ? "covered-expense" : "pending-expense"}`}>
                                 <div className="name-expense">
                                     <h5 className="color-expense">{expense.title}</h5>
-                                    {expense.contributor && <span className="expense-label covered-expense-label">Cubierto</span>}
-                                    {!expense.contributor && <span className="expense-label">Pendiente</span>}
+                                    {expense.isCovered ? (
+                                        <span className="expense-label covered-expense-label">Cubierto</span>
+                                    ) : (
+                                        <span className="expense-label pending-expense-label">Pendiente</span>
+                                    )}
                                 </div>
 
                                 <div className="amount-expense">
-                                    <h5 className="color-expense">{expense.amount.toFixed(2)}€</h5>
+                                    <h5 className="color-expense">{expense.amount ? expense.amount.toFixed(2) : '0.00'}€</h5>
                                 </div>
 
                                 <div className="contribute-expense">
-                                    {expense.contributor ?
-                                        (
-                                            expense.contributor.id === userId ? (
-                                                <div className="contribution-info">
-                                                    <button className="uncontribute-button-red" onClick={() => handleUncontribute(expense.id)}>
-                                                        Desvincular
-                                                    </button>
-                                                </div>
-                                            ) : null
+                                    {expense.currentUserHasContributed ? (
+                                        <button
+                                            className="uncontribute-button-red"
+                                            onClick={() => handleUncontribute(expense.id)}
+                                        >
+                                            Cubierto
+                                        </button>
+                                    ) : (
+                                        expense.isCovered ? (
+                                            null
                                         ) : (
-                                            <button className="contribute-button-green" onClick={() => navigate(`/GastosDividos/${id}`)}>
-                                                Pagado
+                                            <button className="contribute-button-green" onClick={() => handleContribute(expense.id)}>
+                                                Sin cubrir
                                             </button>
-                                        )}
+                                        )
+                                    )}
                                 </div>
 
-                                <div className="contributed-by">
-                                    {expense.contributor && (
-                                        <span className="contributor-name">{expense.contributor.name}</span>
+                                <div className="contributed-by" ref={contributorDropdownRef}>
+                                    {expense.contributors && expense.contributors.length > 0 ? (
+                                        expense.contributors.length > 1 ? (
+                                            <div className="dropdown-container">
+                                                <div className="custom-dropdown styled-dropdown-header" onClick={() => toggleContributorDropdown(expense.id)}>
+                                                    Pagado por ({expense.contributors.length})
+                                                </div>
+                                                {openContributorDropdownId === expense.id && (
+                                                    <div className="dropdown-content">
+                                                        {expense.contributors.map((contributor) => (
+                                                            <div key={contributor.id} className="dropdown-item">
+                                                                {contributor.name}: {contributor.amount ? contributor.amount.toFixed(2) : '0.00'}€
+                                                            </div>
+                                                        ))}
+                                                        <button onClick={closeContributorDropdownManually} className="close-dropdown-button-bottom">
+                                                            <FaTimes /> Cerrar
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            // Si solo hay un contribuidor, mostrarlo directamente
+                                            expense.contributors.map(contributor => (
+                                                <span key={contributor.id} className="contributor-name">
+                                                    {contributor.name}: {contributor.amount ? contributor.amount.toFixed(2) : '0.00'}€
+                                                </span>
+                                            ))
+                                        )
+                                    ) : (
+                                        <span>Nadie ha contribuido </span>
                                     )}
                                 </div>
 
@@ -392,14 +469,17 @@ export default function ExpenseView() {
                                     )}
                                 </div>
 
-                                <div className="edition-expense">
-                                    <button onClick={() => handleEdit(expense.id)} className="edit-btn">
-                                        <FaEdit />
-                                    </button>
-                                    <button onClick={() => handleDeleteClick(expense.id)} className="delete-btn">
-                                        <FaTrashAlt />
-                                    </button>
-                                </div>
+                                {/* Mostrar botones de Editar/Eliminar solo si el usuario actual es el administrador */}
+                                {isCurrentUserAdmin && (
+                                    <div className="edition-expense">
+                                        <button onClick={() => handleEdit(expense.id)} className="edit-btn">
+                                            <FaEdit />
+                                        </button>
+                                        <button onClick={() => handleDeleteClick(expense.id)} className="delete-btn">
+                                            <FaTrashAlt />
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         ))
                     ) : (
@@ -407,9 +487,11 @@ export default function ExpenseView() {
                     )}
                 </div>
                 <div className="expense-list-bottom">
-                    <button className="expense-list-button" onClick={() => navigate(`/AñadirGastos/${id}`)}>
-                        <h2 className="color-expense">Añadir Gasto</h2>
-                    </button>
+                    {isCurrentUserAdmin && (
+                        <button className="expense-list-button" onClick={() => navigate(`/AñadirGastos/${id}`)}>
+                            <h2 className="color-expense">Añadir Gasto</h2>
+                        </button>
+                    )}
                 </div>
             </div>
 
