@@ -74,7 +74,7 @@ const DividedExpense = () => {
     return (
         <div className="divided-expense-container">
             <div className="divided-expense-header">
-                <h2>Gasto Dividido</h2>
+                <h2>Contribuir</h2>
             </div>
 
             <div className="divided-expense-form">
