@@ -182,19 +182,12 @@ export default function GroupAdminView() {
                 <img src={calendar} alt="Calendar" />
                 <p className="icon-label">Calendario</p>
               </button>
-              <button className="icon-btn" onClick={() => navigate(`/map/${groupId}`)}>
-                <img src={location} alt="Location" />
-                <p className="icon-label">Mapa</p>
-              </button>
+            
             </div>
             <div className="icon-row center">
-              <button className="icon-btn">
-                <img src={document} alt="Documents" />
-                <p className="icon-label">Documentos</p>
-              </button>
-              <button className="icon-btn">
-                <img src={chat} alt="Chat" />
-                <p className="icon-label">Chat</p>
+  <button className="icon-btn" onClick={() => navigate(`/map/${groupId}`)}>
+                <img src={location} alt="Location" />
+                <p className="icon-label">Mapa</p>
               </button>
             </div>
           </div>
